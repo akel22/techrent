@@ -1,0 +1,58 @@
+.admin-card {
+    border-color: #dee2e6;
+    background-color: #ffffff;
+}
+
+.transaction-search {
+    width: 100%;
+    max-width: 360px;
+}
+
+.transaction-search .input-group-text img {
+    width: 1rem;
+    height: 1rem;
+}
+
+.transaction-sort-controls {
+    flex-shrink: 0;
+}
+
+.transaction-sort-select {
+    width: auto;
+    min-width: 8rem;
+}
+
+.transaction-table {
+    min-width: 760px;
+}
+
+.transaction-table th {
+    background-color: #f1f3f5;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.transaction-table td {
+    white-space: nowrap;
+}
+
+.transaction-status {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-ongoing {
+    color: #198754;
+}
+
+.status-late {
+    color: #fd7e14;
+}
+
+.status-overdue {
+    color: #dc3545;
+}
+
+.status-done {
+    color: #6c757d;
+}

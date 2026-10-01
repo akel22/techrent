@@ -1,0 +1,18 @@
+.admin-card {
+    border-color: #dee2e6;
+    background-color: #ffffff;
+}
+
+.admin-period-select {
+    width: auto;
+    max-width: none;
+}
+
+.admin-line-chart {
+    height: 280px;
+}
+
+.admin-doughnut-chart {
+    height: 190px;
+}
+

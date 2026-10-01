@@ -1,0 +1,23 @@
+.admin-card {
+    border-color: #dee2e6;
+    background-color: #ffffff;
+}
+
+.audit-table {
+    min-width: 680px;
+}
+
+.audit-table th {
+    background-color: #f1f3f5;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.audit-table td {
+    white-space: nowrap;
+}
+
+.input-group-text img {
+    width: 1rem;
+    height: 1rem;
+}

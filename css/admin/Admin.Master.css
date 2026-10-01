@@ -1,0 +1,52 @@
+.admin-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    padding: 1.5rem 1rem;
+    background-color: #212529;
+}
+
+.admin-brand {
+    display: block;
+    margin: 0 0 2rem;
+    color: #ffffff;
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+}
+
+.admin-sidebar .nav-link {
+    margin-bottom: 0.25rem;
+    padding: 0.625rem 0.75rem;
+    color: #ffff;
+    border-radius: 0.25rem;
+}
+
+.admin-sidebar .nav-link.active {
+        color: rgba(255, 255, 255, 0.45);
+    }
+
+.admin-sidebar .nav-link.disabled {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.admin-main {
+    flex-grow: 1;
+    min-width: 0;
+    padding: 2rem;
+}
+
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        width: 180px;
+    }
+
+    .admin-main {
+        padding: 1.5rem;
+    }
+}

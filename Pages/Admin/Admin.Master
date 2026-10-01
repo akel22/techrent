@@ -1,0 +1,35 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Admin.Master.cs" Inherits="Techrent.Pages.Admin.AdminMaster" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%: Page.Title %> - TECHRENT</title>
+    <link href="<%: ResolveUrl("~/Content/bootstrap.min.css") %>" rel="stylesheet" />
+    <link href="<%: ResolveUrl("~/css/admin/Admin.Master.css") %>" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</head>
+<body class="bg-light">
+    <form id="adminForm" runat="server">
+        <div class="admin-shell">
+            <aside class="admin-sidebar">
+                <div class ="d-flex justify-content-center">
+                    <a class="admin-brand" href="<%: ResolveUrl("~/Pages/Admin/Dashboard.aspx") %>">TECH<span class="text-danger">RENT</span></a>
+                </div>
+                <nav class="nav flex-column" aria-label="Admin navigation">
+                    <asp:HyperLink ID="DashboardLink" runat="server" CssClass="nav-link" NavigateUrl="dashboard">Dashboard</asp:HyperLink>
+                    <asp:HyperLink ID="TransactionsLink" runat="server" CssClass="nav-link" NavigateUrl="transactions">Transactions</asp:HyperLink>
+                    <asp:HyperLink ID="AuditLogsLink" runat="server" CssClass="nav-link" NavigateUrl="auditLogs">Audit Logs</asp:HyperLink>
+                    <span class="nav-link disabled" aria-disabled="true">Customers</span>
+                    <span class="nav-link disabled" aria-disabled="true">Inventory</span>
+                </nav>
+            </aside>
+            <main class="admin-main">
+                <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+            </main>
+        </div>
+    </form>
+    <asp:ContentPlaceHolder ID="PageScripts" runat="server" />
+</body>
+</html>
