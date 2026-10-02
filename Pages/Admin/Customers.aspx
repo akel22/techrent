@@ -16,7 +16,6 @@
     <section class="card admin-card">
         <div class="card-body">
             <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
-                <p class="text-muted small mb-0">Customer records</p>
                 <div class="input-group customer-search">
                     <span class="input-group-text bg-white" aria-hidden="true">
                         <img src="<%: ResolveUrl("~/assets/svg/search.svg") %>" alt="" />

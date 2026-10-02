@@ -134,7 +134,7 @@
                             <label for="inventoryDetailStatus" class="form-label">Equipment status</label>
                             <select id="inventoryDetailStatus" class="form-select">
                                 <option>Available</option>
-                                <option>In Maintenance</option>
+                                <option>Maintenance</option>
                                 <option>Rented</option>
                             </select>
                         </div>
@@ -144,17 +144,29 @@
                         </div>
                         <div class="col-sm-4">
                             <label for="inventoryDetailType" class="form-label">Equipment type</label>
-                            <input type="text" id="inventoryDetailType" class="form-control" />
+                            <select id="inventoryDetailType" class="form-select">
+                                <option value="Obsolete">Obsolete</option>
+                                <option value="Standard">Standard</option>
+                                <option value="Professional">Professional</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row g-3 mt-1">
                         <div class="col-sm-6">
                             <label for="inventoryDetailRentalRate" class="form-label">Base rental fee/hour</label>
-                            <input type="text" id="inventoryDetailRentalRate" class="form-control" />
+                            <div class="input-group">
+                                <span class="input-group-text" aria-hidden="true">&#8369;</span>
+                                <input type="number" max="100" id="inventoryDetailRentalRate" class="form-control" min="0" step="0.01" inputmode="decimal" />
+                                <span class="input-group-text">/hr</span>
+                            </div>
                         </div>
                         <div class="col-sm-6">
                             <label for="inventoryDetailDeposit" class="form-label">Security deposit/hour</label>
-                            <input type="text" id="inventoryDetailDeposit" class="form-control" />
+                            <div class="input-group">
+                                <span class="input-group-text" aria-hidden="true">&#8369;</span>
+                                <input type="number" max="100" id="inventoryDetailDeposit" class="form-control" min="0" step="0.01" inputmode="decimal" />
+                                <span class="input-group-text">/hr</span>
+                            </div>
                         </div>
                     </div>
                 </div>

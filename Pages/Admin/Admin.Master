@@ -30,6 +30,7 @@
             </main>
         </div>
     </form>
+    <script src="<%: ResolveUrl("~/Scripts/bootstrap.bundle.min.js") %>"></script>
     <asp:ContentPlaceHolder ID="PageScripts" runat="server" />
 </body>
 </html>
