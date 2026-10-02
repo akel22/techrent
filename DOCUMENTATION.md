@@ -8,13 +8,14 @@ The application is currently being established as an ASP.NET Web Forms applicati
 
 ## Current scope
 
-The current implementation includes an administrator dashboard, a transaction log page, and an audit log page:
+The current implementation includes an administrator dashboard, transaction and audit log pages, and a customer management page:
 
 - `Pages/Admin/Admin.Master` provides the administrator sidebar and content shell.
 - Bootstrap is the only stylesheet framework.
 - Administrator page styles are kept in `css/admin/`.
 - The transaction log uses static sample records, search applied when Enter is pressed, a created-date sort selector for earliest or latest dates, and pagination limited to eight rows per page. Search, sorting, and pagination are presentation-only and are not connected to a database.
 - `Pages/Admin/AuditLogs.aspx` presents static sample audit events with date-range and category filters, keyword search, and pagination limited to eight rows per page. Apply Filters uses the selected category while retaining the selected date range and search; All Categories removes only the category constraint. The Show Details action opens a Bootstrap scrollable modal. These audit records and interactions are presentation-only and are not connected to a database.
+- `Pages/Admin/Customers.aspx` presents static sample customer records with Enter-triggered search across customer ID, name, mobile number, and email, plus pagination limited to eight rows per page. Show Details opens a Bootstrap modal, and Remove opens a confirmation modal; both actions are presentation-only and are not connected to a database.
 - The Rental Staff interface and additional administrator workflows are not implemented yet.
 - No authentication or role authorization is implemented yet.
 - No database queries, transactions, calculations, or business workflows are implemented yet.
@@ -39,7 +40,7 @@ The future Rental Staff interface is expected to support day-to-day rental opera
 
 ### Administrators
 
-The administrator interface currently includes a dashboard, a transaction log page, and an audit log page. The transaction log presents transaction IDs, customer IDs, creation and expiration dates, status, and row actions using static sample data. Search is applied when Enter is pressed; created-date sorting offers earliest and latest order; pagination displays at most eight rows per page. The audit log page presents log IDs, actors, roles, timestamps, and category-filtered sample events. Date-range and category filters are applied with the Apply Filters button, keyword search can be applied with Enter, pagination displays at most eight rows per page, and Show Details displays the selected event in a scrollable Bootstrap modal. No audit-log database integration or authorization is implemented.
+The administrator interface currently includes a dashboard, `Pages/Admin/Equipments.aspx`, a transaction log page, and an audit log page. `Pages/Admin/Equipments.aspx` presents equipment IDs, categories, models, types, statuses, quantities, and row details using static sample data. Search filters the displayed rows, sorting supports category, model, and type, pagination displays at most eight rows per page, and Show Details opens a scrollable Bootstrap modal with presentation-only editable fields. The transaction log presents transaction IDs, customer IDs, creation and expiration dates, status, and row actions using static sample data. Search is applied when Enter is pressed; created-date sorting offers earliest and latest order; pagination displays at most eight rows per page. The audit log page presents log IDs, actors, roles, timestamps, and category-filtered sample events. Date-range and category filters are applied with the Apply Filters button, keyword search can be applied with Enter, pagination displays at most eight rows per page, and Show Details displays the selected event in a scrollable Bootstrap modal. No inventory, audit-log database integration, persistence workflow, or authorization is implemented.
 
 Additional management functions, permissions, and workflows will be defined before implementation.
 

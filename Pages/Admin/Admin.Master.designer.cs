@@ -60,6 +60,24 @@ namespace Techrent.Pages.Admin
         protected global::System.Web.UI.WebControls.HyperLink AuditLogsLink;
 
         /// <summary>
+        /// CustomersLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink CustomersLink;
+
+        /// <summary>
+        /// EquipmentsLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink EquipmentsLink;
+
+        /// <summary>
         /// MainContent control.
         /// </summary>
         /// <remarks>

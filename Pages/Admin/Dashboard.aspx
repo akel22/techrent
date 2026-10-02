@@ -40,19 +40,13 @@
                         <p class="h3 mb-0">40</p>
                     </div>
                 </section>
-                <section class="card  admin-card">
-                    <div class="card-body">
-                        <p class="text-muted small mb-2">Equipments in maintenance</p>
-                        <p class="h3 mb-0">5</p>
-                    </div>
-                </section>
             </div>
         </div>
 
         <div class="col-xl-6">
             <section class="card h-100 admin-card">
                 <div class="card-body">
-                    <h2 class="h6 mb-3">Equipment availability</h2>
+                    <h2 class="h6 mb-3">Rental Activity</h2>
                     <div class="admin-doughnut-chart">
                         <canvas id="availabilityChart" aria-label="Equipment availability chart" role="img"></canvas>
                     </div>
@@ -128,11 +122,11 @@
                     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
                     datasets: [{
                         data: [28500, 35400, 31200, 58100],
-                        borderColor: '#0d6efd',
+                        borderColor: '#2C3E50',
                         backgroundColor: 'rgba(13, 110, 253, 0.08)',
                         borderWidth: 2,
-                        fill: true,
-                        tension: 0.25,
+                        fill: false,
+                        tension: 0,
                         pointRadius: 3
                     }]
                 },
@@ -145,12 +139,12 @@
             });
 
             new Chart(document.getElementById('availabilityChart'), {
-                type: 'doughnut',
+                type: 'pie',
                 data: {
-                    labels: ['Available', 'Rented'],
-                    datasets: [{ data: [83, 17], backgroundColor: ['#0d6efd', '#e9ecef'], borderWidth: 0 }]
+                    labels: ['Successful Transactions', 'Late Transactions', 'Overdued Transactions'],
+                    datasets: [{ data: [83, 17, 4], backgroundColor: ['#28a745', '#ffc107', '#dc3545'], borderWidth: 0 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, cutout: '68%', plugins: { legend: { position: 'bottom' } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
 
         });

@@ -122,10 +122,14 @@
     <Content Include="css\admin\Admin.Master.css" />
     <Content Include="css\admin\AdminDashboard.css" />
     <Content Include="css\admin\AuditLogs.css" />
+    <Content Include="css\admin\Customers.css" />
+    <Content Include="css\admin\Inventory.css" />
     <Content Include="css\admin\Transactions.css" />
     <Content Include="Pages\Admin\Admin.Master" />
     <Content Include="Pages\Admin\AuditLogs.aspx" />
     <Content Include="Pages\Admin\Dashboard.aspx" />
+    <Content Include="Pages\Admin\Customers.aspx" />
+    <Content Include="Pages\Admin\Equipments.aspx" />
     <Content Include="Pages\Admin\Transactions.aspx" />
     <Content Include="DOCUMENTATION.md" />
     <Content Include="favicon.ico" />
@@ -219,6 +223,20 @@
     <Compile Include="Pages\Admin\Dashboard.aspx.designer.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Admin\Customers.aspx.cs">
+      <DependentUpon>Customers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Admin\Customers.aspx.designer.cs">
+      <DependentUpon>Customers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\Equipments.aspx.cs">
+      <DependentUpon>Equipments.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Admin\Equipments.aspx.designer.cs">
+      <DependentUpon>Equipments.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Admin\Transactions.aspx.cs">
       <DependentUpon>Transactions.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -245,6 +263,7 @@
     <Folder Include="Application Layer\Services\" />
     <Folder Include="App_Data\" />
     <Folder Include="assets\img\" />
+    <Folder Include="css\rentalstaff\" />
     <Folder Include="Data Access Layer\DTOs\" />
   </ItemGroup>
   <ItemGroup>

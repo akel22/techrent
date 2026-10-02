@@ -1,0 +1,50 @@
+.admin-card {
+    border-color: #dee2e6;
+    background-color: #ffffff;
+}
+
+.customer-search {
+    width: 100%;
+    max-width: 360px;
+}
+
+.customer-search .input-group-text img {
+    width: 1rem;
+    height: 1rem;
+}
+
+.customer-table {
+    min-width: 780px;
+}
+
+.customer-table th {
+    background-color: #f1f3f5;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.customer-table td {
+    white-space: nowrap;
+}
+
+.customer-details-list dt,
+.customer-details-list dd {
+    margin-bottom: 0.75rem;
+}
+
+.customer-profile-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    border: 1px solid #212529;
+    border-radius: 0.75rem;
+    color: #6c757d;
+    background-color: #f8f9fa;
+}
+
+@media (max-width: 767.98px) {
+    .customer-search {
+        max-width: none;
+    }
+}

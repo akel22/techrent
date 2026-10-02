@@ -13,6 +13,7 @@ namespace Techrent.Pages.Admin
             SetNavigationState(DashboardLink, string.Equals(currentPage, "Dashboard.aspx", StringComparison.OrdinalIgnoreCase));
             SetNavigationState(TransactionsLink, string.Equals(currentPage, "Transactions.aspx", StringComparison.OrdinalIgnoreCase));
             SetNavigationState(AuditLogsLink, string.Equals(currentPage, "AuditLogs.aspx", StringComparison.OrdinalIgnoreCase));
+            SetNavigationState(CustomersLink, string.Equals(currentPage, "Customers.aspx", StringComparison.OrdinalIgnoreCase));
         }
 
         private static void SetNavigationState(HyperLink link, bool isActive)

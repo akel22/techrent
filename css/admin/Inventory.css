@@ -1,0 +1,81 @@
+.admin-card {
+    border-color: #dee2e6;
+    background-color: #ffffff;
+}
+
+.inventory-search {
+    width: 100%;
+    max-width: 360px;
+}
+
+.inventory-search .input-group-text img {
+    width: 1rem;
+    height: 1rem;
+}
+
+.inventory-sort-controls {
+    flex-shrink: 0;
+}
+
+.inventory-sort-select {
+    width: auto;
+    min-width: 9rem;
+}
+
+.inventory-table {
+    min-width: 900px;
+}
+
+.inventory-table th {
+    background-color: #f1f3f5;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.inventory-table td {
+    white-space: nowrap;
+}
+
+.inventory-status {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-available {
+    color: #198754;
+}
+
+.status-maintenance {
+    color: #fd7e14;
+}
+
+.status-rented {
+    color: #6f42c1;
+}
+
+.inventory-details-list dt {
+    font-weight: 600;
+}
+
+.inventory-details-list dd {
+    color: #495057;
+}
+
+.inventory-image-placeholder {
+    min-height: 9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #adb5bd;
+    border-radius: 0.75rem;
+    background-color: #f1f3f5;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+@media (max-width: 575.98px) {
+    .inventory-table {
+        min-width: 820px;
+    }
+}

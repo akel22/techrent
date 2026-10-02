@@ -15,14 +15,14 @@
         <div class="admin-shell">
             <aside class="admin-sidebar">
                 <div class ="d-flex justify-content-center">
-                    <a class="admin-brand" href="<%: ResolveUrl("~/Pages/Admin/Dashboard.aspx") %>">TECH<span class="text-danger">RENT</span></a>
+                    <a class="admin-brand" href="<%: GetRouteUrl("dashboard")%>">TECH<span class="text-danger">RENT</span></a>
                 </div>
                 <nav class="nav flex-column" aria-label="Admin navigation">
-                    <asp:HyperLink ID="DashboardLink" runat="server" CssClass="nav-link" NavigateUrl="dashboard">Dashboard</asp:HyperLink>
-                    <asp:HyperLink ID="TransactionsLink" runat="server" CssClass="nav-link" NavigateUrl="transactions">Transactions</asp:HyperLink>
-                    <asp:HyperLink ID="AuditLogsLink" runat="server" CssClass="nav-link" NavigateUrl="auditLogs">Audit Logs</asp:HyperLink>
-                    <span class="nav-link disabled" aria-disabled="true">Customers</span>
-                    <span class="nav-link disabled" aria-disabled="true">Inventory</span>
+                    <asp:HyperLink ID="DashboardLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = dashboard %>">Dashboard</asp:HyperLink>
+                    <asp:HyperLink ID="TransactionsLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = transactions %>">Transactions</asp:HyperLink>
+                    <asp:HyperLink ID="AuditLogsLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = auditLogs %>">Audit Logs</asp:HyperLink>
+                    <asp:HyperLink ID="CustomersLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = customers %>">Customers</asp:HyperLink>
+                    <asp:HyperLink ID="EquipmentsLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = equipments %>">Equipments</asp:HyperLink>
                 </nav>
             </aside>
             <main class="admin-main">
