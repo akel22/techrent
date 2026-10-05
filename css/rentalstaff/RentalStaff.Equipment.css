@@ -1,0 +1,153 @@
+.rental-staff-equipment {
+    max-width: 90rem;
+    margin: 0 auto;
+}
+
+.rental-staff-summary-pricing {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    align-self: start;
+    text-align: right;
+}
+
+.rental-staff-equipment-card {
+    overflow: hidden;
+    border-color: #e1e6eb;
+}
+
+.rental-staff-summary-pricing span {
+    font-size: 0.75rem;
+}
+
+.rental-staff-search-wrapper {
+    position: relative;
+}
+
+@media (max-width: 575.98px) {
+    .rental-staff-summary-pricing {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        text-align: left;
+    }
+}
+
+.rental-staff-search-wrapper .form-control {
+    padding-left: 2.25rem;
+}
+
+.rental-staff-search-wrapper:focus-within .form-control {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.rental-staff-search-icon {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    width: 1rem;
+    height: 1rem;
+    color: #6c757d;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+.rental-staff-equipment-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 7rem;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.rental-staff-equipment-visual-laptop { background-color: #4355a4; }
+.rental-staff-equipment-visual-projector { background-color: #1f6f8b; }
+.rental-staff-equipment-visual-monitor { background-color: #4c7a61; }
+.rental-staff-equipment-visual-accessory { background-color: #7b5b8d; }
+
+.equipment-type {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    padding: 0.2rem 0.45rem;
+    border-radius: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.equipment-type-standard {
+    color: #084298;
+    background-color: #cfe2ff;
+}
+
+.equipment-type-professional {
+    color: #055160;
+    background-color: #cff4fc;
+}
+
+.equipment-type-obsolete {
+    color: #664d03;
+    background-color: #fff3cd;
+}
+
+.rental-staff-stock {
+    color: #198754;
+}
+
+.rental-staff-summary {
+    position: sticky;
+    top: 1rem;
+}
+
+.rental-staff-summary-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.rental-staff-summary-item > div:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.rental-staff-summary-item > strong {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+}
+
+.rental-staff-summary-item span {
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+.rental-staff-summary-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    grid-column: 1 / -1;
+}
+
+.rental-staff-summary-controls > span {
+    min-width: 1.5rem;
+    color: #212529;
+    text-align: center;
+}
+
+.summary-remove-button {
+    margin-left: auto;
+    padding: 0.25rem;
+}
+
+@media (max-width: 1199.98px) {
+    .rental-staff-summary {
+        position: static;
+    }
+}

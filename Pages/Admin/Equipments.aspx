@@ -84,6 +84,7 @@
                                     <td><span class="inventory-status <%#: Eval("StatusClass") %>"><%#: Eval("Status") %></span></td>
                                     <td><%#: Eval("Quantity") %></td>
                                     <td class="text-center text-nowrap">
+                                        <button type="button" class="btn btn-danger btn-sm inventory-remove-button" data-bs-toggle="modal" data-bs-target="#removeInventoryModal" data-equipment-id="<%#: Eval("EquipmentId") %>">Remove</button>
                                         <button type="button" class="btn btn-outline-primary btn-sm inventory-details-button" data-bs-toggle="modal" data-bs-target="#inventoryDetailsModal" data-equipment-id="<%#: Eval("EquipmentId") %>" data-serial-number="<%#: Eval("SerialNumber") %>" data-model="<%#: Eval("Model") %>" data-category="<%#: Eval("Category") %>" data-type="<%#: Eval("Type") %>" data-status="<%#: Eval("Status") %>" data-quantity="<%#: Eval("Quantity") %>" data-rental-rate="<%#: Eval("RentalRate") %>" data-deposit="<%#: Eval("Deposit") %>" data-date-added="<%#: Eval("DateAdded") %>">Show Details</button>
                                     </td>
                                 </tr>
@@ -177,6 +178,28 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="removeInventoryModal" tabindex="-1" aria-labelledby="removeInventoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="removeInventoryModalLabel">Remove equipment?</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger mb-3">
+                        <p class="mb-2">The following equipment record will be removed:</p>
+                        <p class="mb-0"><strong id="removeInventoryEquipmentId"></strong></p>
+                    </div>
+                    <p class="text-danger small mb-0 text-center">Once removed, this action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Remove Record</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </asp:Content>
 
 <asp:Content ID="PageScripts" ContentPlaceHolderID="PageScripts" runat="server">
@@ -189,9 +212,10 @@
             var emptyMessage = document.getElementById('inventoryEmptyMessage');
             var currentPage = 1;
             var pageSize = 8;
+            var appliedQuery = '';
 
             function getFilteredRows() {
-                var query = searchInput.value.trim().toLowerCase();
+                var query = appliedQuery;
                 var sortKey = sortSelect.value;
 
                 return rows.filter(function (row) {
@@ -264,9 +288,19 @@
                 });
             });
 
-            searchInput.addEventListener('input', function () {
-                currentPage = 1;
-                renderTable();
+            document.querySelectorAll('.inventory-remove-button').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    setText('removeInventoryEquipmentId', button.dataset.equipmentId);
+                });
+            });
+
+            searchInput.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    appliedQuery = searchInput.value.trim().toLowerCase();
+                    currentPage = 1;
+                    renderTable();
+                }
             });
             sortSelect.addEventListener('change', function () {
                 currentPage = 1;

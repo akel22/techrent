@@ -1,0 +1,56 @@
+.rental-staff-new {
+    max-width: 72rem;
+    margin: 0 auto;
+}
+
+.rental-staff-search-wrapper {
+    position: relative;
+}
+
+.rental-staff-search-wrapper .form-control {
+    padding-left: 2.25rem;
+}
+
+.rental-staff-search-wrapper:focus-within .form-control {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.rental-staff-search-icon {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    z-index: 1;
+    width: 1rem;
+    height: 1rem;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+.rental-staff-customer-table th,
+.rental-staff-customer-table td {
+    padding: 1rem 0.75rem;
+}
+
+.rental-staff-customer-table tbody tr:last-child > * {
+    border-bottom: 0;
+}
+
+@media (max-width: 767.98px) {
+    .rental-staff-customer-table thead {
+        display: none;
+    }
+
+    .rental-staff-customer-table tbody tr {
+        display: block;
+        padding: 1rem 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .rental-staff-customer-table tbody tr > * {
+        display: block;
+        padding: 0.25rem 0;
+        border: 0;
+        text-align: left !important;
+    }
+}

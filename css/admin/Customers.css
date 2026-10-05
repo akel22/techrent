@@ -4,8 +4,33 @@
 }
 
 .customer-search {
+    position: relative;
     width: 100%;
     max-width: 360px;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+}
+
+.customer-search:focus-within {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.customer-search .input-group-text {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    z-index: 1;
+    padding: 0;
+    border: 0;
+    transform: translateY(-50%);
+}
+
+.customer-search .form-control {
+    padding-left: 2.25rem;
+    border: 0;
+    border-radius: 0.375rem;
+    box-shadow: none;
 }
 
 .customer-search .input-group-text img {

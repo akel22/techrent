@@ -1,0 +1,39 @@
+.rental-staff-review {
+    max-width: 90rem;
+    margin: 0 auto;
+}
+
+.rental-staff-review-table th,
+.rental-staff-review-table td {
+    white-space: nowrap;
+}
+
+.rental-staff-review-table th:first-child {
+    min-width: 12rem;
+}
+
+.rental-staff-review-table td:nth-child(2) {
+    min-width: 13rem;
+}
+
+.rental-staff-review-summary {
+    position: sticky;
+    top: 1rem;
+}
+
+#preRentalAuditLog {
+    resize: vertical;
+}
+
+@media (max-width: 1199.98px) {
+    .rental-staff-review-summary {
+        position: static;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .rental-staff-review-table th,
+    .rental-staff-review-table td {
+        white-space: normal;
+    }
+}

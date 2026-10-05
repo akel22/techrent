@@ -39,7 +39,7 @@
                 </div>
                 <div class="col-12 col-lg-4">
                     <label for="auditSearch" class="form-label">Search audit logs</label>
-                    <div class="input-group">
+                    <div class="input-group audit-search">
                         <span class="input-group-text bg-white" aria-hidden="true">
                             <img src="<%: ResolveUrl("~/assets/svg/search.svg") %>" alt="" />
                         </span>
@@ -145,6 +145,7 @@
             var pagination = document.getElementById('auditPagination');
             var currentPage = 1;
             var pageSize = 8;
+            var appliedQuery = '';
             var filters = { dateFrom: '', dateTo: '', category: '', query: '' };
 
             function applyFilters() {
@@ -164,7 +165,7 @@
                     dateFrom: dateFrom,
                     dateTo: dateTo,
                     category: categorySelect.value,
-                    query: searchInput.value.trim().toLowerCase()
+                    query: appliedQuery
                 };
                 currentPage = 1;
                 renderTable();
@@ -229,6 +230,7 @@
             searchInput.addEventListener('keydown', function (event) {
                 if (event.key === 'Enter') {
                     event.preventDefault();
+                    appliedQuery = searchInput.value.trim().toLowerCase();
                     applyFilters();
                 }
             });

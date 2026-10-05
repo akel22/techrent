@@ -1,0 +1,54 @@
+.rental-staff-header {
+    background-color: #343a40;
+}
+
+.rental-staff-header-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 4rem;
+}
+
+.rental-staff-brand {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.rental-staff-signout {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.rental-staff-frame {
+    max-width: 70rem;
+    min-height: calc(100vh - 4rem);
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.rental-staff-content {
+    width: 100%;
+}
+
+@media (max-width: 575.98px) {
+    .rental-staff-header-content {
+        justify-content: flex-start;
+        padding-left: 1rem;
+    }
+
+    .rental-staff-signout {
+        right: 1rem;
+    }
+
+    .rental-staff-frame {
+        padding: 1rem;
+    }
+}

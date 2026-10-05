@@ -1,0 +1,95 @@
+.rental-staff-serial-assignment {
+    max-width: 72rem;
+    margin: 0 auto;
+}
+
+.serial-assignment-form {
+    max-width: 60rem;
+    margin: 0 auto;
+}
+
+.serial-assignment-group {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.serial-assignment-group:first-child {
+    padding-top: 0;
+}
+
+.serial-assignment-group:last-of-type {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.serial-assignment-rows {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.serial-assignment-row {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    background-color: #f8f9fa;
+}
+
+.assignment-unit-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: #212529;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.serial-assignment-row .form-select:focus {
+    border-color: #86b7fe;
+}
+
+.serial-assignment-row .serial-select {
+    width: 16rem;
+    max-width: 100%;
+}
+
+.serial-assignment-form.was-validated .form-select:invalid {
+    border-color: #dc3545;
+}
+
+.serial-assignment-row .invalid-feedback {
+    grid-column: 2 / -1;
+}
+
+.progress-bar {
+    transition: none;
+}
+
+.progress {
+    height: 0.65rem;
+}
+
+@media (max-width: 767.98px) {
+    .serial-assignment-rows {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .serial-assignment-row {
+        grid-template-columns: 2rem minmax(0, 1fr);
+    }
+
+    .serial-assignment-row .assignment-row-status {
+        grid-column: 2;
+        justify-self: start;
+    }
+}

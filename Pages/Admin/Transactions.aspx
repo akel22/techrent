@@ -37,8 +37,8 @@
                         <tr>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Customer ID</th>
-                            <th scope="col">Created_At</th>
-                            <th scope="col">Expiration</th>
+                            <th scope="col">CreatedAt</th>
+                            <th scope="col">DueAt</th>
                             <th scope="col">Status</th>
                             <th scope="col" class="text-center">Action</th>
                         </tr>
@@ -46,15 +46,15 @@
                     <tbody id="transactionRows">
                         <asp:Repeater ID="TransactionsRepeater" runat="server">
                             <ItemTemplate>
-                                <tr>
+                                <tr data-detail-payload="<%#: Eval("DetailPayload") %>">
                                     <td><%#: Eval("TransactionId") %></td>
                                     <td><%#: Eval("CustomerId") %></td>
                                     <td><%#: Eval("CreatedAt") %></td>
-                                    <td><%#: Eval("Expiration") %></td>
+                                    <td><%#: Eval("DueAt") %></td>
                                     <td><span class="transaction-status <%#: Eval("StatusClass") %>"><%#: Eval("Status") %></span></td>
                                     <td class="text-center text-nowrap">
                                         <button type="button" class="btn btn-secondary btn-sm" disabled>Archive</button>
-                                        <button type="button" class="btn btn-outline-primary btn-sm">View</button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm transaction-view-button" data-bs-toggle="modal" data-bs-target="#transactionDetailsModal">View</button>
                                     </td>
                                 </tr>
                             </ItemTemplate>
@@ -68,6 +68,69 @@
             </nav>
         </div>
     </section>
+
+    <div class="modal fade" id="transactionDetailsModal" tabindex="-1" aria-labelledby="transactionDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="transactionDetailsModalLabel">Transaction Details</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="transactionPrintContent">
+                    <div class="row g-4">
+                        <div class="col-lg-8">
+                            <section class="transaction-detail-section mb-3" aria-labelledby="transactionSummaryHeading">
+                                <dl class="row mb-0 transaction-detail-list">
+                                    <dt class="col-sm-4">Transaction ID</dt>
+                                    <dd class="col-sm-8" id="transactionDetailId"></dd>
+                                    <dt class="col-sm-4">Customer ID</dt>
+                                    <dd class="col-sm-8" id="transactionDetailCustomer"></dd>
+                                    <dt class="col-sm-4">Created date</dt>
+                                    <dd class="col-sm-8" id="transactionDetailCreated"></dd>
+                                    <dt class="col-sm-4">Expiration</dt>
+                                    <dd class="col-sm-8" id="transactionDetailExpiration"></dd>
+                                    <dt class="col-sm-4">Status</dt>
+                                    <dd class="col-sm-8" id="transactionDetailStatus"></dd>
+                                </dl>
+                            </section>
+
+                            <section class="transaction-detail-section mb-3" aria-labelledby="equipmentHeading">
+                                <h3 class="h6 transaction-detail-heading" id="equipmentHeading">Rented equipment</h3>
+                                <div id="transactionEquipmentDetails" class="transaction-detail-items"></div>
+                            </section>
+
+                            <section class="transaction-detail-section mb-0" aria-labelledby="preRentalHeading">
+                                <h3 class="h6 transaction-detail-heading" id="preRentalHeading">Pre-rental details</h3>
+                                <p class="small text-muted">Inspection entries shown from the transaction audit log.</p>
+                                <div id="transactionPreRentalDetails" class="transaction-detail-items"></div>
+                            </section>
+                        </div>
+                        <div class="col-lg-4">
+                            <section class="receipt-placeholder-card" aria-labelledby="receiptHeading">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h3 class="h6 mb-0" id="receiptHeading">Receipt</h3>
+                                    <span class="badge text-bg-light">Placeholder</span>
+                                </div>
+                                <div class="receipt-placeholder-body">
+                                    <p class="small text-muted mb-2">Receipt preview will be connected to the rental record later.</p>
+                                    <dl class="small mb-0">
+                                        <dt>Receipt number</dt>
+                                        <dd>To be generated</dd>
+                                        <dt>Total</dt>
+                                        <dd>To be calculated</dd>
+                                    </dl>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="printTransactionButton">Print details</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </asp:Content>
 
 <asp:Content ID="PageScripts" ContentPlaceHolderID="PageScripts" runat="server">
@@ -80,6 +143,89 @@
             var currentPage = 1;
             var pageSize = 8;
             var appliedQuery = '';
+
+            function setDetailText(id, value) {
+                document.getElementById(id).textContent = value || '—';
+            }
+
+            function createDetailItem(title, values) {
+                var item = document.createElement('div');
+                item.className = 'transaction-detail-item';
+
+                var heading = document.createElement('h4');
+                heading.className = 'small fw-semibold mb-2';
+                heading.textContent = title;
+                item.appendChild(heading);
+
+                var details = document.createElement('dl');
+                details.className = 'row small mb-0';
+                values.forEach(function (value) {
+                    var term = document.createElement('dt');
+                    term.className = 'col-sm-5 text-muted';
+                    term.textContent = value.label;
+                    var description = document.createElement('dd');
+                    description.className = 'col-sm-7';
+                    description.textContent = value.text || '—';
+                    details.appendChild(term);
+                    details.appendChild(description);
+                });
+                item.appendChild(details);
+                return item;
+            }
+
+            function populateTransactionModal(transaction) {
+                setDetailText('transactionDetailId', transaction.TransactionId);
+                setDetailText('transactionDetailCustomer', transaction.CustomerId);
+                setDetailText('transactionDetailCreated', transaction.CreatedAt);
+                setDetailText('transactionDetailExpiration', transaction.Expiration);
+
+                var status = document.getElementById('transactionDetailStatus');
+                status.textContent = transaction.Status || '—';
+                status.className = 'col-sm-8 transaction-status ' + (transaction.StatusClass || '');
+
+                var equipmentDetails = document.getElementById('transactionEquipmentDetails');
+                equipmentDetails.innerHTML = '';
+                transaction.Equipment.forEach(function (equipment) {
+                    equipmentDetails.appendChild(createDetailItem(equipment.Name, [
+                        { label: 'Serial number', text: equipment.SerialNumber },
+                        { label: 'Rental rate', text: equipment.Rate },
+                        { label: 'Security deposit', text: equipment.Deposit }
+                    ]));
+                });
+
+                var preRentalDetails = document.getElementById('transactionPreRentalDetails');
+                preRentalDetails.innerHTML = '';
+                transaction.PreRentalDetails.forEach(function (detail) {
+                    preRentalDetails.appendChild(createDetailItem(detail.EquipmentSerialNumber, [
+                        { label: 'Inspection note', text: detail.Issue },
+                        { label: 'Recorded by', text: detail.RecordedBy }
+                    ]));
+                });
+            }
+
+            function printTransactionDetails() {
+                var printWindow = window.open('', '_blank', 'width=900,height=700');
+                if (!printWindow) {
+                    return;
+                }
+
+                var bootstrapStylesheet = '<%: ResolveUrl("~/Content/bootstrap.min.css") %>';
+                var transactionStylesheet = '<%: ResolveUrl("~/css/admin/Transactions.css") %>';
+                printWindow.document.write('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Transaction details</title><link rel="stylesheet" href="' + bootstrapStylesheet + '"><link rel="stylesheet" href="' + transactionStylesheet + '"></head><body class="transaction-print-page"><main class="container py-4"><h1 class="h4 mb-4">Transaction details</h1>' + document.getElementById('transactionPrintContent').innerHTML + '</main></body></html>');
+                printWindow.document.close();
+                printWindow.focus();
+                setTimeout(function () {
+                    printWindow.print();
+                    printWindow.close();
+                }, 250);
+            }
+
+            document.getElementById('transactionDetailsModal').addEventListener('show.bs.modal', function (event) {
+                var row = event.relatedTarget.closest('tr');
+                populateTransactionModal(JSON.parse(row.getAttribute('data-detail-payload')));
+            });
+
+            document.getElementById('printTransactionButton').addEventListener('click', printTransactionDetails);
 
             function getFilteredRows() {
                 return rows.filter(function (row) {

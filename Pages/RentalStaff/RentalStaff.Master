@@ -1,0 +1,30 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="RentalStaff.Master.cs" Inherits="Techrent.Pages.RentalStaff.RentalStaff" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%: Page.Title %> - TECHRENT</title>
+    <link href="<%: ResolveUrl("~/Content/bootstrap.min.css") %>" rel="stylesheet" />
+        <link href="<%: ResolveUrl("~/css/rentalstaff/RentalStaff.Master.css?v=2") %>" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</head>
+<body class="bg-light">
+        <!-- Page header moved outside the framed content so it renders as part of the page chrome -->
+        <header class="rental-staff-header">
+            <div class="container rental-staff-header-content">
+                <h1 class="rental-staff-brand text-center">TECH<span class="text-danger">RENT</span></h1>
+                <button type="button" class="btn btn-danger rental-staff-signout">Sign out</button>
+            </div>
+        </header>
+
+        <div class="rental-staff-frame">
+            <main class="rental-staff-content">
+                <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+            </main>
+        </div>
+    <script src="<%: ResolveUrl("~/Scripts/bootstrap.bundle.min.js") %>"></script>
+    <asp:ContentPlaceHolder ID="PageScripts" runat="server" />
+</body>
+</html>

@@ -23,7 +23,12 @@
                     <asp:HyperLink ID="AuditLogsLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = auditLogs %>">Audit Logs</asp:HyperLink>
                     <asp:HyperLink ID="CustomersLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = customers %>">Customers</asp:HyperLink>
                     <asp:HyperLink ID="EquipmentsLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = equipments %>">Equipments</asp:HyperLink>
-                </nav>
+                    <asp:Button         
+                    ID="LogoutButton" 
+                        runat="server" 
+                        CssClass="nav-link btn btn-danger text-start mt-5" 
+                        Text="Sign out"  />     
+                    </nav>
             </aside>
             <main class="admin-main">
                 <asp:ContentPlaceHolder ID="MainContent" runat="server" />

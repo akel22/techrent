@@ -1,0 +1,42 @@
+.rental-staff-home {
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem 0;
+}
+
+.rental-staff-home-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: min(100%, 48rem);
+    min-height: 20rem;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    background-color: #ffffff;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.rental-staff-transaction-button {
+    margin-top: 4.5rem;
+    min-width: 12rem;
+}
+
+.rental-staff-transaction-button span {
+    margin-left: 1.5rem;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+@media (max-width: 575.98px) {
+    .rental-staff-home-card {
+        min-height: 18rem;
+        padding: 1.5rem;
+    }
+
+    .rental-staff-transaction-button {
+        margin-top: 3rem;
+    }
+
+
+}
