@@ -70,7 +70,7 @@
             <section class="card admin-card h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h2 class="h6 mb-0">Upcoming transactions</h2>
+                        <h2 class="h6 mb-0">Ongoing transactions</h2>
                         <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="<%$ RouteUrl:RouteName=Transactions %>" CssClass="btn btn-outline-secondary btn-sm">View all</asp:HyperLink>
                     </div>
                     <div class="table-responsive">
@@ -141,7 +141,7 @@
             new Chart(document.getElementById('availabilityChart'), {
                 type: 'pie',
                 data: {
-                    labels: ['Successful Transactions', 'Late Transactions', 'Overdued Transactions'],
+                    labels: ['Successful Transactions', 'Late Transactions', 'Unreturned Transactions'],
                     datasets: [{ data: [83, 17, 4], backgroundColor: ['#28a745', '#ffc107', '#dc3545'], borderWidth: 0 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }

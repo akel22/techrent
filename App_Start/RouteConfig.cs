@@ -11,6 +11,7 @@ namespace Techrent
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.MapPageRoute("RentalStaff", "", "~/Pages/RentalStaff/Default.aspx");
+            routes.MapPageRoute("RentalStaffActiveTransactions", "rentalStaff/active-transactions", "~/Pages/RentalStaff/ActiveTransactions.aspx");
             routes.MapPageRoute("RentalStaffNew", "rentalStaff/new", "~/Pages/RentalStaff/New.aspx");
             routes.MapPageRoute("RentalStaffRegisterCustomer", "rentalStaff/register-customer", "~/Pages/RentalStaff/RegisterCustomer.aspx");
             routes.MapPageRoute("RentalStaffEquipment", "rentalStaff/equipment", "~/Pages/RentalStaff/Equipment.aspx");

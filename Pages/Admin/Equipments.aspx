@@ -85,7 +85,7 @@
                                     <td><%#: Eval("Quantity") %></td>
                                     <td class="text-center text-nowrap">
                                         <button type="button" class="btn btn-danger btn-sm inventory-remove-button" data-bs-toggle="modal" data-bs-target="#removeInventoryModal" data-equipment-id="<%#: Eval("EquipmentId") %>">Remove</button>
-                                        <button type="button" class="btn btn-outline-primary btn-sm inventory-details-button" data-bs-toggle="modal" data-bs-target="#inventoryDetailsModal" data-equipment-id="<%#: Eval("EquipmentId") %>" data-serial-number="<%#: Eval("SerialNumber") %>" data-model="<%#: Eval("Model") %>" data-category="<%#: Eval("Category") %>" data-type="<%#: Eval("Type") %>" data-status="<%#: Eval("Status") %>" data-quantity="<%#: Eval("Quantity") %>" data-rental-rate="<%#: Eval("RentalRate") %>" data-deposit="<%#: Eval("Deposit") %>" data-date-added="<%#: Eval("DateAdded") %>">Show Details</button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm inventory-details-button" data-bs-toggle="modal" data-bs-target="#inventoryDetailsModal" data-equipment-id="<%#: Eval("EquipmentId") %>" data-serial-number="<%#: Eval("SerialNumber") %>" data-model="<%#: Eval("Model") %>" data-category="<%#: Eval("Category") %>" data-type="<%#: Eval("Type") %>" data-status="<%#: Eval("Status") %>" data-quantity="<%#: Eval("Quantity") %>" data-rental-rate="<%#: Eval("RentalRate") %>" data-deposit="<%#: Eval("Deposit") %>" data-date-added="<%#: Eval("DateAdded") %>">Show Details</button>
                                     </td>
                                 </tr>
                             </ItemTemplate>
@@ -172,7 +172,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Go back</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Go back</button>
                     <button type="button" class="btn btn-primary" id="saveInventoryDetails">Save changes</button>
                 </div>
             </div>
@@ -194,8 +194,8 @@
                     <p class="text-danger small mb-0 text-center">Once removed, this action cannot be undone.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Remove Record</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Remove equipment</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Cancel</button>
                 </div>
             </div>
         </div>

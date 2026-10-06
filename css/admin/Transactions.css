@@ -88,6 +88,130 @@
     border-bottom: 1px solid #e9ecef;
 }
 
+.transaction-receipt {
+    max-width: 960px;
+    padding: 1.5rem;
+    margin: 0 auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background-color: #ffffff;
+}
+
+.transaction-receipt-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #212529;
+}
+
+.transaction-receipt-header dl,
+.transaction-receipt-header dd {
+    margin-bottom: 0;
+}
+
+.transaction-receipt-header dd {
+    font-weight: 600;
+}
+
+.transaction-receipt-contact {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.transaction-receipt-contact h3 {
+    letter-spacing: 0.04em;
+}
+
+.transaction-receipt-header dl,
+.transaction-receipt-header dd,
+.transaction-receipt-summary dt,
+.transaction-receipt-summary dd {
+    margin-bottom: 0.5rem;
+}
+
+.transaction-detail-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem 2rem;
+    margin: 0;
+}
+
+.transaction-detail-field {
+    min-width: 0;
+}
+
+.transaction-detail-field dt,
+.transaction-detail-field dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.transaction-detail-field dt {
+    margin-bottom: 0.2rem;
+    color: #6c757d;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.transaction-detail-field dd {
+    font-weight: 500;
+}
+
+.transaction-receipt-table th {
+    background-color: #f1f3f5;
+    white-space: nowrap;
+}
+
+.transaction-receipt-table th,
+.transaction-receipt-table td {
+    padding: 0.65rem 0.75rem;
+    vertical-align: top;
+}
+
+.transaction-receipt-footer-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 28rem);
+    gap: 1rem;
+    align-items: start;
+}
+
+.transaction-receipt-footer-row .transaction-detail-section,
+.transaction-receipt-footer-row .transaction-financial-summary {
+    margin: 0;
+}
+
+.transaction-receipt-signature-line {
+    width: min(100%, 24rem);
+    margin-top: 1rem;
+    border-bottom: 1px solid #212529;
+}
+
+.transaction-receipt-summary {
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background-color: #f8f9fa;
+}
+
+.transaction-receipt-summary dt,
+.transaction-receipt-summary dd {
+    margin-bottom: 0.5rem;
+}
+
+.transaction-receipt-summary dt {
+    color: #6c757d;
+    font-weight: 400;
+}
+
+.transaction-receipt-summary dd:last-child,
+.transaction-receipt-summary dt:last-of-type {
+    margin-bottom: 0;
+}
+
 .transaction-detail-heading {
     color: #343a40;
     margin-bottom: 1rem;
@@ -105,6 +229,17 @@
 .transaction-detail-items {
     display: grid;
     gap: 0.75rem;
+}
+
+.transaction-pre-rental-card {
+    padding: 0.875rem 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background-color: #f8f9fa;
+}
+
+.transaction-pre-rental-auditor {
+    font-weight: 500;
 }
 
 .transaction-detail-item {
@@ -128,45 +263,94 @@
     margin-bottom: 0;
 }
 
-.receipt-placeholder-card {
-    min-height: 18rem;
-    padding: 1.25rem;
-    border: 1px dashed #adb5bd;
-    border-radius: 0.5rem;
-    background-color: #f8f9fa;
-}
-
-.receipt-placeholder-body {
-    display: flex;
-    min-height: 13rem;
+.transaction-financial-summary,
+.transaction-receipt-financials {
+    max-width: none;
     padding: 1rem;
     border: 1px solid #dee2e6;
     border-radius: 0.375rem;
-    background-color: #ffffff;
-    flex-direction: column;
-    justify-content: center;
+    background-color: #f8f9fa;
 }
 
-.receipt-placeholder-body dt {
-    color: #6c757d;
-    font-weight: 400;
+.transaction-financial-summary dt,
+.transaction-financial-summary dd,
+.transaction-receipt-financials dt,
+.transaction-receipt-financials dd {
+    margin-bottom: 0.5rem;
 }
 
-.receipt-placeholder-body dd {
-    margin-bottom: 1rem;
+.transaction-total-label,
+.transaction-total,
+.transaction-receipt-total {
+    padding-top: 0.75rem;
+    margin-top: 0.5rem;
+    border-top: 2px solid #212529;
+    font-weight: 700;
 }
 
 @media print {
-    .transaction-print-page .modal-body {
-        overflow: visible !important;
-    }
-
     .transaction-print-page .modal-footer,
     .transaction-print-page .btn-close {
         display: none;
     }
 
-    .transaction-print-page .modal-content {
+    .transaction-print-page .transaction-receipt {
+        max-width: none;
+        padding: 0;
         border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .transaction-print-page .transaction-receipt-contact {
+        margin-bottom: 0.75rem !important;
+        padding-bottom: 0.5rem;
+    }
+
+    .transaction-print-page .transaction-receipt-header {
+        margin-bottom: 0.75rem !important;
+        padding-bottom: 0.5rem;
+    }
+
+    .transaction-print-page .transaction-detail-section {
+        padding-bottom: 0.65rem;
+        margin-bottom: 0.65rem;
+    }
+
+    .transaction-print-page .transaction-detail-heading {
+        margin-bottom: 0.5rem;
+    }
+
+    .transaction-print-page .transaction-receipt-table th,
+    .transaction-print-page .transaction-receipt-table td {
+        padding: 0.35rem 0.5rem;
+    }
+
+    .transaction-print-page .transaction-receipt-footer-row {
+        gap: 0.75rem;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .transaction-print-page .transaction-financial-summary {
+        padding: 0.65rem;
+    }
+
+    .transaction-print-page .transaction-detail-section,
+    .transaction-print-page .transaction-financial-summary {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .transaction-detail-list,
+    .transaction-receipt-footer-row {
+        grid-template-columns: 1fr;
+    }
+
+    .transaction-receipt-table th,
+    .transaction-receipt-table td {
+        white-space: normal;
     }
 }

@@ -72,7 +72,7 @@
                     </div>
 
                     <div class="d-flex flex-wrap justify-content-end gap-2 mt-4 pt-3 border-top">
-                         <a class="btn btn-outline-secondary" href="<%: GetRouteUrl("RentalStaffNew", null) %>">Back to customers</a>
+                         <a class="btn btn-outline-secondary" href="<%: GetRouteUrl("RentalStaffNew", null) %>"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Back to customers</a>
                         <button class="btn btn-success" type="submit">Register customer</button>
                     </div>
                 </form>

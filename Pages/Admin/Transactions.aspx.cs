@@ -45,10 +45,14 @@ namespace Techrent.Pages.Admin
             return new TransactionRow
             {
                 TransactionId = transactionId,
+                ReceiptNumber = "RCPT-" + transactionId.Substring(3),
                 CustomerId = customerId,
                 CreatedAt = createdAt,
                 DueAt = dueAt,
                 Status = status,
+                RentalFee = "$315.00",
+                SecurityDeposit = "$75.00",
+                Total = "$390.00",
                 StatusClass = statusClass,
                 Equipment = new List<TransactionEquipment>
                 {
@@ -66,10 +70,14 @@ namespace Techrent.Pages.Admin
         public sealed class TransactionRow
         {
             public string TransactionId { get; set; }
+            public string ReceiptNumber { get; set; }
             public string CustomerId { get; set; }
             public string CreatedAt { get; set; }
             public string DueAt { get; set; }
             public string Status { get; set; }
+            public string RentalFee { get; set; }
+            public string SecurityDeposit { get; set; }
+            public string Total { get; set; }
             public string StatusClass { get; set; }
             public List<TransactionEquipment> Equipment { get; set; }
             public List<PreRentalDetail> PreRentalDetails { get; set; }

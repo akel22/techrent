@@ -52,6 +52,20 @@
     white-space: nowrap;
 }
 
+.customer-transaction-history-table {
+    min-width: 640px;
+}
+
+.customer-transaction-history-table th {
+    background-color: #f1f3f5;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.customer-transaction-history-table td {
+    white-space: nowrap;
+}
+
 .customer-details-list dt,
 .customer-details-list dd {
     margin-bottom: 0.75rem;

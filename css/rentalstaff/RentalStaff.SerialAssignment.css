@@ -8,6 +8,10 @@
     margin: 0 auto;
 }
 
+.serial-assignment-page-header .btn {
+    white-space: nowrap;
+}
+
 .serial-assignment-group {
     padding: 1.25rem 0;
     border-bottom: 1px solid #e9ecef;
@@ -69,6 +73,15 @@
     grid-column: 2 / -1;
 }
 
+
+.serial-assignment-actions .btn-success {
+    justify-self: end;
+}
+
+.serial-assignment-actions p {
+    grid-column: 1 / -1;
+}
+
 .progress-bar {
     transition: none;
 }
@@ -84,6 +97,14 @@
 }
 
 @media (max-width: 575.98px) {
+    .serial-assignment-page-header {
+        align-items: flex-start !important;
+    }
+
+    .serial-assignment-page-header .btn {
+        width: 100%;
+    }
+
     .serial-assignment-row {
         grid-template-columns: 2rem minmax(0, 1fr);
     }
@@ -91,5 +112,19 @@
     .serial-assignment-row .assignment-row-status {
         grid-column: 2;
         justify-self: start;
+    }
+
+    .serial-assignment-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .serial-assignment-actions .btn,
+    .serial-assignment-actions .btn-success {
+        width: 100%;
+        justify-self: stretch;
+    }
+
+    .serial-assignment-actions p {
+        text-align: center !important;
     }
 }

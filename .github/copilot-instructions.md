@@ -49,3 +49,7 @@
 ## PowerShell Commands
 
 - When writing future PowerShell commands that need line breaks, use `[Environment]::NewLine` instead of `r`n, especially in replacement strings.
+
+## Audit Display Rules
+
+- When displaying consolidated pre-rental audit details, place the auditor attribution above the actual detail description instead of repeating it in parentheses after every serial-number entry.

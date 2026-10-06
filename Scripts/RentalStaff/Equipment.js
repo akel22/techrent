@@ -7,10 +7,42 @@
     var summaryItems = document.getElementById('summaryItems');
     var summaryEmpty = document.getElementById('summaryEmpty');
     var summaryTotal = document.getElementById('summaryTotal');
-    var unitCount = document.getElementById('summaryUnitCount');
     var continueButton = document.getElementById('continueButton');
     var noEquipment = document.getElementById('noEquipmentMessage');
+    var rentalStartDate = document.getElementById('rentalStartDate');
+    var rentalEndDate = document.getElementById('rentalEndDate');
+    var rentalDateValidation = document.getElementById('rentalDateValidation');
     var appliedSearchTerm = '';
+
+    function formatDateForInput(date) {
+        var year = date.getFullYear();
+        var month = String(date.getMonth() + 1).padStart(2, '0');
+        var day = String(date.getDate()).padStart(2, '0');
+        return year + '-' + month + '-' + day;
+    }
+
+    function validateRentalDates() {
+        var start = rentalStartDate.value;
+        var end = rentalEndDate.value;
+        var message = '';
+        var today = rentalStartDate.min;
+        var valid = !!start && !!end && start >= today && end >= start;
+
+        if (!start || !end) {
+            message = 'Select both a rental start date and a return date.';
+        } else if (start < today) {
+            message = 'The rental start date cannot be in the past.';
+        } else if (end < start) {
+            message = 'The return date must be on or after the rental start date.';
+        }
+
+        rentalStartDate.classList.toggle('is-invalid', !start || start < today || (!!end && end < start));
+        rentalEndDate.classList.toggle('is-invalid', !end || (!!start && end < start));
+        rentalDateValidation.textContent = message;
+        rentalDateValidation.classList.toggle('d-none', valid);
+        continueButton.disabled = !valid || Object.keys(selected).length === 0;
+        return valid;
+    }
 
     function money(value) {
         return '\u20b1' + value.toLocaleString('ph-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -45,7 +77,8 @@
             totalUnits += item.quantity;
             total += lineTotal;
             markup += '<div class="rental-staff-summary-item">' +
-                '<div><strong>' + item.name + '</strong><span>' + money(item.rate) + ' each</span></div>' +
+                '<div><strong>' + item.name + '</strong><span> Base rental fee: ' + money(item.rate) + '/hr </span>' +
+                '<span> Security deposit: '+ money(item.securityDeposit) + '</span></div>' +
                 '<div class="rental-staff-summary-controls" aria-label="Quantity for ' + item.name + '">' +
                 '<button type="button" class="btn btn-sm btn-outline-secondary summary-quantity-button" data-action="decrease" data-id="' + id + '">−</button>' +
                 '<span>' + item.quantity + '</span>' +
@@ -57,10 +90,9 @@
         summaryEmpty.classList.toggle('d-none', totalUnits !== 0);
         summaryItems.querySelectorAll('.rental-staff-summary-item').forEach(function (node) { node.remove(); });
         summaryItems.insertAdjacentHTML('afterbegin', markup);
-        unitCount.textContent = totalUnits + (totalUnits === 1 ? ' unit' : ' units');
         summaryTotal.textContent = money(total);
         continueButton.disabled = totalUnits === 0;
-        bindSummaryButtons();
+        validateRentalDates();
     }
 
     function addItem(button) {
@@ -100,22 +132,21 @@
         }
         buttons.forEach(function (button) {
             if (button.getAttribute('data-equipment-id') === id) {
-                button.disabled = selected[id] && selected[id].quantity >= item.stock;
+                button.disabled = !!selected[id] && selected[id].quantity >= item.stock;
             }
         });
         renderSummary();
     }
 
-    function bindSummaryButtons() {
-        Array.prototype.slice.call(document.querySelectorAll('.summary-quantity-button, .summary-remove-button')).forEach(function (button) {
-            button.addEventListener('click', function () {
-                changeQuantity(button.getAttribute('data-id'), button.getAttribute('data-action'));
-            });
-        });
-    }
-
     buttons.forEach(function (button) {
         button.addEventListener('click', function () { addItem(button); });
+    });
+    summaryItems.addEventListener('click', function (event) {
+        var button = event.target.closest('.summary-quantity-button, .summary-remove-button');
+
+        if (button && summaryItems.contains(button)) {
+            changeQuantity(button.getAttribute('data-id'), button.getAttribute('data-action'));
+        }
     });
     search.addEventListener('keydown', function (event) {
         if (event.key === 'Enter') {
@@ -125,9 +156,19 @@
         }
     });
     continueButton.addEventListener('click', function () {
-        if (!continueButton.disabled) {
+        if (!continueButton.disabled && validateRentalDates()) {
             window.location.href = continueButton.getAttribute('data-next-url');
         }
     });
     category.addEventListener('change', applyFilters);
+    var today = new Date();
+    var todayValue = formatDateForInput(today);
+    rentalStartDate.min = todayValue;
+    rentalEndDate.min = todayValue;
+    rentalStartDate.addEventListener('change', function () {
+        rentalEndDate.min = rentalStartDate.value || todayValue;
+        validateRentalDates();
+    });
+    rentalEndDate.addEventListener('change', validateRentalDates);
+    validateRentalDates();
 }());

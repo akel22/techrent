@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Web.Script.Serialization;
 using System.Web.UI;
 
 namespace Techrent.Pages.Admin
@@ -38,6 +39,26 @@ namespace Techrent.Pages.Admin
             };
         }
 
+        public string TransactionHistoryJson
+        {
+            get { return new JavaScriptSerializer().Serialize(GetSampleTransactionHistory()); }
+        }
+
+        private static List<CustomerTransaction> GetSampleTransactionHistory()
+        {
+            return new List<CustomerTransaction>
+            {
+                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-001-2026", CreatedAt = "2026-01-01 12:00:00", DueAt = "2026-01-08 12:00:00", Status = "Ongoing" },
+                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-017-2026", CreatedAt = "2026-01-20 09:30:00", DueAt = "2026-01-27 09:30:00", Status = "Done" },
+                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-018-2026", CreatedAt = "2026-02-03 10:00:00", DueAt = "2026-02-10 10:00:00", Status = "Late" },
+                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-019-2026", CreatedAt = "2026-02-15 13:15:00", DueAt = "2026-02-22 13:15:00", Status = "Done" },
+                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-020-2026", CreatedAt = "2026-03-01 08:45:00", DueAt = "2026-03-08 08:45:00", Status = "Overdue" },
+                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-021-2026", CreatedAt = "2026-03-10 11:20:00", DueAt = "2026-03-17 11:20:00", Status = "Ongoing" },
+                new CustomerTransaction { CustomerId = "CUSTOMER-002", TransactionId = "TR-002-2026", CreatedAt = "2026-01-02 12:00:00", DueAt = "2026-01-09 12:00:00", Status = "Late" },
+                new CustomerTransaction { CustomerId = "CUSTOMER-003", TransactionId = "TR-003-2026", CreatedAt = "2026-01-03 12:00:00", DueAt = "2026-01-10 12:00:00", Status = "Overdue" }
+            };
+        }
+
         public sealed class CustomerRow
         {
             public string CustomerId { get; set; }
@@ -50,6 +71,15 @@ namespace Techrent.Pages.Admin
             public string Organization { get; set; }
             public string Address { get; set; }
             public string AccountStatus { get; set; }
+        }
+
+        public sealed class CustomerTransaction
+        {
+            public string CustomerId { get; set; }
+            public string TransactionId { get; set; }
+            public string CreatedAt { get; set; }
+            public string DueAt { get; set; }
+            public string Status { get; set; }
         }
     }
 }

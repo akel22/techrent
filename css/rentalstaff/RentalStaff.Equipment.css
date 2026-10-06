@@ -18,6 +18,17 @@
     border-color: #e1e6eb;
 }
 
+.equipment-add-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.equipment-add-button img {
+    width: 1rem;
+    height: 1rem;
+}
+
 .rental-staff-summary-pricing span {
     font-size: 0.75rem;
 }
@@ -70,28 +81,18 @@
 .rental-staff-equipment-visual-monitor { background-color: #4c7a61; }
 .rental-staff-equipment-visual-accessory { background-color: #7b5b8d; }
 
-.equipment-type {
-    display: inline-block;
-    margin-bottom: 0.5rem;
-    padding: 0.2rem 0.45rem;
-    border-radius: 0.25rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-}
+
 
 .equipment-type-standard {
     color: #084298;
-    background-color: #cfe2ff;
 }
 
 .equipment-type-professional {
     color: #055160;
-    background-color: #cff4fc;
 }
 
 .equipment-type-obsolete {
     color: #664d03;
-    background-color: #fff3cd;
 }
 
 .rental-staff-stock {

@@ -1,7 +1,7 @@
 <%@ Page Title="Transactions" Language="C#" MasterPageFile="~/Pages/Admin/Admin.Master" AutoEventWireup="true" CodeBehind="Transactions.aspx.cs" Inherits="Techrent.Pages.Admin.Transactions" %>
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
-    <link href="<%: ResolveUrl("~/css/admin/Transactions.css") %>" rel="stylesheet" />
+    <link href="<%: ResolveUrl("~/css/admin/Transactions.css?v=2") %>" rel="stylesheet" />
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
@@ -54,7 +54,7 @@
                                     <td><span class="transaction-status <%#: Eval("StatusClass") %>"><%#: Eval("Status") %></span></td>
                                     <td class="text-center text-nowrap">
                                         <button type="button" class="btn btn-secondary btn-sm" disabled>Archive</button>
-                                        <button type="button" class="btn btn-outline-primary btn-sm transaction-view-button" data-bs-toggle="modal" data-bs-target="#transactionDetailsModal">View</button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm transaction-view-button" data-bs-toggle="modal" data-bs-target="#transactionDetailsModal">View receipt</button>
                                     </td>
                                 </tr>
                             </ItemTemplate>
@@ -77,55 +77,75 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="transactionPrintContent">
-                    <div class="row g-4">
-                        <div class="col-lg-8">
-                            <section class="transaction-detail-section mb-3" aria-labelledby="transactionSummaryHeading">
-                                <dl class="row mb-0 transaction-detail-list">
-                                    <dt class="col-sm-4">Transaction ID</dt>
-                                    <dd class="col-sm-8" id="transactionDetailId"></dd>
-                                    <dt class="col-sm-4">Customer ID</dt>
-                                    <dd class="col-sm-8" id="transactionDetailCustomer"></dd>
-                                    <dt class="col-sm-4">Created date</dt>
-                                    <dd class="col-sm-8" id="transactionDetailCreated"></dd>
-                                    <dt class="col-sm-4">Expiration</dt>
-                                    <dd class="col-sm-8" id="transactionDetailExpiration"></dd>
-                                    <dt class="col-sm-4">Status</dt>
-                                    <dd class="col-sm-8" id="transactionDetailStatus"></dd>
-                                </dl>
-                            </section>
-
-                            <section class="transaction-detail-section mb-3" aria-labelledby="equipmentHeading">
-                                <h3 class="h6 transaction-detail-heading" id="equipmentHeading">Rented equipment</h3>
-                                <div id="transactionEquipmentDetails" class="transaction-detail-items"></div>
-                            </section>
-
-                            <section class="transaction-detail-section mb-0" aria-labelledby="preRentalHeading">
-                                <h3 class="h6 transaction-detail-heading" id="preRentalHeading">Pre-rental details</h3>
-                                <p class="small text-muted">Inspection entries shown from the transaction audit log.</p>
-                                <div id="transactionPreRentalDetails" class="transaction-detail-items"></div>
-                            </section>
+                    <div class="transaction-receipt">
+                        <div class="transaction-receipt-contact text-center mb-4">
+                            <h3 class="h5 mb-1">TECH<span class="text-danger">RENT</span></h3>
+                            <p class="small mb-0">Quezon City · (02) 8123-4567 · techrent@example.com</p>
                         </div>
-                        <div class="col-lg-4">
-                            <section class="receipt-placeholder-card" aria-labelledby="receiptHeading">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h3 class="h6 mb-0" id="receiptHeading">Receipt</h3>
-                                    <span class="badge text-bg-light">Placeholder</span>
-                                </div>
-                                <div class="receipt-placeholder-body">
-                                    <p class="small text-muted mb-2">Receipt preview will be connected to the rental record later.</p>
-                                    <dl class="small mb-0">
-                                        <dt>Receipt number</dt>
-                                        <dd>To be generated</dd>
-                                        <dt>Total</dt>
-                                        <dd>To be calculated</dd>
-                                    </dl>
-                                </div>
+                        <div class="transaction-receipt-header d-flex flex-column flex-sm-row justify-content-between gap-3 mb-4">
+                            <div>
+                                <h3 class="h4 mb-1" id="receiptHeading">TECH<span class="text-danger">RENT</span> receipt</h3>
+                                <p class="small text-muted mb-0">Transaction record and rental charges</p>
+                            </div>
+                            <dl class="small mb-0 text-sm-end">
+                                <dt>Receipt number</dt>
+                                <dd class="mb-0 fw-semibold" id="transactionDetailReceiptNumber"></dd>
+                            </dl>
+                        </div>
+
+                        <section class="transaction-detail-section" aria-labelledby="transactionSummaryHeading">
+                            <h3 class="h6 transaction-detail-heading" id="transactionSummaryHeading">Transaction information</h3>
+                            <dl class="transaction-detail-list">
+                                <div class="transaction-detail-field"><dt>Transaction ID</dt><dd id="transactionDetailId"></dd></div>
+                                <div class="transaction-detail-field"><dt>Customer ID</dt><dd id="transactionDetailCustomer"></dd></div>
+                                <div class="transaction-detail-field"><dt>Created date</dt><dd id="transactionDetailCreated"></dd></div>
+                                <div class="transaction-detail-field"><dt>Due date</dt><dd id="transactionDetailExpiration"></dd></div>
+                                <div class="transaction-detail-field"><dt>Status</dt><dd id="transactionDetailStatus"></dd></div>
+                            </dl>
+                        </section>
+
+                        <section class="transaction-detail-section" aria-labelledby="equipmentHeading">
+                            <h3 class="h6 transaction-detail-heading" id="equipmentHeading">Rented equipment</h3>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle mb-0 transaction-receipt-table">
+                                    <caption class="visually-hidden">Equipment and charges for this transaction</caption>
+                                    <thead>
+                                        <tr><th scope="col">Equipment</th><th scope="col">Serial number</th><th scope="col" class="text-end">Rental fee</th><th scope="col" class="text-end">Deposit</th></tr>
+                                    </thead>
+                                    <tbody id="transactionEquipmentDetails"></tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <section class="transaction-detail-section" aria-labelledby="preRentalHeading">
+                            <h3 class="h6 transaction-detail-heading" id="preRentalHeading">Pre-rental details</h3>
+                            <p class="small text-muted mb-2">Inspection entries shown from the transaction audit log.</p>
+                            <div id="transactionPreRentalDetails"></div>
+                        </section>
+
+                        <div class="transaction-receipt-footer-row">
+                            <section class="transaction-detail-section transaction-receipt-signature-section" aria-labelledby="transactionSignatureHeading">
+                                <h3 class="h6 transaction-detail-heading" id="transactionSignatureHeading">Rental staff signature</h3>
+                                <div class="transaction-receipt-signature-line" aria-hidden="true"></div>
+                                <p class="small text-muted mb-0">Signature</p>
+                            </section>
+
+                            <section class="transaction-financial-summary" aria-labelledby="financialSummaryHeading">
+                                <h3 class="h6 transaction-detail-heading" id="financialSummaryHeading">Charge summary</h3>
+                                <dl class="row small mb-0 transaction-receipt-summary">
+                                    <dt class="col-8">Rental fee</dt>
+                                    <dd class="col-4 text-end" id="transactionDetailRentalFee"></dd>
+                                    <dt class="col-8">Security deposit</dt>
+                                    <dd class="col-4 text-end" id="transactionDetailSecurityDeposit"></dd>
+                                    <dt class="col-8 transaction-total-label">Total</dt>
+                                    <dd class="col-4 text-end transaction-total" id="transactionDetailTotal"></dd>
+                                </dl>
                             </section>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="printTransactionButton">Print details</button>
+                    <button type="button" class="btn btn-primary" id="printTransactionButton">Save receipt as PDF</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -148,59 +168,68 @@
                 document.getElementById(id).textContent = value || '—';
             }
 
-            function createDetailItem(title, values) {
-                var item = document.createElement('div');
-                item.className = 'transaction-detail-item';
-
-                var heading = document.createElement('h4');
-                heading.className = 'small fw-semibold mb-2';
-                heading.textContent = title;
-                item.appendChild(heading);
-
-                var details = document.createElement('dl');
-                details.className = 'row small mb-0';
-                values.forEach(function (value) {
-                    var term = document.createElement('dt');
-                    term.className = 'col-sm-5 text-muted';
-                    term.textContent = value.label;
-                    var description = document.createElement('dd');
-                    description.className = 'col-sm-7';
-                    description.textContent = value.text || '—';
-                    details.appendChild(term);
-                    details.appendChild(description);
-                });
-                item.appendChild(details);
-                return item;
-            }
-
             function populateTransactionModal(transaction) {
-                setDetailText('transactionDetailId', transaction.TransactionId);
-                setDetailText('transactionDetailCustomer', transaction.CustomerId);
-                setDetailText('transactionDetailCreated', transaction.CreatedAt);
-                setDetailText('transactionDetailExpiration', transaction.Expiration);
+                var detail = transaction || {};
+                setDetailText('transactionDetailReceiptNumber', detail.ReceiptNumber);
+                setDetailText('transactionDetailId', detail.TransactionId);
+                setDetailText('transactionDetailCustomer', detail.CustomerId);
+                setDetailText('transactionDetailCreated', detail.CreatedAt);
+                setDetailText('transactionDetailExpiration', detail.DueAt);
+                setDetailText('transactionDetailRentalFee', detail.RentalFee);
+                setDetailText('transactionDetailSecurityDeposit', detail.SecurityDeposit);
+                setDetailText('transactionDetailTotal', detail.Total);
 
                 var status = document.getElementById('transactionDetailStatus');
-                status.textContent = transaction.Status || '—';
-                status.className = 'col-sm-8 transaction-status ' + (transaction.StatusClass || '');
+                status.textContent = detail.Status || '—';
+                status.className = 'transaction-status ' + (detail.StatusClass || '');
 
                 var equipmentDetails = document.getElementById('transactionEquipmentDetails');
                 equipmentDetails.innerHTML = '';
-                transaction.Equipment.forEach(function (equipment) {
-                    equipmentDetails.appendChild(createDetailItem(equipment.Name, [
-                        { label: 'Serial number', text: equipment.SerialNumber },
-                        { label: 'Rental rate', text: equipment.Rate },
-                        { label: 'Security deposit', text: equipment.Deposit }
-                    ]));
+                (detail.Equipment || []).forEach(function (equipment) {
+                    var row = document.createElement('tr');
+                    var equipmentCell = document.createElement('th');
+                    equipmentCell.scope = 'row';
+                    equipmentCell.textContent = equipment.Name || '—';
+                    row.appendChild(equipmentCell);
+
+                    var serialCell = document.createElement('td');
+                    serialCell.textContent = equipment.SerialNumber || '—';
+                    row.appendChild(serialCell);
+
+                    var rentalFeeCell = document.createElement('td');
+                    rentalFeeCell.className = 'text-end';
+                    rentalFeeCell.textContent = equipment.Rate || '—';
+                    row.appendChild(rentalFeeCell);
+
+                    var depositCell = document.createElement('td');
+                    depositCell.className = 'text-end';
+                    depositCell.textContent = equipment.Deposit || '—';
+                    row.appendChild(depositCell);
+
+                    equipmentDetails.appendChild(row);
                 });
 
                 var preRentalDetails = document.getElementById('transactionPreRentalDetails');
                 preRentalDetails.innerHTML = '';
-                transaction.PreRentalDetails.forEach(function (detail) {
-                    preRentalDetails.appendChild(createDetailItem(detail.EquipmentSerialNumber, [
-                        { label: 'Inspection note', text: detail.Issue },
-                        { label: 'Recorded by', text: detail.RecordedBy }
-                    ]));
+                var preRentalAuditor = document.createElement('p');
+                preRentalAuditor.className = 'small text-muted mb-2 transaction-pre-rental-auditor';
+                var auditors = [];
+                 (detail.PreRentalDetails || []).forEach(function (preRentalDetail) {
+                     if (preRentalDetail.RecordedBy && auditors.indexOf(preRentalDetail.RecordedBy) === -1) {
+                         auditors.push(preRentalDetail.RecordedBy);
+                    }
                 });
+                preRentalAuditor.textContent = auditors.length ? 'Recorded by ' + auditors.join(', ') : 'Recorded by —';
+                preRentalDetails.appendChild(preRentalAuditor);
+
+                var preRentalParagraph = document.createElement('p');
+                preRentalParagraph.className = 'small mb-0';
+                 preRentalParagraph.textContent = (detail.PreRentalDetails || []).length
+                     ? detail.PreRentalDetails.map(function (preRentalDetail) {
+                         return preRentalDetail.EquipmentSerialNumber + ': ' + preRentalDetail.Issue;
+                    }).join(' ')
+                    : '—';
+                preRentalDetails.appendChild(preRentalParagraph);
             }
 
             function printTransactionDetails() {
@@ -211,7 +240,7 @@
 
                 var bootstrapStylesheet = '<%: ResolveUrl("~/Content/bootstrap.min.css") %>';
                 var transactionStylesheet = '<%: ResolveUrl("~/css/admin/Transactions.css") %>';
-                printWindow.document.write('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Transaction details</title><link rel="stylesheet" href="' + bootstrapStylesheet + '"><link rel="stylesheet" href="' + transactionStylesheet + '"></head><body class="transaction-print-page"><main class="container py-4"><h1 class="h4 mb-4">Transaction details</h1>' + document.getElementById('transactionPrintContent').innerHTML + '</main></body></html>');
+                printWindow.document.write('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Rental receipt</title><link rel="stylesheet" href="' + bootstrapStylesheet + '"><link rel="stylesheet" href="' + transactionStylesheet + '"></head><body class="transaction-print-page"><main class="container py-4">' + document.getElementById('transactionPrintContent').innerHTML + '</main></body></html>');
                 printWindow.document.close();
                 printWindow.focus();
                 setTimeout(function () {

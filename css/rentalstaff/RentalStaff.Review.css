@@ -25,13 +25,196 @@
     resize: vertical;
 }
 
+.rental-receipt {
+    max-width: 60rem;
+    padding: 1.5rem;
+    margin: 0 auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background-color: #ffffff;
+}
+
+.rental-receipt-header {
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #212529;
+}
+
+.rental-receipt-contact {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.rental-receipt-contact h3 {
+    letter-spacing: 0.04em;
+}
+
+.rental-receipt-header dl,
+.rental-receipt-header dd,
+.rental-receipt-summary dt,
+.rental-receipt-summary dd {
+    margin-bottom: 0.5rem;
+}
+
+.rental-receipt-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem 2rem;
+    margin: 0;
+}
+
+.rental-receipt-field {
+    min-width: 0;
+}
+
+.rental-receipt-field dt,
+.rental-receipt-field dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.rental-receipt-field dt {
+    margin-bottom: 0.2rem;
+    color: #6c757d;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.rental-receipt-section {
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.rental-receipt-heading {
+    color: #343a40;
+    margin-bottom: 1rem;
+}
+
+.rental-receipt-signature-line {
+    width: min(100%, 24rem);
+    margin-top: 1rem;
+    border-bottom: 1px solid #212529;
+}
+
+.rental-receipt-footer-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 28rem);
+    gap: 1rem;
+    align-items: start;
+}
+
+.rental-receipt-footer-row .rental-receipt-section,
+.rental-receipt-footer-row .rental-receipt-financial-summary {
+    margin: 0;
+}
+
+.rental-receipt-table th {
+    background-color: #f1f3f5;
+    white-space: nowrap;
+}
+
+.rental-receipt-table th,
+.rental-receipt-table td {
+    padding: 0.65rem 0.75rem;
+    vertical-align: top;
+}
+
+.rental-receipt-financial-summary {
+    max-width: none;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background-color: #f8f9fa;
+}
+
+.rental-receipt-total-label,
+.rental-receipt-total {
+    padding-top: 0.75rem;
+    margin-top: 0.5rem;
+    border-top: 2px solid #212529;
+    font-weight: 700;
+}
+
 @media (max-width: 1199.98px) {
     .rental-staff-review-summary {
         position: static;
     }
 }
 
+@media print {
+    @page {
+        margin: 0.5in;
+    }
+
+    .rental-receipt-print-page {
+        font-size: 12px;
+    }
+
+    .rental-receipt-print-page .modal-footer,
+    .rental-receipt-print-page .btn-close,
+    .rental-receipt-print-page #receiptSaveConfirmation {
+        display: none;
+    }
+
+    .rental-receipt-print-page .rental-receipt {
+        max-width: none;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .rental-receipt-print-page .rental-receipt-contact {
+        margin-bottom: 0.75rem !important;
+        padding-bottom: 0.5rem;
+    }
+
+    .rental-receipt-print-page .rental-receipt-header {
+        margin-bottom: 0.75rem !important;
+        padding-bottom: 0.5rem;
+    }
+
+    .rental-receipt-print-page .rental-receipt-section {
+        padding-bottom: 0.65rem;
+        margin-bottom: 0.65rem;
+    }
+
+    .rental-receipt-print-page .rental-receipt-heading {
+        margin-bottom: 0.5rem;
+    }
+
+    .rental-receipt-print-page .rental-receipt-table th,
+    .rental-receipt-print-page .rental-receipt-table td {
+        padding: 0.35rem 0.5rem;
+    }
+
+    .rental-receipt-print-page .rental-receipt-footer-row {
+        gap: 0.75rem;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .rental-receipt-print-page .rental-receipt-financial-summary {
+        padding: 0.65rem;
+    }
+
+    .rental-receipt-print-page .rental-receipt-section,
+    .rental-receipt-print-page .rental-receipt-financial-summary {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}
+
 @media (max-width: 575.98px) {
+    .rental-receipt-list {
+        grid-template-columns: 1fr;
+    }
+
+    .rental-receipt-footer-row {
+        grid-template-columns: 1fr;
+    }
+
     .rental-staff-review-table th,
     .rental-staff-review-table td {
         white-space: normal;

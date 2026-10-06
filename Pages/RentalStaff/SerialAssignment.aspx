@@ -1,17 +1,18 @@
 <%@ Page Title="Assign Serial Numbers" Language="C#" MasterPageFile="~/Pages/RentalStaff/RentalStaff.Master" AutoEventWireup="true" CodeBehind="SerialAssignment.aspx.cs" Inherits="Techrent.Pages.RentalStaff.SerialAssignment" %>
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
-    <link href="<%: ResolveUrl("~/css/rentalstaff/RentalStaff.SerialAssignment.css?v=4") %>" rel="stylesheet" />
+    <link href="<%: ResolveUrl("~/css/rentalstaff/RentalStaff.SerialAssignment.css?v=5") %>" rel="stylesheet" />
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
     <section class="rental-staff-serial-assignment" aria-labelledby="serialAssignmentHeading">
-        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4 serial-assignment-page-header">
             <div>
                 <p class="text-uppercase text-muted small fw-semibold mb-1">Step 3 of 4</p>
                 <h1 id="serialAssignmentHeading" class="h3 mb-2">Assign serial numbers</h1>
                 <p class="text-muted mb-0">Select an available serial number for every unit in this rental.</p>
             </div>
+            <a class="btn btn-outline-secondary" href="<%: GetRouteUrl("RentalStaffEquipment", null) %>"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Go back to step 2</a>
         </div>
 
  
@@ -26,7 +27,7 @@
                         </div>
                     </div>
                     <div class="serial-assignment-rows">
-                        <div class="serial-assignment-row" data-assignment-row ="">
+                        <div class="serial-assignment-row" data-assignment-row="">
                             <span class="assignment-unit-number">1</span>
                             <label class="visually-hidden" for="samsungSerial1">Serial number for SAMSUNG-001 unit 1</label>
                             <select id="samsungSerial1" class="form-select serial-select" data-equipment="samsung" required>
@@ -89,9 +90,8 @@
                     </div>
                 </div>
 
-                <div class="border-top pt-3 mt-4">
-                    <button type="submit" id="finalizeAssignmentButton" class="btn btn-success w-100" data-next-url='<%: GetRouteUrl("RentalStaffReview", null) %>'>Confirm assignment and continue</button>
-                    <p id="finalizeAssignmentMessage" class="small text-muted text-center mt-2 mb-0">All units must have a serial number before continuing.</p>
+                <div class="border-top pt-3 mt-4 d-flex justify-content-end">
+                    <button type="submit" id="finalizeAssignmentButton" class="btn btn-success" data-next-url='<%: GetRouteUrl("RentalStaffReview", null) %>'>Confirm assignment and continue</button>
                 </div>
             </div>
         </form>
@@ -99,5 +99,5 @@
 </asp:Content>
 
 <asp:Content ID="PageScriptsContent" ContentPlaceHolderID="PageScripts" runat="server">
-    <script src="<%: ResolveUrl("~/Scripts/RentalStaff/SerialAssignment.js?v=1") %>"></script>
+    <script src="<%: ResolveUrl("~/Scripts/RentalStaff/SerialAssignment.js?v=2") %>"></script>
 </asp:Content>

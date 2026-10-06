@@ -1,0 +1,113 @@
+.rental-staff-active-transactions {
+    width: 100%;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1.5rem 0;
+}
+
+.rental-staff-active-table {
+    min-width: 46rem;
+    color: #212529;
+    font-size: 0.9375rem;
+}
+
+.rental-staff-active-table thead th {
+    padding: 0.75rem;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f1f3f5;
+    color: #212529;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.rental-staff-active-table thead th.status-column-heading {
+    padding-left: calc(0.75rem + 0.65rem);
+}
+
+.rental-staff-active-table tbody td,
+.rental-staff-active-table tbody th {
+    padding: 0.85rem 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+    white-space: nowrap;
+}
+
+.rental-staff-active-table tbody tr:last-child td,
+.rental-staff-active-table tbody tr:last-child th {
+    border-bottom: 0;
+}
+
+.transaction-status {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-ongoing {
+    color: #198754;
+    background-color: rgba(25, 135, 84, 0.12);
+}
+
+.status-done {
+    color: #6c757d;
+    background-color: rgba(108, 117, 125, 0.12);
+}
+
+.rental-staff-back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+
+.rental-staff-back-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.9rem;
+    height: 0.9rem;
+    flex: 0 0 0.9rem;
+}
+
+.rental-staff-back-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.mark-done-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+
+.mark-done-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.9rem;
+    height: 0.9rem;
+    flex: 0 0 0.9rem;
+}
+
+.mark-done-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+@media (max-width: 575.98px) {
+    .rental-staff-active-transactions {
+        padding-top: 1rem;
+    }
+}
