@@ -188,11 +188,10 @@
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <label for="inventoryDetailDeposit" class="form-label">Security deposit/hour</label>
+                            <label for="inventoryDetailDeposit" class="form-label">Security deposit</label>
                             <div class="input-group">
                                 <span class="input-group-text" aria-hidden="true">&#8369;</span>
                                 <input type="number" id="inventoryDetailDeposit" runat="server" ClientIDMode="Static" class="form-control" min="0" step="0.01" inputmode="decimal" />
-                                <span class="input-group-text">/hr</span>
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Web.UI;
+using Newtonsoft.Json;
 using Techrent.ApplicationLayer.Services;
 using Techrent.DataAccessLayer.DTOs;
 
@@ -26,7 +27,11 @@ namespace Techrent.Pages.RentalStaff
                 return;
             }
 
-            ServiceFactory.CreateRentalService().CompleteRental(transactionId, ReturnConditionNotesHidden.Value);
+            var additionalCharges = string.IsNullOrWhiteSpace(AdditionalChargesHidden.Value)
+                ? new System.Collections.Generic.List<AdditionalChargeDto>()
+                : JsonConvert.DeserializeObject<System.Collections.Generic.List<AdditionalChargeDto>>(AdditionalChargesHidden.Value);
+
+            ServiceFactory.CreateRentalService().CompleteRental(transactionId, ReturnConditionNotesHidden.Value, additionalCharges);
             BindTransactions();
         }
 

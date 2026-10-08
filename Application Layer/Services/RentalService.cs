@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Techrent.DataAccessLayer.DTOs;
 using Techrent.DataAccessLayer.Repositories.Interfaces;
 
@@ -54,15 +55,44 @@ namespace Techrent.ApplicationLayer.Services
 
         public void CompleteRental(Guid rentalId, string returnConditionNotes)
         {
+            CompleteRental(rentalId, returnConditionNotes, Enumerable.Empty<AdditionalChargeDto>());
+        }
+
+        public void CompleteRental(Guid rentalId, string returnConditionNotes, IEnumerable<AdditionalChargeDto> additionalCharges)
+        {
             var notes = string.IsNullOrWhiteSpace(returnConditionNotes) ? null : returnConditionNotes.Trim();
             if (notes != null && notes.Length > 500)
             {
                 throw new ArgumentException("Return condition notes cannot exceed 500 characters.", nameof(returnConditionNotes));
             }
 
+            var charges = (additionalCharges ?? Enumerable.Empty<AdditionalChargeDto>()).ToList();
+            foreach (var charge in charges)
+            {
+                if (charge == null)
+                {
+                    throw new ArgumentException("Additional charges cannot contain empty entries.", nameof(additionalCharges));
+                }
+
+                if (charge.PaymentType != "LateFee" && charge.PaymentType != "DamageCharge")
+                {
+                    throw new ArgumentException("Additional charges must be LateFee or DamageCharge.", nameof(additionalCharges));
+                }
+
+                if (charge.PaymentMethod != "Cash" && charge.PaymentMethod != "GCash")
+                {
+                    throw new ArgumentException("Additional charges must use Cash or GCash.", nameof(additionalCharges));
+                }
+
+                if (charge.Amount < 0 || charge.Amount > 9999999999999999.99m || decimal.Round(charge.Amount, 2) != charge.Amount)
+                {
+                    throw new ArgumentException("Additional charge amounts must be non-negative values with up to two decimal places.", nameof(additionalCharges));
+                }
+            }
+
             try
             {
-                _repo.CompleteRental(rentalId, notes);
+                _repo.CompleteRental(rentalId, notes, charges);
                 AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "RentalCompleted", "Transaction", rentalId, "A rental transaction was completed.");
             }
             catch (Exception ex)

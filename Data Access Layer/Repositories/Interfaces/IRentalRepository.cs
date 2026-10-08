@@ -12,6 +12,7 @@ namespace Techrent.DataAccessLayer.Repositories.Interfaces
         IEnumerable<RentalTransactionDto> GetTransactionLog();
         IEnumerable<RentalTransactionDto> GetByCustomer(Guid userId);
         void CompleteRental(Guid transactionId, string returnConditionNotes);
+        void CompleteRental(Guid transactionId, string returnConditionNotes, IEnumerable<AdditionalChargeDto> additionalCharges);
         bool ArchiveRental(Guid transactionId);
         RentalTransactionDto GetById(Guid transactionId);
     }

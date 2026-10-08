@@ -42,6 +42,15 @@ namespace Techrent.Pages.RentalStaff
         protected global::System.Web.UI.WebControls.HiddenField ReturnConditionNotesHidden;
 
         /// <summary>
+        /// AdditionalChargesHidden control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField AdditionalChargesHidden;
+
+        /// <summary>
         /// CompleteTransactionButton control.
         /// </summary>
         /// <remarks>

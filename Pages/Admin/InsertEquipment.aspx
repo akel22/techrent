@@ -107,7 +107,6 @@
                     </div>
                     <div class="d-flex flex-wrap justify-content-end gap-2 mt-4 pt-3 border-top">
                         <a class="btn btn-outline-secondary" href="<%: GetRouteUrl("Equipments", null) %>">Cancel</a>
-                        <button id="equipmentPreviewButton" class="btn btn-primary" type="button">Review equipment</button>
                         <button id="saveEquipmentButton" runat="server" class="btn btn-success" type="submit" onserverclick="SaveEquipmentButton_ServerClick">Save equipment</button>
                     </div>
                 </div>

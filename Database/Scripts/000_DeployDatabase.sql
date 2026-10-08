@@ -318,7 +318,7 @@ BEGIN
 	UPDATE dbo.Transactions
 	SET [Status]=CASE WHEN DueAt < DATEADD(DAY,-3,SYSUTCDATETIME()) THEN N'Overdue' ELSE N'Late' END
 	WHERE IsArchived=0 AND [Status] IN(N'Ongoing',N'Overdue',N'Late') AND DueAt < SYSUTCDATETIME();
-	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t INNER JOIN dbo.Customers c ON c.CustomerID=t.UserID
 	WHERE t.[Status] IN(N'Ongoing',N'Overdue',N'Late') AND t.IsArchived=0 ORDER BY t.DueAt;
 END
@@ -330,7 +330,7 @@ BEGIN
 	UPDATE dbo.Transactions
 	SET [Status]=CASE WHEN DueAt < DATEADD(DAY,-3,SYSUTCDATETIME()) THEN N'Overdue' ELSE N'Late' END
 	WHERE IsArchived=0 AND [Status] IN(N'Ongoing',N'Overdue',N'Late') AND DueAt < SYSUTCDATETIME();
-	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t INNER JOIN dbo.Customers c ON c.CustomerID=t.UserID WHERE t.IsArchived=0 ORDER BY t.CreatedAt DESC;
 END
 GO
@@ -338,7 +338,7 @@ GO
 CREATE OR ALTER PROCEDURE dbo.usp_GetTransactionsByCustomer @UserID UNIQUEIDENTIFIER AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t INNER JOIN dbo.Customers c ON c.CustomerID=t.UserID
 	WHERE t.UserID=@UserID ORDER BY t.CreatedAt DESC;
 END
@@ -347,8 +347,9 @@ GO
 CREATE OR ALTER PROCEDURE dbo.usp_GetTransactionById @TransactionID UNIQUEIDENTIFIER AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t INNER JOIN dbo.Customers c ON c.CustomerID=t.UserID
+	WHERE t.TransactionID=@TransactionID;
 	SELECT te.TransactionID, te.EquipmentID, e.Model, e.SKU, e.Category, e.[Type] AS Type, e.[Status] AS Status, te.Quantity, te.RentalFee, te.DepositFee
 	FROM dbo.TransactionEquipments te INNER JOIN dbo.Equipments e ON e.EquipmentID=te.EquipmentID WHERE te.TransactionID=@TransactionID;
 END

@@ -54,6 +54,7 @@
     <div class="modal fade" id="markDoneModal" tabindex="-1" aria-labelledby="markDoneModalLabel" aria-hidden="true">
         <asp:HiddenField ID="SelectedTransactionIdHidden" runat="server" ClientIDMode="Static" />
         <asp:HiddenField ID="ReturnConditionNotesHidden" runat="server" ClientIDMode="Static" />
+        <asp:HiddenField ID="AdditionalChargesHidden" runat="server" ClientIDMode="Static" />
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -95,6 +96,17 @@
                                     <span id="returnConditionCount" class="form-text" aria-live="polite">0 / 500</span>
                                 </div>
                             </div>
+                             <div class="mt-4" aria-labelledby="additionalChargesHeading">
+                                 <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+                                     <div>
+                                         <h3 class="h6 mb-1" id="additionalChargesHeading">Additional charges <span class="text-muted fw-normal">(optional)</span></h3>
+                                         <p class="small text-muted mb-0">Record late or damage charges collected when the equipment is returned.</p>
+                                     </div>
+                                     <button type="button" class="btn btn-outline-secondary btn-sm" id="addAdditionalCharge">Add charge</button>
+                                 </div>
+                                 <div id="additionalCharges" class="vstack gap-2"></div>
+                                 <p id="additionalChargesEmpty" class="small text-muted mb-0">No additional charges added.</p>
+                             </div>
                         </div>
                     </div>
                         </div>
@@ -102,7 +114,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <asp:Button ID="CompleteTransactionButton" runat="server" Text="Mark as done" CssClass="btn btn-success" OnClick="CompleteTransactionButton_Click" UseSubmitBehavior="false" data-confirm-mark-done="true" />
+                    <asp:Button ID="CompleteTransactionButton" runat="server" Text="Mark as done" CssClass="btn btn-success" OnClick="CompleteTransactionButton_Click" OnClientClick="if (!prepareCompletionSubmission()) return false;" UseSubmitBehavior="false" data-confirm-mark-done="true" />
                 </div>
             </div>
         </div>

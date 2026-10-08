@@ -58,8 +58,8 @@ namespace Techrent.Pages.Admin
                 ReceiptNumber = "RCPT-" + rental.TransactionId.ToString("N").Substring(0, 8).ToUpperInvariant(),
                 CustomerId = rental.UserId.ToString(),
                 CustomerName = (rental.FirstName + " " + rental.LastName).Trim(),
-                 CustomerEmail = GetCustomerEmail(rental.UserId),
-                 CustomerMobile = GetCustomerMobile(rental.UserId),
+                 CustomerEmail = rental.Email,
+                 CustomerMobile = rental.MobileNumber,
                 CreatedAt = rental.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
                 DueAt = rental.DueAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
                 RentalStartDate = rental.CreatedAt.ToString("dd MMM yyyy", CultureInfo.InvariantCulture),
@@ -95,18 +95,6 @@ namespace Techrent.Pages.Admin
             decimal total = rentalFee + securityDeposit + persistedLateFee;
             transaction.Change = FormatCurrency(Math.Max(0m, payments.Sum(payment => payment.Amount) - total));
             return transaction;
-        }
-
-        private static string GetCustomerEmail(Guid userId)
-        {
-            var customer = ServiceFactory.CreateCustomerService().GetCustomerById(userId);
-            return customer == null ? string.Empty : customer.Email;
-        }
-
-        private static string GetCustomerMobile(Guid userId)
-        {
-            var customer = ServiceFactory.CreateCustomerService().GetCustomerById(userId);
-            return customer == null ? string.Empty : customer.MobileNumber;
         }
 
         private static string FormatCurrency(decimal amount)

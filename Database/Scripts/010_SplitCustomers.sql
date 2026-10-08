@@ -25,7 +25,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName,
-		   t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
+			c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t
 	INNER JOIN dbo.Customers c ON c.CustomerID = t.UserID
 	WHERE t.UserID = @UserID
@@ -165,7 +165,7 @@ BEGIN
 	UPDATE dbo.Transactions
 	SET Status = CASE WHEN DueAt < DATEADD(DAY, -3, SYSUTCDATETIME()) THEN 'Overdue' ELSE 'Late' END
 	WHERE IsArchived = 0 AND Status IN ('Ongoing', 'Overdue', 'Late') AND DueAt < SYSUTCDATETIME();
-	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t
 	INNER JOIN dbo.Customers c ON c.CustomerID = t.UserID
 	WHERE t.Status IN ('Ongoing', 'Overdue', 'Late')
@@ -195,7 +195,7 @@ CREATE OR ALTER PROCEDURE dbo.usp_GetTransactionById
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t
 	INNER JOIN dbo.Customers c ON c.CustomerID = t.UserID
 	WHERE t.TransactionID = @TransactionID;

@@ -87,7 +87,6 @@
                     </ItemTemplate>
                 </asp:Repeater>
             </div>
-            <p class="small text-muted mt-4 mb-0">Rules are currently static and are not stored in the database. Update the rule source and this page together when business policy changes.</p>
         </div>
     </section>
 </asp:Content>
