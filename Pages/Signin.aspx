@@ -20,17 +20,19 @@
                         </div>
 
                     <div class="mb-3">
-                        <asp:Label ID="UsernameLabel" runat="server" AssociatedControlID="UsernameTextBox" CssClass="form-label">Username</asp:Label>
-                        <asp:TextBox ID="UsernameTextBox" runat="server" CssClass="form-control w-100" MaxLength="16" placeholder="Enter your username" autocomplete="username" style="max-width: none;"></asp:TextBox>
+                        <asp:Label ID="UsernameLabel" runat="server" AssociatedControlID="UsernameTextBox" CssClass="form-label">Email</asp:Label>
+                        <asp:TextBox ID="UsernameTextBox" runat="server" CssClass="form-control w-100" MaxLength="32" placeholder="Enter your email" autocomplete="username" style="max-width: none;"></asp:TextBox>
                     </div>
 
                     <div class="mb-4">
                         <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="PasswordTextBox" CssClass="form-label">Password</asp:Label>
-                        <asp:TextBox ID="PasswordTextBox" runat="server" CssClass="form-control w-100" TextMode="Password" MaxLength="16" placeholder="Enter your password" autocomplete="current-password" style="max-width: none;"></asp:TextBox>
+                        <asp:TextBox ID="PasswordTextBox" runat="server" CssClass="form-control w-100" TextMode="Password" MaxLength="128" placeholder="Enter your password" autocomplete="current-password" style="max-width: none;"></asp:TextBox>
                     </div>
+
+                    <asp:Label ID="SignInErrorLabel" runat="server" CssClass="text-danger small d-block mb-3" Visible="false" />
                       
                         <div class="d-flex justify-content-center">
-                            <asp:Button ID="SignInButton" runat="server" Text="Sign in" CssClass="btn btn-dark w-100" />
+                            <asp:Button ID="SignInButton" runat="server" Text="Sign in" CssClass="btn btn-dark w-100" OnClick="SignInButton_Click" />
                         </div>
 
                     </div>

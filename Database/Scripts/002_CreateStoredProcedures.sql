@@ -1,178 +1,301 @@
--- Stored procedure skeletons for Techrent
+-- Stored procedures for the Techrent ERD contract.
 GO
-CREATE PROCEDURE dbo.usp_CreateCustomer
-	@FullName NVARCHAR(200),
-	@Mobile NVARCHAR(50) = NULL,
-	@Email NVARCHAR(200) = NULL,
-	@CustomerId INT OUTPUT
+CREATE OR ALTER PROCEDURE dbo.usp_CreateCustomer
+	@FirstName NVARCHAR(24),
+	@LastName NVARCHAR(24),
+	@Occupation NVARCHAR(32),
+	@Email NVARCHAR(32),
+	@MobileNumber NVARCHAR(12) = NULL,
+	@OrganizationAddress NVARCHAR(300) = NULL,
+	@IdentificationCard VARBINARY(MAX),
+	@UserID UNIQUEIDENTIFIER OUTPUT
 AS
 BEGIN
 	SET NOCOUNT ON;
-	INSERT INTO dbo.Customers (FullName, Mobile, Email)
-	VALUES (@FullName, @Mobile, @Email);
-	SET @CustomerId = SCOPE_IDENTITY();
+	SET @UserID = NEWID();
+	INSERT INTO dbo.Users (UserID, FirstName, LastName, Role, Occupation, Email, MobileNumber, OrganizationAddress, IdentificationCard)
+	VALUES (@UserID, @FirstName, @LastName, 'Customer', @Occupation, @Email, @MobileNumber, @OrganizationAddress, @IdentificationCard);
 END
 GO
 
-CREATE PROCEDURE dbo.usp_GetCustomerById
-	@CustomerId INT
+CREATE OR ALTER PROCEDURE dbo.usp_GetCustomerById
+	@UserID UNIQUEIDENTIFIER
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT CustomerId, CustomerCode, FullName, Mobile, Email, CreatedAt FROM dbo.Customers WHERE CustomerId = @CustomerId;
+	SELECT UserID, FirstName, LastName, Role, Occupation, Email, MobileNumber, OrganizationAddress, IdentificationCard, CreatedAt
+	FROM dbo.Users
+	WHERE UserID = @UserID AND Role = 'Customer';
 END
 GO
 
-CREATE PROCEDURE dbo.usp_GetCustomerByCode
-	@CustomerCode NVARCHAR(50)
+CREATE OR ALTER PROCEDURE dbo.usp_GetCustomerByEmail
+	@Email NVARCHAR(32)
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT CustomerId, CustomerCode, FullName, Mobile, Email, CreatedAt FROM dbo.Customers WHERE CustomerCode = @CustomerCode;
+	SELECT UserID, FirstName, LastName, Role, Occupation, Email, MobileNumber, OrganizationAddress, IdentificationCard, CreatedAt
+	FROM dbo.Users
+	WHERE Email = @Email AND Role = 'Customer';
 END
 GO
 
-CREATE PROCEDURE dbo.usp_SearchCustomers
-	@Keyword NVARCHAR(200)
+CREATE OR ALTER PROCEDURE dbo.usp_SearchCustomers
+	@Keyword NVARCHAR(32) = NULL
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT CustomerId, CustomerCode, FullName, Mobile, Email, CreatedAt
-	FROM dbo.Customers
-	WHERE @Keyword IS NULL OR FullName LIKE '%' + @Keyword + '%' OR Mobile LIKE '%' + @Keyword + '%' OR Email LIKE '%' + @Keyword + '%';
+	SELECT UserID, FirstName, LastName, Role, Occupation, Email, MobileNumber, OrganizationAddress, IdentificationCard, CreatedAt
+	FROM dbo.Users
+	WHERE Role = 'Customer'
+	  AND (@Keyword IS NULL OR FirstName LIKE '%' + @Keyword + '%' OR LastName LIKE '%' + @Keyword + '%'
+			  OR MobileNumber LIKE '%' + @Keyword + '%' OR Email LIKE '%' + @Keyword + '%');
 END
 GO
 
-CREATE PROCEDURE dbo.usp_UpdateCustomer
-	@CustomerId INT,
-	@FullName NVARCHAR(200),
-	@Mobile NVARCHAR(50) = NULL,
-	@Email NVARCHAR(200) = NULL
+CREATE OR ALTER PROCEDURE dbo.usp_UpdateCustomer
+	@UserID UNIQUEIDENTIFIER,
+	@FirstName NVARCHAR(24),
+	@LastName NVARCHAR(24),
+	@Occupation NVARCHAR(32),
+	@Email NVARCHAR(32),
+	@MobileNumber NVARCHAR(12) = NULL,
+	@OrganizationAddress NVARCHAR(300) = NULL,
+	@IdentificationCard VARBINARY(MAX) = NULL
 AS
 BEGIN
 	SET NOCOUNT ON;
-	UPDATE dbo.Customers SET FullName = @FullName, Mobile = @Mobile, Email = @Email WHERE CustomerId = @CustomerId;
+	UPDATE dbo.Users
+	SET FirstName = @FirstName, LastName = @LastName, Occupation = @Occupation, Email = @Email,
+		MobileNumber = @MobileNumber, OrganizationAddress = @OrganizationAddress, IdentificationCard = @IdentificationCard
+	WHERE UserID = @UserID AND Role = 'Customer';
 END
 GO
 
-CREATE PROCEDURE dbo.usp_SearchEquipment
+CREATE OR ALTER PROCEDURE dbo.usp_CreateEquipment
+	@Category NVARCHAR(30),
+	@Type NVARCHAR(30),
+	@Status NVARCHAR(30),
+	@Model NVARCHAR(200),
+	@SKU NVARCHAR(100),
+	@Image VARBINARY(MAX) = NULL,
+	@Stock INT,
+	@BaseRentalFee DECIMAL(18,2),
+	@SecurityDeposit DECIMAL(18,2),
+	@EquipmentID UNIQUEIDENTIFIER OUTPUT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SET @EquipmentID = NEWID();
+	INSERT INTO dbo.Equipments (EquipmentID, Category, Type, Status, Model, SKU, Image, Stock, BaseRentalFee, SecurityDeposit)
+	VALUES (@EquipmentID, @Category, @Type, @Status, @Model, @SKU, @Image, @Stock, @BaseRentalFee, @SecurityDeposit);
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.usp_SearchEquipment
 	@Keyword NVARCHAR(200) = NULL
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT EquipmentId, Name, Category, RentalRate, AvailableQuantity
-	FROM dbo.Equipment
-	WHERE @Keyword IS NULL OR Name LIKE '%' + @Keyword + '%' OR Category LIKE '%' + @Keyword + '%';
+	SELECT EquipmentID, Category, Type, Status, Model, SKU, Image, Stock, BaseRentalFee, SecurityDeposit, CreatedAt
+	FROM dbo.Equipments
+	WHERE @Keyword IS NULL OR Model LIKE '%' + @Keyword + '%' OR Category LIKE '%' + @Keyword + '%' OR SKU LIKE '%' + @Keyword + '%';
 END
 GO
 
-CREATE PROCEDURE dbo.usp_GetEquipmentById
-	@EquipmentId INT
+CREATE OR ALTER PROCEDURE dbo.usp_GetEquipmentById
+	@EquipmentID UNIQUEIDENTIFIER
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT EquipmentId, Name, Category, RentalRate, AvailableQuantity FROM dbo.Equipment WHERE EquipmentId = @EquipmentId;
+	SELECT EquipmentID, Category, Type, Status, Model, SKU, Image, Stock, BaseRentalFee, SecurityDeposit, CreatedAt
+	FROM dbo.Equipments
+	WHERE EquipmentID = @EquipmentID;
 END
 GO
 
-CREATE PROCEDURE dbo.usp_IsSerialAvailable
-	@SerialNumber NVARCHAR(100),
-	@IsAvailable BIT OUTPUT
+CREATE OR ALTER PROCEDURE dbo.usp_UpdateEquipment
+	@EquipmentID UNIQUEIDENTIFIER,
+	@Type NVARCHAR(30),
+	@Status NVARCHAR(30),
+	@Stock INT,
+	@BaseRentalFee DECIMAL(18,2),
+	@SecurityDeposit DECIMAL(18,2)
 AS
 BEGIN
 	SET NOCOUNT ON;
-	IF EXISTS (SELECT 1 FROM dbo.RentalItems WHERE SerialNumber = @SerialNumber)
-		SET @IsAvailable = 0;
-	ELSE
-		SET @IsAvailable = 1;
+	UPDATE dbo.Equipments
+	SET [Type] = @Type, [Status] = @Status, Stock = @Stock,
+		BaseRentalFee = @BaseRentalFee, SecurityDeposit = @SecurityDeposit
+	WHERE EquipmentID = @EquipmentID;
 END
 GO
 
-CREATE PROCEDURE dbo.usp_CreateRental
-	@CustomerId INT,
-	@DueDate DATETIME2,
-	@RentalFee DECIMAL(18,2),
-	@SecurityDeposit DECIMAL(18,2),
-	@RentalTransactionId INT OUTPUT
+CREATE OR ALTER PROCEDURE dbo.usp_CreateTransaction
+	@UserID UNIQUEIDENTIFIER,
+	@DueAt DATETIME2(7),
+	@TransactionID UNIQUEIDENTIFIER OUTPUT
 AS
 BEGIN
 	SET NOCOUNT ON;
-	INSERT INTO dbo.RentalTransactions (CustomerId, DueDate, RentalFee, SecurityDeposit)
-	VALUES (@CustomerId, @DueDate, @RentalFee, @SecurityDeposit);
-	SET @RentalTransactionId = SCOPE_IDENTITY();
+	SET @TransactionID = NEWID();
+	INSERT INTO dbo.Transactions (TransactionID, UserID, Status, DueAt)
+	VALUES (@TransactionID, @UserID, 'Ongoing', @DueAt);
 END
 GO
 
-CREATE PROCEDURE dbo.usp_AddRentalItem
-	@RentalTransactionId INT,
-	@EquipmentId INT,
+CREATE OR ALTER PROCEDURE dbo.usp_AddTransactionEquipment
+	@TransactionID UNIQUEIDENTIFIER,
+	@EquipmentID UNIQUEIDENTIFIER,
 	@Quantity INT,
-	@SerialNumber NVARCHAR(100) = NULL
+	@RentalFee DECIMAL(18,2),
+	@DepositFee DECIMAL(18,2)
 AS
 BEGIN
 	SET NOCOUNT ON;
-	INSERT INTO dbo.RentalItems (RentalTransactionId, EquipmentId, Quantity, SerialNumber, Rate)
-	VALUES (@RentalTransactionId, @EquipmentId, @Quantity, @SerialNumber, (SELECT RentalRate FROM dbo.Equipment WHERE EquipmentId = @EquipmentId));
-	UPDATE dbo.Equipment SET AvailableQuantity = AvailableQuantity - @Quantity WHERE EquipmentId = @EquipmentId;
+	INSERT INTO dbo.TransactionEquipments (TransactionID, EquipmentID, Quantity, RentalFee, DepositFee)
+	VALUES (@TransactionID, @EquipmentID, @Quantity, @RentalFee, @DepositFee);
+	UPDATE dbo.Equipments SET Stock = Stock - @Quantity WHERE EquipmentID = @EquipmentID;
 END
 GO
 
-CREATE PROCEDURE dbo.usp_GetActiveRentals
+CREATE OR ALTER PROCEDURE dbo.usp_GetActiveRentals
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT rt.RentalTransactionId, rt.TransactionCode, rt.CustomerId, c.FullName AS CustomerName, rt.CreatedAt, rt.DueDate, rt.Status, rt.RentalFee, rt.SecurityDeposit
-	FROM dbo.RentalTransactions rt
-	JOIN dbo.Customers c ON c.CustomerId = rt.CustomerId
-	WHERE rt.Status = 'Ongoing'
-	ORDER BY rt.DueDate ASC;
+	UPDATE dbo.Transactions
+	SET Status = CASE WHEN DueAt < DATEADD(DAY, -3, SYSUTCDATETIME()) THEN 'Overdue' ELSE 'Late' END
+	WHERE IsArchived = 0 AND Status IN ('Ongoing', 'Overdue', 'Late') AND DueAt < SYSUTCDATETIME();
+	SELECT t.TransactionID, t.UserID, u.FirstName, u.LastName, t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
+	FROM dbo.Transactions t
+	INNER JOIN dbo.Users u ON u.UserID = t.UserID
+	WHERE t.Status IN ('Ongoing', 'Overdue', 'Late')
+	  AND t.IsArchived = 0
+	ORDER BY t.DueAt ASC;
 END
 GO
 
-CREATE PROCEDURE dbo.usp_GetRentalById
-	@RentalTransactionId INT
+CREATE OR ALTER PROCEDURE dbo.usp_GetTransactionLog
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT rt.RentalTransactionId, rt.TransactionCode, rt.CustomerId, c.FullName AS CustomerName, rt.CreatedAt, rt.DueDate, rt.Status, rt.RentalFee, rt.SecurityDeposit
-	FROM dbo.RentalTransactions rt
-	JOIN dbo.Customers c ON c.CustomerId = rt.CustomerId
-	WHERE rt.RentalTransactionId = @RentalTransactionId;
-
-	SELECT ri.RentalItemId, ri.EquipmentId, e.Name AS EquipmentName, ri.SerialNumber, ri.Quantity, ri.Rate
-	FROM dbo.RentalItems ri
-	JOIN dbo.Equipment e ON e.EquipmentId = ri.EquipmentId
-	WHERE ri.RentalTransactionId = @RentalTransactionId;
+	UPDATE dbo.Transactions
+	SET Status = CASE WHEN DueAt < DATEADD(DAY, -3, SYSUTCDATETIME()) THEN 'Overdue' ELSE 'Late' END
+	WHERE IsArchived = 0 AND Status IN ('Ongoing', 'Overdue', 'Late') AND DueAt < SYSUTCDATETIME();
+	SELECT t.TransactionID, t.UserID, u.FirstName, u.LastName,
+		   t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
+	FROM dbo.Transactions t
+	INNER JOIN dbo.Users u ON u.UserID = t.UserID
+	WHERE t.IsArchived = 0
+	ORDER BY t.CreatedAt DESC;
 END
 GO
 
-CREATE PROCEDURE dbo.usp_CompleteRental
-	@RentalTransactionId INT
+CREATE OR ALTER PROCEDURE dbo.usp_GetTransactionById
+	@TransactionID UNIQUEIDENTIFIER
 AS
 BEGIN
 	SET NOCOUNT ON;
-	UPDATE dbo.RentalTransactions SET Status = 'Done' WHERE RentalTransactionId = @RentalTransactionId;
-	-- Optionally make returned equipment available again: omitted here to keep behavior explicit
+	SELECT t.TransactionID, t.UserID, u.FirstName, u.LastName, t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
+	FROM dbo.Transactions t
+	INNER JOIN dbo.Users u ON u.UserID = t.UserID
+	WHERE t.TransactionID = @TransactionID;
+
+	SELECT te.TransactionID, te.EquipmentID, e.Model, e.SKU, e.Category, e.Type, e.Status, te.Quantity, te.RentalFee, te.DepositFee
+	FROM dbo.TransactionEquipments te
+	INNER JOIN dbo.Equipments e ON e.EquipmentID = te.EquipmentID
+	WHERE te.TransactionID = @TransactionID;
 END
 GO
 
-CREATE PROCEDURE dbo.usp_InsertAudit
-	@Category NVARCHAR(100) = NULL,
+CREATE OR ALTER PROCEDURE dbo.usp_CompleteTransaction
+	@TransactionID UNIQUEIDENTIFIER
+	,@ReturnConditionNotes NVARCHAR(500) = NULL
+AS
+BEGIN
+	SET NOCOUNT ON;
+	UPDATE dbo.Transactions
+	SET Status = 'Done',
+		ReturnConditionNotes = @ReturnConditionNotes
+	WHERE TransactionID = @TransactionID
+	  AND IsArchived = 0;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.usp_ArchiveTransaction
+	@TransactionID UNIQUEIDENTIFIER
+AS
+BEGIN
+	SET NOCOUNT ON;
+	UPDATE dbo.Transactions
+	SET IsArchived = 1
+	WHERE TransactionID = @TransactionID
+	  AND Status = 'Done'
+	  AND IsArchived = 0;
+
+	SELECT CAST(CASE WHEN @@ROWCOUNT = 1 THEN 1 ELSE 0 END AS BIT) AS Archived;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.usp_CreatePayment
+	@TransactionID UNIQUEIDENTIFIER,
+	@PaymentType NVARCHAR(30),
+	@Amount DECIMAL(18,2),
+	@PaymentMethod NVARCHAR(30),
+	@PaymentID UNIQUEIDENTIFIER OUTPUT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SET @PaymentID = NEWID();
+	INSERT INTO dbo.TransactionPayment (PaymentID, TransactionID, PaymentType, Amount, PaymentMethod)
+	VALUES (@PaymentID, @TransactionID, @PaymentType, @Amount, @PaymentMethod);
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.usp_GetPaymentsByTransaction
+	@TransactionID UNIQUEIDENTIFIER
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT PaymentID, TransactionID, PaymentType, Amount, PaymentMethod, CreatedAt
+	FROM dbo.TransactionPayment
+	WHERE TransactionID = @TransactionID
+	ORDER BY CreatedAt;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.usp_GetPaymentActivity
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT PaymentID, TransactionID, PaymentType, Amount, PaymentMethod, CreatedAt
+	FROM dbo.TransactionPayment
+	ORDER BY CreatedAt DESC;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.usp_InsertAudit
+	@UserID UNIQUEIDENTIFIER,
+	@UserLogged NVARCHAR(100),
 	@Description NVARCHAR(MAX) = NULL,
-	@PerformedBy NVARCHAR(200) = NULL
+	@LogID UNIQUEIDENTIFIER OUTPUT
 AS
 BEGIN
 	SET NOCOUNT ON;
-	INSERT INTO dbo.AuditLogs (Category, Description, PerformedBy)
-	VALUES (@Category, @Description, @PerformedBy);
+	SET @LogID = NEWID();
+	INSERT INTO dbo.Logs (LogID, UserID, UserLogged, Description)
+	VALUES (@LogID, @UserID, @UserLogged, @Description);
 END
 GO
 
-CREATE PROCEDURE dbo.usp_GetRecentAudits
+CREATE OR ALTER PROCEDURE dbo.usp_GetRecentAudits
 	@MaxRows INT = 100
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT TOP(@MaxRows) AuditId, Category, Description, PerformedBy, CreatedAt FROM dbo.AuditLogs ORDER BY CreatedAt DESC;
+	SELECT TOP (@MaxRows) l.LogID, l.UserID, l.UserLogged, u.Role, l.LoggedAt, l.Description
+	FROM dbo.Logs l
+	LEFT JOIN dbo.Users u ON u.UserID = l.UserID
+	ORDER BY l.LoggedAt DESC;
 END
 GO

@@ -4,121 +4,17 @@ using System.Data;
 using System.Data.SqlClient;
 using Techrent.DataAccessLayer.DTOs;
 using Techrent.DataAccessLayer.Repositories.Interfaces;
-
 namespace Techrent.DataAccessLayer.Repositories
 {
     public class CustomerRepository : SqlRepositoryBase, ICustomerRepository
     {
-        public int Create(CustomerDto customer)
-        {
-            using (var conn = DatabaseConnectionFactory.CreateConnection())
-            using (var cmd = CreateStoredProcCommand(conn, "usp_CreateCustomer"))
-            {
-                cmd.Parameters.AddWithValue("@FullName", customer.FullName ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@Mobile", customer.Mobile ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@Email", customer.Email ?? (object)DBNull.Value);
-                var outId = new SqlParameter("@CustomerId", SqlDbType.Int) { Direction = ParameterDirection.Output };
-                cmd.Parameters.Add(outId);
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                return (int)outId.Value;
-            }
-        }
-
-        public CustomerDto GetByCode(string customerCode)
-        {
-            using (var conn = DatabaseConnectionFactory.CreateConnection())
-            using (var cmd = CreateStoredProcCommand(conn, "usp_GetCustomerByCode"))
-            {
-                cmd.Parameters.AddWithValue("@CustomerCode", customerCode ?? (object)DBNull.Value);
-                conn.Open();
-                using (var rdr = cmd.ExecuteReader())
-                {
-                    if (rdr.Read())
-                    {
-                        return new CustomerDto
-                        {
-                            CustomerId = rdr.GetInt32(rdr.GetOrdinal("CustomerId")),
-                            CustomerCode = rdr.GetString(rdr.GetOrdinal("CustomerCode")),
-                            FullName = rdr.GetString(rdr.GetOrdinal("FullName")),
-                            Mobile = rdr.IsDBNull(rdr.GetOrdinal("Mobile")) ? null : rdr.GetString(rdr.GetOrdinal("Mobile")),
-                            Email = rdr.IsDBNull(rdr.GetOrdinal("Email")) ? null : rdr.GetString(rdr.GetOrdinal("Email")),
-                            CreatedAt = rdr.GetDateTime(rdr.GetOrdinal("CreatedAt"))
-                        };
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        public CustomerDto GetById(int customerId)
-        {
-            using (var conn = DatabaseConnectionFactory.CreateConnection())
-            using (var cmd = CreateStoredProcCommand(conn, "usp_GetCustomerById"))
-            {
-                cmd.Parameters.AddWithValue("@CustomerId", customerId);
-                conn.Open();
-                using (var rdr = cmd.ExecuteReader())
-                {
-                    if (rdr.Read())
-                    {
-                        return new CustomerDto
-                        {
-                            CustomerId = rdr.GetInt32(rdr.GetOrdinal("CustomerId")),
-                            CustomerCode = rdr.GetString(rdr.GetOrdinal("CustomerCode")),
-                            FullName = rdr.GetString(rdr.GetOrdinal("FullName")),
-                            Mobile = rdr.IsDBNull(rdr.GetOrdinal("Mobile")) ? null : rdr.GetString(rdr.GetOrdinal("Mobile")),
-                            Email = rdr.IsDBNull(rdr.GetOrdinal("Email")) ? null : rdr.GetString(rdr.GetOrdinal("Email")),
-                            CreatedAt = rdr.GetDateTime(rdr.GetOrdinal("CreatedAt"))
-                        };
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        public IEnumerable<CustomerDto> Search(string keyword)
-        {
-            var results = new List<CustomerDto>();
-            using (var conn = DatabaseConnectionFactory.CreateConnection())
-            using (var cmd = CreateStoredProcCommand(conn, "usp_SearchCustomers"))
-            {
-                cmd.Parameters.AddWithValue("@Keyword", keyword ?? (object)DBNull.Value);
-                conn.Open();
-                using (var rdr = cmd.ExecuteReader())
-                {
-                    while (rdr.Read())
-                    {
-                        results.Add(new CustomerDto
-                        {
-                            CustomerId = rdr.GetInt32(rdr.GetOrdinal("CustomerId")),
-                            CustomerCode = rdr.GetString(rdr.GetOrdinal("CustomerCode")),
-                            FullName = rdr.GetString(rdr.GetOrdinal("FullName")),
-                            Mobile = rdr.IsDBNull(rdr.GetOrdinal("Mobile")) ? null : rdr.GetString(rdr.GetOrdinal("Mobile")),
-                            Email = rdr.IsDBNull(rdr.GetOrdinal("Email")) ? null : rdr.GetString(rdr.GetOrdinal("Email")),
-                            CreatedAt = rdr.GetDateTime(rdr.GetOrdinal("CreatedAt"))
-                        });
-                    }
-                }
-            }
-
-            return results;
-        }
-
-        public void Update(CustomerDto customer)
-        {
-            using (var conn = DatabaseConnectionFactory.CreateConnection())
-            using (var cmd = CreateStoredProcCommand(conn, "usp_UpdateCustomer"))
-            {
-                cmd.Parameters.AddWithValue("@CustomerId", customer.CustomerId);
-                cmd.Parameters.AddWithValue("@FullName", customer.FullName ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@Mobile", customer.Mobile ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@Email", customer.Email ?? (object)DBNull.Value);
-                conn.Open();
-                cmd.ExecuteNonQuery();
-            }
-        }
+        public Guid Create(CustomerDto c) { using (var cn=DatabaseConnectionFactory.CreateConnection()) using (var cm=CreateStoredProcCommand(cn,"usp_CreateCustomer")) { Add(cm,c); var p=new SqlParameter("@UserID",SqlDbType.UniqueIdentifier){Direction=ParameterDirection.Output}; cm.Parameters.Add(p); cn.Open(); cm.ExecuteNonQuery(); return (Guid)p.Value; } }
+        public CustomerDto GetById(Guid id) => Get("usp_GetCustomerById","@UserID",id);
+        public CustomerDto GetByEmail(string email) => Get("usp_GetCustomerByEmail","@Email",email);
+        public IEnumerable<CustomerDto> Search(string key) { var a=new List<CustomerDto>(); using(var cn=DatabaseConnectionFactory.CreateConnection()) using(var cm=CreateStoredProcCommand(cn,"usp_SearchCustomers")) { cm.Parameters.AddWithValue("@Keyword",(object)key??DBNull.Value); cn.Open(); using(var r=cm.ExecuteReader()) while(r.Read()) a.Add(Map(r)); } return a; }
+        public void Update(CustomerDto c) { using(var cn=DatabaseConnectionFactory.CreateConnection()) using(var cm=CreateStoredProcCommand(cn,"usp_UpdateCustomer")) { cm.Parameters.Add("@UserID",SqlDbType.UniqueIdentifier).Value=c.UserId; Add(cm,c); cn.Open(); cm.ExecuteNonQuery(); } }
+        private static void Add(SqlCommand cm,CustomerDto c) { cm.Parameters.AddWithValue("@FirstName",c.FirstName??(object)DBNull.Value); cm.Parameters.AddWithValue("@LastName",c.LastName??(object)DBNull.Value); cm.Parameters.AddWithValue("@Occupation",c.Occupation??(object)DBNull.Value); cm.Parameters.AddWithValue("@Email",c.Email??(object)DBNull.Value); cm.Parameters.AddWithValue("@MobileNumber",c.MobileNumber??(object)DBNull.Value); cm.Parameters.AddWithValue("@OrganizationAddress",c.OrganizationAddress??(object)DBNull.Value); cm.Parameters.Add("@IdentificationCard",SqlDbType.VarBinary,-1).Value=(object)c.IdentificationCard??DBNull.Value; }
+        private CustomerDto Get(string p,string n,object v) { using(var cn=DatabaseConnectionFactory.CreateConnection()) using(var cm=CreateStoredProcCommand(cn,p)) { cm.Parameters.AddWithValue(n,v??DBNull.Value); cn.Open(); using(var r=cm.ExecuteReader()) return r.Read()?Map(r):null; } }
+        private static CustomerDto Map(IDataRecord r) => new CustomerDto { CustomerId=r.GetGuid(r.GetOrdinal("CustomerID")),FirstName=r.GetString(r.GetOrdinal("FirstName")),LastName=r.GetString(r.GetOrdinal("LastName")),Occupation=r.GetString(r.GetOrdinal("Occupation")),Email=r.GetString(r.GetOrdinal("Email")),MobileNumber=r.IsDBNull(r.GetOrdinal("MobileNumber"))?null:r.GetString(r.GetOrdinal("MobileNumber")),OrganizationAddress=r.IsDBNull(r.GetOrdinal("OrganizationAddress"))?null:r.GetString(r.GetOrdinal("OrganizationAddress")),IdentificationCard=r.IsDBNull(r.GetOrdinal("IdentificationCard"))?null:(byte[])r["IdentificationCard"],CreatedAt=r.GetDateTime(r.GetOrdinal("CreatedAt")) };
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Techrent.DataAccessLayer.DTOs;
 using Techrent.DataAccessLayer.Repositories.Interfaces;
@@ -13,7 +14,7 @@ namespace Techrent.ApplicationLayer.Services
             _repo = repo;
         }
 
-        public void Insert(AuditRecordDto record) => _repo.Insert(record);
+        public Guid Insert(AuditRecordDto record) => _repo.Insert(record);
 
         public IEnumerable<AuditRecordDto> GetRecent(int maxRows) => _repo.QueryRecent(maxRows);
     }

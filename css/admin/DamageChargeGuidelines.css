@@ -1,0 +1,39 @@
+.damage-charge-table {
+    min-width: 42rem;
+    color: #212529;
+}
+
+.damage-charge-table thead th {
+    padding: 0.75rem;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f1f3f5;
+    color: #212529;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.damage-charge-table tbody th,
+.damage-charge-table tbody td {
+    padding: 0.85rem 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+    white-space: nowrap;
+}
+
+.damage-charge-table tbody tr:last-child th,
+.damage-charge-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.damage-condition-card {
+    padding: 1rem;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    background-color: #f8f9fa;
+}
+
+@media (max-width: 575.98px) {
+    .damage-charge-table {
+        min-width: 39rem;
+    }
+}

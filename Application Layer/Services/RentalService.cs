@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Techrent.DataAccessLayer.DTOs;
 using Techrent.DataAccessLayer.Repositories.Interfaces;
@@ -7,18 +8,93 @@ namespace Techrent.ApplicationLayer.Services
     public class RentalService
     {
         private readonly IRentalRepository _repo;
+        private readonly AuditService _auditService;
 
-        public RentalService(IRentalRepository repo)
+        public RentalService(IRentalRepository repo, AuditService auditService)
         {
             _repo = repo;
+            _auditService = auditService;
         }
 
-        public int CreateRental(RentalTransactionDto tx) => _repo.CreateRental(tx);
+        public Guid CreateRental(RentalTransactionDto tx)
+        {
+            try
+            {
+                var transactionId = _repo.CreateRental(tx);
+                AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "RentalCreated", "Transaction", transactionId, "A rental transaction was created.");
+                return transactionId;
+            }
+            catch (Exception ex)
+            {
+                AuditWorkflow.Failure(_auditService, AuditEventFactory.RentalCategory, "RentalCreated", "Transaction", null, "A rental creation attempt failed.", ex);
+                throw;
+            }
+        }
+
+        public Guid CreateRental(RentalTransactionDto tx, PaymentDto payment)
+        {
+            try
+            {
+                var transactionId = _repo.CreateRental(tx, payment);
+                AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "RentalCreated", "Transaction", transactionId, "A rental transaction and initial payment were created.");
+                return transactionId;
+            }
+            catch (Exception ex)
+            {
+                AuditWorkflow.Failure(_auditService, AuditEventFactory.RentalCategory, "RentalCreated", "Transaction", null, "A rental creation attempt failed.", ex);
+                throw;
+            }
+        }
 
         public IEnumerable<RentalTransactionDto> GetActiveRentals() => _repo.GetActiveRentals();
 
-        public void CompleteRental(int rentalId) => _repo.CompleteRental(rentalId);
+        public IEnumerable<RentalTransactionDto> GetTransactionLog() => _repo.GetTransactionLog();
 
-        public RentalTransactionDto GetById(int rentalId) => _repo.GetById(rentalId);
+        public IEnumerable<RentalTransactionDto> GetByCustomer(Guid userId) => _repo.GetByCustomer(userId);
+
+        public void CompleteRental(Guid rentalId, string returnConditionNotes)
+        {
+            var notes = string.IsNullOrWhiteSpace(returnConditionNotes) ? null : returnConditionNotes.Trim();
+            if (notes != null && notes.Length > 500)
+            {
+                throw new ArgumentException("Return condition notes cannot exceed 500 characters.", nameof(returnConditionNotes));
+            }
+
+            try
+            {
+                _repo.CompleteRental(rentalId, notes);
+                AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "RentalCompleted", "Transaction", rentalId, "A rental transaction was completed.");
+            }
+            catch (Exception ex)
+            {
+                AuditWorkflow.Failure(_auditService, AuditEventFactory.RentalCategory, "RentalCompleted", "Transaction", rentalId, "A rental completion attempt failed.", ex);
+                throw;
+            }
+        }
+
+        public bool ArchiveRental(Guid rentalId)
+        {
+            try
+            {
+                var archived = _repo.ArchiveRental(rentalId);
+                if (archived)
+                {
+                    AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "RentalArchived", "Transaction", rentalId, "A rental transaction was archived.");
+                }
+                else
+                {
+                    AuditWorkflow.Failure(_auditService, AuditEventFactory.RentalCategory, "RentalArchived", "Transaction", rentalId, "A rental archive attempt did not change the transaction.", null);
+                }
+
+                return archived;
+            }
+            catch (Exception ex)
+            {
+                AuditWorkflow.Failure(_auditService, AuditEventFactory.RentalCategory, "RentalArchived", "Transaction", rentalId, "A rental archive attempt failed.", ex);
+                throw;
+            }
+        }
+
+        public RentalTransactionDto GetById(Guid rentalId) => _repo.GetById(rentalId);
     }
 }

@@ -4,76 +4,56 @@ using System.Data;
 using System.Data.SqlClient;
 using Techrent.DataAccessLayer.DTOs;
 using Techrent.DataAccessLayer.Repositories.Interfaces;
-
 namespace Techrent.DataAccessLayer.Repositories
 {
     public class EquipmentRepository : SqlRepositoryBase, IEquipmentRepository
     {
-        public EquipmentDto GetById(int equipmentId)
+        public Guid Create(EquipmentDto equipment)
         {
             using (var conn = DatabaseConnectionFactory.CreateConnection())
-            using (var cmd = CreateStoredProcCommand(conn, "usp_GetEquipmentById"))
+            using (var cmd = CreateStoredProcCommand(conn, "usp_CreateEquipment"))
             {
-                cmd.Parameters.AddWithValue("@EquipmentId", equipmentId);
-                conn.Open();
-                using (var rdr = cmd.ExecuteReader())
-                {
-                    if (rdr.Read())
-                    {
-                        return new EquipmentDto
-                        {
-                            EquipmentId = rdr.GetInt32(rdr.GetOrdinal("EquipmentId")),
-                            Name = rdr.GetString(rdr.GetOrdinal("Name")),
-                            Category = rdr.IsDBNull(rdr.GetOrdinal("Category")) ? null : rdr.GetString(rdr.GetOrdinal("Category")),
-                            RentalRate = rdr.GetDecimal(rdr.GetOrdinal("RentalRate")),
-                            AvailableQuantity = rdr.GetInt32(rdr.GetOrdinal("AvailableQuantity"))
-                        };
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        public IEnumerable<EquipmentDto> Search(string keyword)
-        {
-            var list = new List<EquipmentDto>();
-            using (var conn = DatabaseConnectionFactory.CreateConnection())
-            using (var cmd = CreateStoredProcCommand(conn, "usp_SearchEquipment"))
-            {
-                cmd.Parameters.AddWithValue("@Keyword", keyword ?? (object)DBNull.Value);
-                conn.Open();
-                using (var rdr = cmd.ExecuteReader())
-                {
-                    while (rdr.Read())
-                    {
-                        list.Add(new EquipmentDto
-                        {
-                            EquipmentId = rdr.GetInt32(rdr.GetOrdinal("EquipmentId")),
-                            Name = rdr.GetString(rdr.GetOrdinal("Name")),
-                            Category = rdr.IsDBNull(rdr.GetOrdinal("Category")) ? null : rdr.GetString(rdr.GetOrdinal("Category")),
-                            RentalRate = rdr.GetDecimal(rdr.GetOrdinal("RentalRate")),
-                            AvailableQuantity = rdr.GetInt32(rdr.GetOrdinal("AvailableQuantity"))
-                        });
-                    }
-                }
-            }
-
-            return list;
-        }
-
-        public bool IsSerialAvailable(string serialNumber)
-        {
-            using (var conn = DatabaseConnectionFactory.CreateConnection())
-            using (var cmd = CreateStoredProcCommand(conn, "usp_IsSerialAvailable"))
-            {
-                cmd.Parameters.AddWithValue("@SerialNumber", serialNumber ?? (object)DBNull.Value);
-                var outParam = new SqlParameter("@IsAvailable", SqlDbType.Bit) { Direction = ParameterDirection.Output };
-                cmd.Parameters.Add(outParam);
+                cmd.Parameters.AddWithValue("@Category", equipment.Category ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Type", equipment.Type ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Status", equipment.Status ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Model", equipment.Model ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@SKU", equipment.Sku ?? (object)DBNull.Value);
+                cmd.Parameters.Add("@Image", SqlDbType.VarBinary, -1).Value = equipment.Image ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@Stock", SqlDbType.Int).Value = equipment.Stock;
+                cmd.Parameters.Add("@BaseRentalFee", SqlDbType.Decimal).Value = equipment.BaseRentalFee;
+                cmd.Parameters.Add("@SecurityDeposit", SqlDbType.Decimal).Value = equipment.SecurityDeposit;
+                var output = new SqlParameter("@EquipmentID", SqlDbType.UniqueIdentifier) { Direction = ParameterDirection.Output };
+                cmd.Parameters.Add(output);
                 conn.Open();
                 cmd.ExecuteNonQuery();
-                return Convert.ToBoolean(outParam.Value);
+                return (Guid)output.Value;
             }
+        }
+
+        public void Update(EquipmentDto equipment)
+        {
+            using (var conn = DatabaseConnectionFactory.CreateConnection())
+            using (var cmd = CreateStoredProcCommand(conn, "usp_UpdateEquipment"))
+            {
+                cmd.Parameters.Add("@EquipmentID", SqlDbType.UniqueIdentifier).Value = equipment.EquipmentId;
+                cmd.Parameters.AddWithValue("@Type", equipment.Type);
+                cmd.Parameters.AddWithValue("@Status", equipment.Status);
+                cmd.Parameters.Add("@Stock", SqlDbType.Int).Value = equipment.Stock;
+                cmd.Parameters.Add("@BaseRentalFee", SqlDbType.Decimal).Value = equipment.BaseRentalFee;
+                cmd.Parameters.Add("@SecurityDeposit", SqlDbType.Decimal).Value = equipment.SecurityDeposit;
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public EquipmentDto GetById(Guid id) { var result = Query("usp_GetEquipmentById", "@EquipmentID", id); return result.Count == 0 ? null : result[0]; }
+        public IEnumerable<EquipmentDto> Search(string keyword) => Query("usp_SearchEquipment", "@Keyword", keyword);
+        private List<EquipmentDto> Query(string procedure, string parameter, object value)
+        {
+            var list = new List<EquipmentDto>();
+            using (var conn = DatabaseConnectionFactory.CreateConnection()) using (var cmd = CreateStoredProcCommand(conn, procedure))
+            { cmd.Parameters.AddWithValue(parameter, value ?? (object)DBNull.Value); conn.Open(); using (var r = cmd.ExecuteReader()) while (r.Read()) list.Add(new EquipmentDto { EquipmentId = r.GetGuid(r.GetOrdinal("EquipmentID")), Category = r.GetString(r.GetOrdinal("Category")), Type = r.GetString(r.GetOrdinal("Type")), Status = r.GetString(r.GetOrdinal("Status")), Model = r.GetString(r.GetOrdinal("Model")), Sku = r.GetString(r.GetOrdinal("SKU")), Image = r.IsDBNull(r.GetOrdinal("Image")) ? null : (byte[])r["Image"], Stock = r.GetInt32(r.GetOrdinal("Stock")), BaseRentalFee = r.GetDecimal(r.GetOrdinal("BaseRentalFee")), SecurityDeposit = r.GetDecimal(r.GetOrdinal("SecurityDeposit")), CreatedAt = r.GetDateTime(r.GetOrdinal("CreatedAt")) }); }
+            return list;
         }
     }
 }

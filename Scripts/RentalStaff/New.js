@@ -22,7 +22,22 @@
     }
 
     function setDetail(id, value) {
-        document.getElementById(id).textContent = value || 'Not provided';
+        var element = document.getElementById(id);
+        if (element) {
+            element.textContent = value || 'Not provided';
+        }
+    }
+
+    function getImageMimeType(imageData) {
+        if (imageData.indexOf('/9j/') === 0) {
+            return 'image/jpeg';
+        }
+
+        if (imageData.indexOf('iVBORw0KGgo') === 0) {
+            return 'image/png';
+        }
+
+        return 'image/jpeg';
     }
 
     function populateDetails(row) {
@@ -32,9 +47,25 @@
         setDetail('customerDetailEmail', row.getAttribute('data-email'));
         setDetail('customerDetailMobile', row.getAttribute('data-mobile-number'));
         setDetail('customerDetailTelephone', row.getAttribute('data-telephone-number'));
-        setDetail('customerDetailOrganization', row.getAttribute('data-organization'));
-        setDetail('customerDetailAddress', row.getAttribute('data-address'));
+        setDetail('customerDetailOccupation', row.getAttribute('data-occupation'));
+        setDetail('customerDetailAddress', row.getAttribute('data-organization-address'));
         setDetail('customerDetailStatus', row.getAttribute('data-account-status'));
+        var image = document.getElementById('customerProfileImage');
+        var placeholder = document.getElementById('customerProfileImagePlaceholder');
+        var imageData = row.getAttribute('data-image');
+        if (imageData) {
+            image.src = 'data:' + getImageMimeType(imageData) + ';base64,' + imageData;
+            image.classList.remove('d-none');
+            placeholder.classList.add('d-none');
+        } else {
+            image.removeAttribute('src');
+            image.classList.add('d-none');
+            placeholder.classList.remove('d-none');
+        }
+        var selectButton = document.getElementById('customerDetailSelectButton');
+        if (selectButton) {
+            selectButton.href = selectButton.href.split('?')[0] + '?customerId=' + encodeURIComponent(row.getAttribute('data-customer-id'));
+        }
     }
 
     search.addEventListener('keydown', function (event) {

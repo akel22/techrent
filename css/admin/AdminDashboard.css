@@ -16,3 +16,13 @@
     height: 190px;
 }
 
+.admin-equipment-status-chart {
+    height: 220px;
+}
+
+@media (max-width: 575.98px) {
+    .admin-equipment-status-chart {
+        height: 200px;
+    }
+}
+

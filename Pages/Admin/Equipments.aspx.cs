@@ -1,6 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using Techrent.ApplicationLayer.Services;
+using Techrent.DataAccessLayer.DTOs;
 
 namespace Techrent.Pages.Admin
 {
@@ -10,27 +15,85 @@ namespace Techrent.Pages.Admin
         {
             if (!IsPostBack)
             {
-                InventoryRepeater.DataSource = GetSampleInventory();
-                InventoryRepeater.DataBind();
+                BindInventory();
             }
         }
 
-        private static List<InventoryRow> GetSampleInventory()
+        public int AvailableEquipmentCount { get; private set; }
+        public int MaintenanceEquipmentCount { get; private set; }
+        public int TotalInventoryCount { get; private set; }
+
+        private void BindInventory()
         {
-            return new List<InventoryRow>
+            var equipment = ServiceFactory.CreateEquipmentService().Search(null).ToList();
+            AvailableEquipmentCount = equipment.Where(item => string.Equals(item.Status, "Available", StringComparison.OrdinalIgnoreCase)).Sum(item => item.Stock);
+            MaintenanceEquipmentCount = equipment.Where(item => string.Equals(item.Status, "Maintenance", StringComparison.OrdinalIgnoreCase)).Sum(item => item.Stock);
+            TotalInventoryCount = equipment.Sum(item => item.Stock);
+            InventoryRepeater.DataSource = equipment.Select(CreateInventoryRow).ToList();
+            InventoryRepeater.DataBind();
+        }
+
+        protected void SaveInventoryDetails_ServerClick(object sender, EventArgs e)
+        {
+            Guid equipmentId;
+            int stock;
+            decimal rentalRate;
+            decimal deposit;
+            if (!Guid.TryParse(inventoryDetailEquipmentId.Value, out equipmentId) ||
+                !int.TryParse(inventoryDetailQuantity.Value, out stock) || stock < 0 ||
+                !decimal.TryParse(inventoryDetailRentalRate.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out rentalRate) || rentalRate < 0 ||
+                !decimal.TryParse(inventoryDetailDeposit.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out deposit) || deposit < 0 ||
+                string.IsNullOrWhiteSpace(inventoryDetailStatus.Value) ||
+                string.IsNullOrWhiteSpace(inventoryDetailType.Value))
             {
-                new InventoryRow { EquipmentId = "EQUIPMENT-001", SerialNumber = "SN-LPT-001", Model = "Samsung-LPT-001", Category = "Laptop", Type = "Obsolete", Status = "Available", StatusClass = "status-available", Quantity = "50", RentalRate = "25", Deposit = "10", DateAdded = "2026-09-10" },
-                new InventoryRow { EquipmentId = "EQUIPMENT-002", SerialNumber = "SN-LPT-002", Model = "Dell Latitude 5440", Category = "Laptop", Type = "Standard", Status = "Available", StatusClass = "status-available", Quantity = "8", RentalRate = "35", Deposit = "15", DateAdded = "2026-09-11" },
-                new InventoryRow { EquipmentId = "EQUIPMENT-003", SerialNumber = "SN-MON-001", Model = "Dell P2422H", Category = "Monitor", Type = "Standard", Status = "Available", StatusClass = "status-available", Quantity = "12", RentalRate = "18", Deposit = "8", DateAdded = "2026-09-12" },
-                new InventoryRow { EquipmentId = "EQUIPMENT-004", SerialNumber = "SN-PRJ-001", Model = "Epson EB-X06", Category = "Projector", Type = "Standard", Status = "Maintenance", StatusClass = "status-maintenance", Quantity = "2", RentalRate = "45", Deposit = "20", DateAdded = "2026-09-13" },
-                new InventoryRow { EquipmentId = "EQUIPMENT-005", SerialNumber = "SN-TAB-001", Model = "iPad 10th Generation", Category = "Tablet", Type = "Standard", Status = "Available", StatusClass = "status-available", Quantity = "10", RentalRate = "28", Deposit = "12", DateAdded = "2026-09-14" },
-                new InventoryRow { EquipmentId = "EQUIPMENT-006", SerialNumber = "SN-CAM-001", Model = "Canon EOS 90D", Category = "Camera", Type = "Professional", Status = "Rented", StatusClass = "status-rented", Quantity = "3", RentalRate = "60", Deposit = "30", DateAdded = "2026-09-15" },
-                new InventoryRow { EquipmentId = "EQUIPMENT-007", SerialNumber = "SN-LPT-003", Model = "HP ProBook 450", Category = "Laptop", Type = "Standard", Status = "Available", StatusClass = "status-available", Quantity = "6", RentalRate = "30", Deposit = "12", DateAdded = "2026-09-16" },
-                new InventoryRow { EquipmentId = "EQUIPMENT-008", SerialNumber = "SN-MIC-001", Model = "Shure SM58", Category = "Audio", Type = "Professional", Status = "Available", StatusClass = "status-available", Quantity = "4", RentalRate = "20", Deposit = "10", DateAdded = "2026-09-17" },
-                new InventoryRow { EquipmentId = "EQUIPMENT-009", SerialNumber = "SN-NET-001", Model = "TP-Link Archer AX55", Category = "Networking", Type = "Standard", Status = "Available", StatusClass = "status-available", Quantity = "5", RentalRate = "15", Deposit = "7", DateAdded = "2026-09-18" },
-                new InventoryRow { EquipmentId = "EQUIPMENT-010", SerialNumber = "SN-PRN-001", Model = "Brother HL-L2375DW", Category = "Printer", Type = "Standard", Status = "Maintenance", StatusClass = "status-maintenance", Quantity = "2", RentalRate = "22", Deposit = "10", DateAdded = "2026-09-19" },
-                new InventoryRow { EquipmentId = "EQUIPMENT-011", SerialNumber = "SN-LPT-004", Model = "Lenovo ThinkPad E14", Category = "Laptop", Type = "Standard", Status = "Available", StatusClass = "status-available", Quantity = "7", RentalRate = "32", Deposit = "14", DateAdded = "2026-09-20" },
-                new InventoryRow { EquipmentId = "EQUIPMENT-012", SerialNumber = "SN-TAB-002", Model = "Samsung Galaxy Tab S9", Category = "Tablet", Type = "Professional", Status = "Available", StatusClass = "status-available", Quantity = "5", RentalRate = "30", Deposit = "14", DateAdded = "2026-09-21" }
+                ShowInventoryMessage("Enter valid status, type, quantity, rental, and deposit values.", false);
+                return;
+            }
+
+            try
+            {
+                ServiceFactory.CreateEquipmentService().Update(new EquipmentDto
+                {
+                    EquipmentId = equipmentId,
+                    Status = inventoryDetailStatus.Value,
+                    Type = inventoryDetailType.Value,
+                    Stock = stock,
+                    BaseRentalFee = rentalRate,
+                    SecurityDeposit = deposit
+                });
+                BindInventory();
+                ShowInventoryMessage("Equipment changes saved successfully.", true);
+            }
+            catch (Exception ex)
+            {
+                ShowInventoryMessage(ex.Message, false);
+            }
+        }
+
+        private void ShowInventoryMessage(string message, bool success)
+        {
+            inventoryDetailAlert.InnerText = message;
+            inventoryDetailAlert.Attributes["class"] = success
+                ? "alert alert-success"
+                : "alert alert-danger";
+        }
+
+        private static InventoryRow CreateInventoryRow(EquipmentDto equipment)
+        {
+            return new InventoryRow
+            {
+                EquipmentId = equipment.EquipmentId.ToString(),
+                SerialNumber = equipment.Sku,
+                Model = equipment.Model,
+                Category = equipment.Category,
+                Type = equipment.Type,
+                Status = equipment.Status,
+                StatusClass = "status-" + (equipment.Status ?? string.Empty).ToLowerInvariant(),
+                Quantity = equipment.Stock.ToString(),
+                RentalRate = equipment.BaseRentalFee.ToString("0.00", CultureInfo.InvariantCulture),
+                Deposit = equipment.SecurityDeposit.ToString("0.00", CultureInfo.InvariantCulture),
+                DateAdded = equipment.CreatedAt.ToString("yyyy-MM-dd"),
+                ImageData = equipment.Image == null ? string.Empty : Convert.ToBase64String(equipment.Image)
             };
         }
 
@@ -47,6 +110,7 @@ namespace Techrent.Pages.Admin
             public string RentalRate { get; set; }
             public string Deposit { get; set; }
             public string DateAdded { get; set; }
+            public string ImageData { get; set; }
         }
     }
 }

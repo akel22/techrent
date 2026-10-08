@@ -25,14 +25,27 @@
                         <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
                             <div>
                                 <p class="text-uppercase text-muted small fw-semibold mb-1">Customer</p>
-                                <h2 class="h5 mb-1">Maria Santos</h2>
-                                <p class="small text-muted mb-0">CUS-1001</p>
+                                <h2 class="h5 mb-1"><%: CustomerName %></h2>
+                                <p class="small text-muted mb-0"><%: CustomerId %></p>
                             </div>
                         </div>
-                        <div class="row g-3 small">
-                            <div class="col-md-6"><span class="d-block text-muted">Email</span><span>maria.santos@example.com</span></div>
-                            <div class="col-md-6"><span class="d-block text-muted">Mobile</span><span>+63 917 123 4567</span></div>
+                        <div class="row g-3 small mb-3">
+                            <div class="col-md-6"><span class="d-block text-muted">Email</span><span><%: CustomerEmail %></span></div>
+                            <div class="col-md-6"><span class="d-block text-muted">Mobile</span><span><%: CustomerMobile %></span></div>
                         </div>
+
+                        <hr />
+
+                        <dl class="row g-3 mb-0 small rental-staff-review-dates">
+                            <div class="col-md-6">
+                                <dt class="text-muted fw-normal">Rental start date</dt>
+                                <dd id="reviewRentalStartDate" class="mb-0 fw-semibold">Not provided</dd>
+                            </div>
+                            <div class="col-md-6">
+                                <dt class="text-muted fw-normal">Return date</dt>
+                                <dd id="reviewRentalReturnDate" class="mb-0 fw-semibold">Not provided</dd>
+                            </div>
+                        </dl>
                     </div>
                 </div>
 
@@ -41,7 +54,7 @@
                         <div class="mb-3">
                             <p class="text-uppercase text-muted small fw-semibold mb-1">Equipment</p>
                             <h2 class="h5 mb-0">Assigned rental units</h2>
-                            <p><span class ="text-muted">rental fee and security deposit are displayed per unit</span></p>
+                            <p><span class ="text-muted">rental fee and security deposit are displayed per total units</span></p>
                         </div>
                         <div class="table-responsive">
                             <table class="table align-middle mb-0 rental-staff-review-table">
@@ -49,11 +62,7 @@
                                 <thead>
                                     <tr><th scope="col">Equipment</th><th scope="col">Serial number</th><th scope="col" class="text-end">Rental fee</th><th scope="col" class="text-end">Security Deposit</th></tr>
                                 </thead>
-                                <tbody>
-                                    <tr><th scope="row"><span class="d-block">SAMSUNG-001</span><span class="small text-muted">Laptop · 2 units</span></th><td><span class="d-block small">SN-SAM-2026-001</span><span class="d-block small">SN-SAM-2026-002</span></td><td class="text-end">&#8369;3,000.00</td><td class="text-end">&#8369;6,000.00</td></tr>
-                                    <tr><th scope="row"><span class="d-block">PROJECTOR-001</span><span class="small text-muted">Projector · 1 unit</span></th><td class="small">SN-PRJ-881</td><td class="text-end">&#8369;1,500.00</td><td class="text-end">&#8369;3,000.00</td></tr>
-                                    <tr><th scope="row"><span class="d-block">HDMI-CABLE-10M</span><span class="small text-muted">Accessory · 1 unit</span></th><td class="small">SN-HDMI-2026-014</td><td class="text-end">&#8369;0.00</td><td class="text-end">&#8369;0.00</td></tr>
-                                </tbody>
+                                <tbody id="reviewEquipmentRows"></tbody>
                             </table>
                         </div>
                     </div>
@@ -67,7 +76,6 @@
                         </div>
                         <textarea id="preRentalAuditLog" class="form-control" rows="5" maxlength="500" placeholder="Type pre-rental details or leave blank if there are no notes." aria-describedby="auditLogHelp auditLogCount"></textarea>
                         <div class="d-flex justify-content-between gap-3 mt-2">
-                            <span id="auditLogHelp" class="form-text">Optional · Maximum 500 characters</span>
                             <span id="auditLogCount" class="form-text" aria-live="polite">0 / 500</span>
                         </div>
                     </div>
@@ -79,10 +87,19 @@
                     <div class="card-body p-3 p-md-4">
                         <p class="text-uppercase text-muted small fw-semibold mb-1">Financial summary</p>
                         <h2 id="summaryHeading" class="h5 mb-4">Estimated charges</h2>
-                        <div class="d-flex justify-content-between gap-3 mb-3"><span>Rental fees</span><strong>&#8369;4,500.00</strong></div>
-                        <div class="d-flex justify-content-between gap-3 mb-3"><span>Security deposit</span><strong>&#8369;9,000.00</strong></div>
-                        <div class="d-flex justify-content-between gap-3 border-top pt-3"><span class="fw-semibold">Estimated total</span><strong class="fs-5">&#8369;13,500.00</strong></div>
-                        <p class="text-muted small mt-3 mb-0">Static sample amounts for interface demonstration only.</p>
+                         <div class="d-flex justify-content-between gap-3 mb-3"><span>Rental fees</span><strong id="reviewRentalFees">₱0.00</strong></div>
+                         <div class="d-flex justify-content-between gap-3 mb-3"><span>Security deposit</span><strong id="reviewSecurityDeposit">₱0.00</strong></div>
+                         <div class="d-flex justify-content-between gap-3 border-top pt-3"><span class="fw-semibold">Estimated total</span><strong id="reviewTotal" class="fs-5">₱0.00</strong></div>
+                        <div class="mt-4">
+                            <label for="paymentAmount" class="form-label fw-semibold">Amount paid</label>
+                            <div class="input-group">
+                                <span class="input-group-text">&#8369;</span>
+                             <input type="number" id="paymentAmount" class="form-control" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required aria-describedby="paymentAmountHelp paymentAmountError" />
+                            </div>
+                            <div id="paymentAmountHelp" class="form-text">Enter the amount received from the customer.</div>
+                            <div id="paymentAmountError" class="invalid-feedback">Payment must be at least &#8369;13,500.00.</div>
+                        </div>
+                         <p class="text-muted small mt-3 mb-0">Charges are calculated from the selected equipment and stored transaction rates.</p>
                         <button type="button" id="confirmReviewButton" class="btn btn-success w-100 mt-4">Confirm rental details</button>
                         <a class="btn btn-outline-secondary w-100 mt-2" href="<%: GetRouteUrl("RentalStaffSerialAssignment", null) %>"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Back to serial assignment</a>
                     </div>
@@ -102,7 +119,7 @@
                     <div class="rental-receipt">
                         <div class="rental-receipt-contact text-center mb-4">
                             <h3 class="h5 mb-1">TECH<span class="text-danger">RENT</span></h3>
-                            <p class="small mb-0">Quezon City · (02) 8123-4567 · techrent@example.com</p>
+                            <p class="small mb-0">Quezon City | (02) 8123-4567 | techrent@example.com</p>
                         </div>
                         <div class="rental-receipt-header d-flex flex-column flex-sm-row justify-content-between gap-3 mb-4">
                             <div>
@@ -118,10 +135,18 @@
                         <section class="rental-receipt-section" aria-labelledby="rentalReceiptCustomerHeading">
                             <h3 class="h6 rental-receipt-heading" id="rentalReceiptCustomerHeading">Customer information</h3>
                             <dl class="rental-receipt-list">
-                                <div class="rental-receipt-field"><dt>Customer name</dt><dd>Maria Santos</dd></div>
-                                <div class="rental-receipt-field"><dt>Customer ID</dt><dd>CUS-1001</dd></div>
-                                <div class="rental-receipt-field"><dt>Email</dt><dd>maria.santos@example.com</dd></div>
-                                <div class="rental-receipt-field"><dt>Mobile</dt><dd>+63 917 123 4567</dd></div>
+                                <div class="rental-receipt-field"><dt>Customer name</dt><dd><%: CustomerName %></dd></div>
+                                <div class="rental-receipt-field"><dt>Customer ID</dt><dd><%: CustomerId %></dd></div>
+                                <div class="rental-receipt-field"><dt>Email</dt><dd><%: CustomerEmail %></dd></div>
+                                <div class="rental-receipt-field"><dt>Mobile</dt><dd><%: CustomerMobile %></dd></div>
+                            </dl>
+                        </section>
+
+                        <section class="rental-receipt-section" aria-labelledby="rentalReceiptDatesHeading">
+                            <h3 class="h6 rental-receipt-heading" id="rentalReceiptDatesHeading">Rental dates</h3>
+                            <dl class="rental-receipt-list">
+                                <div class="rental-receipt-field"><dt>Rental start date</dt><dd id="rentalReceiptStartDate">Not provided</dd></div>
+                                <div class="rental-receipt-field"><dt>Return date</dt><dd id="rentalReceiptReturnDate">Not provided</dd></div>
                             </dl>
                         </section>
 
@@ -132,10 +157,7 @@
                                     <thead>
                                         <tr><th scope="col">Equipment</th><th scope="col">Serial number</th><th scope="col" class="text-end">Rental fee</th><th scope="col" class="text-end">Deposit</th></tr>
                                     </thead>
-                                    <tbody>
-                                        <tr><th scope="row">SAMSUNG-001</th><td><span class="d-block">SN-SAM-2026-001</span><span class="d-block">SN-SAM-2026-002</span></td><td class="text-end">&#8369;3,000.00</td><td class="text-end">&#8369;6,000.00</td></tr>
-                                        <tr><th scope="row">PROJECTOR-001</th><td>SN-PRJ-881</td><td class="text-end">&#8369;1,500.00</td><td class="text-end">&#8369;3,000.00</td></tr>
-                                        <tr><th scope="row">HDMI-CABLE-10M</th><td>SN-HDMI-2026-014</td><td class="text-end">&#8369;0.00</td><td class="text-end">&#8369;0.00</td></tr>
+                                     <tbody id="rentalReceiptEquipmentRows">
                                     </tbody>
                                 </table>
                             </div>
@@ -157,42 +179,38 @@
                                 <h3 class="h6 rental-receipt-heading" id="rentalReceiptFinancialHeading">Charge summary</h3>
                                 <dl class="row small mb-0 rental-receipt-summary">
                                     <dt class="col-8">Rental fees</dt>
-                                    <dd class="col-4 text-end">&#8369;4,500.00</dd>
+                                     <dd id="rentalReceiptRentalFees" class="col-4 text-end">₱0.00</dd>
                                     <dt class="col-8">Security deposit</dt>
-                                    <dd class="col-4 text-end">&#8369;9,000.00</dd>
+                                     <dd id="rentalReceiptSecurityDeposit" class="col-4 text-end">₱0.00</dd>
+                                    <dt class="col-8">Amount paid</dt>
+                                    <dd id="rentalReceiptAmountPaid" class="col-4 text-end">&#8369;0.00</dd>
+                                    <dt class="col-8">Change</dt>
+                                    <dd id="rentalReceiptChange" class="col-4 text-end">&#8369;0.00</dd>
                                     <dt class="col-8 rental-receipt-total-label">Estimated total</dt>
-                                    <dd class="col-4 text-end rental-receipt-total">&#8369;13,500.00</dd>
+                                     <dd id="rentalReceiptTotal" class="col-4 text-end rental-receipt-total">₱0.00</dd>
                                 </dl>
                             </section>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer d-block">
-                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-                        <fieldset class="mb-0">
-                            <legend class="small fw-semibold mb-2">Was the receipt saved as a PDF file?</legend>
-                            <div class="d-flex gap-3" id="receiptSaveConfirmation">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="receiptSaved" id="receiptSavedYes" value="yes" />
-                                    <label class="form-check-label" for="receiptSavedYes">Yes</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="receiptSaved" id="receiptSavedNo" value="no" />
-                                    <label class="form-check-label" for="receiptSavedNo">No</label>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-primary" id="printRentalReceiptButton">Save receipt as PDF</button>
-                            <button type="button" class="btn btn-outline-secondary" id="closeRentalReceiptButton" data-bs-dismiss="modal" disabled>Close</button>
-                        </div>
+                    <div class="d-flex flex-column flex-md-row justify-content-end align-items-md-center gap-3">
+                        <button type="button" class="btn btn-primary" id="printRentalReceiptButton">Save receipt as PDF</button>
+                        <button type="submit" runat="server" id="saveRentalButton" onserverclick="SaveRentalButton_ServerClick" class="btn btn-success">Confirm and save rental</button>
+
                     </div>
+                    <input type="hidden" id="selectedEquipmentJson" runat="server" ClientIDMode="Static" />
+                    <input type="hidden" id="rentalStartDateValue" runat="server" ClientIDMode="Static" />
+                    <input type="hidden" id="rentalReturnDateValue" runat="server" ClientIDMode="Static" />
+                    <input type="hidden" id="paymentAmountValue" runat="server" ClientIDMode="Static" />
+                    <div id="saveRentalMessage" runat="server" class="alert alert-info mt-3 mb-0" visible="false"></div>
                 </div>
             </div>
         </div>
     </div>
+
 </asp:Content>
 
 <asp:Content ID="PageScriptsContent" ContentPlaceHolderID="PageScripts" runat="server">
-    <script src="<%: ResolveUrl("~/Scripts/RentalStaff/Review.js?v=2") %>"></script>
+    <script src="<%: ResolveUrl("~/Scripts/RentalStaff/Review.js?v=3") %>"></script>
 </asp:Content>

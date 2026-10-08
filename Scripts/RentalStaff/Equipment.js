@@ -1,4 +1,5 @@
 (function () {
+    var rentalDatesStorageKey = 'techrent.rentalDates';
     var selected = {};
     var search = document.getElementById('equipmentSearch');
     var category = document.getElementById('equipmentCategory');
@@ -13,6 +14,7 @@
     var rentalEndDate = document.getElementById('rentalEndDate');
     var rentalDateValidation = document.getElementById('rentalDateValidation');
     var appliedSearchTerm = '';
+    var selectedEquipmentStorageKey = 'techrent.selectedEquipment';
 
     function formatDateForInput(date) {
         var year = date.getFullYear();
@@ -42,6 +44,31 @@
         rentalDateValidation.classList.toggle('d-none', valid);
         continueButton.disabled = !valid || Object.keys(selected).length === 0;
         return valid;
+    }
+
+    function restoreRentalDates() {
+        var storedDates;
+
+        try {
+            storedDates = JSON.parse(sessionStorage.getItem(rentalDatesStorageKey));
+        } catch (error) {
+            storedDates = null;
+        }
+
+        if (storedDates) {
+            rentalStartDate.value = storedDates.startDate || '';
+            rentalEndDate.value = storedDates.returnDate || '';
+        }
+    }
+
+    function storeRentalDates() {
+        try {
+            sessionStorage.setItem(rentalDatesStorageKey, JSON.stringify({
+                startDate: rentalStartDate.value,
+                returnDate: rentalEndDate.value
+            }));
+        } catch (error) {
+        }
     }
 
     function money(value) {
@@ -103,9 +130,11 @@
         if (!current) {
             selected[id] = {
                 name: button.getAttribute('data-equipment-name'),
-                rate: Number(button.getAttribute('data-equipment-rate')),
-                rentalFee: Number(button.getAttribute('data-equipment-rental-fee')),
-                securityDeposit: Number(button.getAttribute('data-equipment-security-deposit')),
+                category: button.getAttribute('data-equipment-category'),
+                sku: button.getAttribute('data-equipment-sku'),
+                rate: Number(button.getAttribute('data-equipment-rate')) || 0,
+                rentalFee: Number(button.getAttribute('data-equipment-rental-fee')) || 0,
+                securityDeposit: Number(button.getAttribute('data-equipment-security-deposit')) || 0,
                 stock: stock,
                 quantity: 1
             };
@@ -114,6 +143,7 @@
         }
 
         button.disabled = selected[id].quantity >= stock;
+        sessionStorage.setItem(selectedEquipmentStorageKey, JSON.stringify(selected));
         renderSummary();
     }
 
@@ -136,6 +166,7 @@
             }
         });
         renderSummary();
+        sessionStorage.setItem(selectedEquipmentStorageKey, JSON.stringify(selected));
     }
 
     buttons.forEach(function (button) {
@@ -157,6 +188,7 @@
     });
     continueButton.addEventListener('click', function () {
         if (!continueButton.disabled && validateRentalDates()) {
+            storeRentalDates();
             window.location.href = continueButton.getAttribute('data-next-url');
         }
     });
@@ -170,5 +202,7 @@
         validateRentalDates();
     });
     rentalEndDate.addEventListener('change', validateRentalDates);
+    restoreRentalDates();
+    rentalEndDate.min = rentalStartDate.value || todayValue;
     validateRentalDates();
 }());

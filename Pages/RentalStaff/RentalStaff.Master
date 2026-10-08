@@ -11,11 +11,12 @@
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
 <body class="bg-light">
+    <form id="rentalStaffForm" runat="server" enctype="multipart/form-data">
         <!-- Page header moved outside the framed content so it renders as part of the page chrome -->
         <header class="rental-staff-header">
             <div class="container rental-staff-header-content">
                 <h1 class="rental-staff-brand text-center">TECH<span class="text-danger">RENT</span></h1>
-                <button type="button" class="btn btn-danger rental-staff-signout">Sign out</button>
+                <asp:Button ID="LogoutButton" runat="server" Text="Sign out" CssClass="btn btn-danger rental-staff-signout" OnClick="LogoutButton_Click" CausesValidation="false" />
             </div>
         </header>
 
@@ -24,6 +25,7 @@
                 <asp:ContentPlaceHolder ID="MainContent" runat="server" />
             </main>
         </div>
+    </form>
     <script src="<%: ResolveUrl("~/Scripts/bootstrap.bundle.min.js") %>"></script>
     <asp:ContentPlaceHolder ID="PageScripts" runat="server" />
 </body>

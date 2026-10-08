@@ -1,70 +1,149 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Web.Script.Serialization;
 using System.Web.UI;
+using System.Web.UI.WebControls;
+using Techrent.ApplicationLayer.Services;
+using Techrent.DataAccessLayer.DTOs;
 
 namespace Techrent.Pages.Admin
 {
     public partial class Transactions : Page
     {
+        private const decimal SharedLateFeePerDay = 25.00m;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                //TransactionsRepeater is a Repeater control defined in the Transactions.aspx page. It is used to display a list of transactions.
-                TransactionsRepeater.DataSource = GetSampleTransactions(); 
-                TransactionsRepeater.DataBind();
+                BindTransactions();
             }
         }
 
-        private static List<TransactionRow> GetSampleTransactions()
+        protected void TransactionsRepeater_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
-            return new List<TransactionRow>
+            if (!string.Equals(e.CommandName, "Archive", StringComparison.OrdinalIgnoreCase))
             {
-                CreateTransaction("TR-001-2026", "Customer-001", "2026-01-01 12:00:00", "2026-01-08 12:00:00", "Ongoing", "status-ongoing"),
-                CreateTransaction("TR-002-2026", "Customer-002", "2026-01-02 12:00:00", "2026-01-09 12:00:00", "Late", "status-late"),
-                CreateTransaction("TR-003-2026", "Customer-003", "2026-01-03 12:00:00", "2026-01-10 12:00:00", "Overdue", "status-overdue"),
-                CreateTransaction("TR-004-2026", "Customer-004", "2026-01-04 12:00:00", "2026-01-11 12:00:00", "Done", "status-done"),
-                CreateTransaction("TR-005-2026", "Customer-005", "2026-01-05 12:00:00", "2026-01-12 12:00:00", "Ongoing", "status-ongoing"),
-                CreateTransaction("TR-006-2026", "Customer-006", "2026-01-06 12:00:00", "2026-01-13 12:00:00", "Late", "status-late"),
-                CreateTransaction("TR-007-2026", "Customer-007", "2026-01-07 12:00:00", "2026-01-14 12:00:00", "Overdue", "status-overdue"),
-                CreateTransaction("TR-008-2026", "Customer-008", "2026-01-08 12:00:00", "2026-01-15 12:00:00", "Done", "status-done"),
-                CreateTransaction("TR-009-2026", "Customer-009", "2026-01-09 12:00:00", "2026-01-16 12:00:00", "Ongoing", "status-ongoing"),
-                CreateTransaction("TR-010-2026", "Customer-010", "2026-01-10 12:00:00", "2026-01-17 12:00:00", "Late", "status-late"),
-                CreateTransaction("TR-011-2026", "Customer-011", "2026-01-11 12:00:00", "2026-01-18 12:00:00", "Overdue", "status-overdue"),
-                CreateTransaction("TR-012-2026", "Customer-012", "2026-01-12 12:00:00", "2026-01-19 12:00:00", "Done", "status-done"),
-                CreateTransaction("TR-013-2026", "Customer-013", "2026-01-13 12:00:00", "2026-01-20 12:00:00", "Ongoing", "status-ongoing"),
-                CreateTransaction("TR-014-2026", "Customer-014", "2026-01-14 12:00:00", "2026-01-21 12:00:00", "Late", "status-late"),
-                CreateTransaction("TR-015-2026", "Customer-015", "2026-01-15 12:00:00", "2026-01-22 12:00:00", "Overdue", "status-overdue"),
-                CreateTransaction("TR-016-2026", "Customer-016", "2026-01-16 12:00:00", "2026-01-23 12:00:00", "Done", "status-done")
-            };
+                return;
+            }
+
+            Guid transactionId;
+            if (!Guid.TryParse(Convert.ToString(e.CommandArgument, CultureInfo.InvariantCulture), out transactionId) ||
+                !ServiceFactory.CreateRentalService().ArchiveRental(transactionId))
+            {
+                ArchiveMessage.Text = "Only completed transactions can be archived. The transaction list was not changed.";
+                ArchiveMessage.Visible = true;
+            }
+
+            BindTransactions();
         }
 
-        private static TransactionRow CreateTransaction(string transactionId, string customerId, string createdAt, string dueAt, string status, string statusClass)
+        private void BindTransactions()
         {
-            return new TransactionRow
+            var rentalService = ServiceFactory.CreateRentalService();
+            TransactionsRepeater.DataSource = rentalService.GetTransactionLog()
+                .Select(transaction => rentalService.GetById(transaction.TransactionId))
+                .Where(transaction => transaction != null)
+                .Select(CreateTransactionRow);
+            TransactionsRepeater.DataBind();
+        }
+
+        private static TransactionRow CreateTransactionRow(RentalTransactionDto rental)
+        {
+            TransactionRow transaction = new TransactionRow
             {
-                TransactionId = transactionId,
-                ReceiptNumber = "RCPT-" + transactionId.Substring(3),
-                CustomerId = customerId,
-                CreatedAt = createdAt,
-                DueAt = dueAt,
-                Status = status,
-                RentalFee = "$315.00",
-                SecurityDeposit = "$75.00",
-                Total = "$390.00",
-                StatusClass = statusClass,
-                Equipment = new List<TransactionEquipment>
+                TransactionId = rental.TransactionId.ToString(),
+                ReceiptNumber = "RCPT-" + rental.TransactionId.ToString("N").Substring(0, 8).ToUpperInvariant(),
+                CustomerId = rental.UserId.ToString(),
+                CustomerName = (rental.FirstName + " " + rental.LastName).Trim(),
+                 CustomerEmail = GetCustomerEmail(rental.UserId),
+                 CustomerMobile = GetCustomerMobile(rental.UserId),
+                CreatedAt = rental.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                DueAt = rental.DueAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                RentalStartDate = rental.CreatedAt.ToString("dd MMM yyyy", CultureInfo.InvariantCulture),
+                ReturnDate = rental.DueAt.ToString("dd MMM yyyy", CultureInfo.InvariantCulture),
+                Status = rental.Status,
+                RentalFee = FormatCurrency(rental.Items.Sum(item => item.RentalFee * item.Quantity)),
+                SecurityDeposit = FormatCurrency(rental.Items.Sum(item => item.DepositFee * item.Quantity)),
+                 LateFeePerDay = SharedLateFeePerDay.ToString("C2", CultureInfo.GetCultureInfo("en-PH")),
+                StatusClass = "status-" + rental.Status.ToLowerInvariant(),
+                Equipment = rental.Items.Select((item, index) => new TransactionEquipment
                 {
-                    new TransactionEquipment { SerialNumber = "000-123-YS6", Name = "Lenovo ThinkPad T14", Rate = "$30.00 / day", Deposit = "$50.00" },
-                    new TransactionEquipment { SerialNumber = "000-123-YS7", Name = "Dell 24-inch Monitor", Rate = "$15.00 / day", Deposit = "$25.00" }
-                },
-                PreRentalDetails = new List<PreRentalDetail>
-                {
-                    new PreRentalDetail { EquipmentSerialNumber = "000-123-YS6", Issue = "No visible damage", RecordedBy = "Audit log - Staff-001" },
-                    new PreRentalDetail { EquipmentSerialNumber = "000-123-YS7", Issue = "Minor scratches on the stand", RecordedBy = "Audit log - Staff-001" }
-                }
+                     SerialNumber = item.Sku,
+                    Name = item.Model,
+                    Rate = FormatCurrency(item.RentalFee),
+                    Deposit = FormatCurrency(item.DepositFee)
+                }).ToList(),
+                PreRentalDetails = new List<PreRentalDetail>()
             };
+
+            transaction.ActualReturnAt = string.Equals(rental.Status, "Done", StringComparison.OrdinalIgnoreCase)
+                ? string.Empty
+                : string.Empty;
+            CalculateCharges(transaction);
+            var payments = ServiceFactory.CreatePaymentService().GetByTransaction(rental.TransactionId).ToList();
+            decimal persistedLateFee = payments
+                .Where(payment => string.Equals(payment.PaymentType, "LateFee", StringComparison.OrdinalIgnoreCase))
+                .Sum(payment => payment.Amount);
+            decimal rentalFee = rental.Items.Sum(item => item.RentalFee * item.Quantity);
+            decimal securityDeposit = rental.Items.Sum(item => item.DepositFee * item.Quantity);
+            transaction.LateFee = FormatCurrency(persistedLateFee);
+            transaction.Total = FormatCurrency(rentalFee + securityDeposit + persistedLateFee);
+            transaction.PaidAmount = FormatCurrency(payments.Sum(payment => payment.Amount));
+            decimal total = rentalFee + securityDeposit + persistedLateFee;
+            transaction.Change = FormatCurrency(Math.Max(0m, payments.Sum(payment => payment.Amount) - total));
+            return transaction;
+        }
+
+        private static string GetCustomerEmail(Guid userId)
+        {
+            var customer = ServiceFactory.CreateCustomerService().GetCustomerById(userId);
+            return customer == null ? string.Empty : customer.Email;
+        }
+
+        private static string GetCustomerMobile(Guid userId)
+        {
+            var customer = ServiceFactory.CreateCustomerService().GetCustomerById(userId);
+            return customer == null ? string.Empty : customer.MobileNumber;
+        }
+
+        private static string FormatCurrency(decimal amount)
+        {
+            return amount.ToString("C2", CultureInfo.GetCultureInfo("en-PH"));
+        }
+
+        private static string GetActualReturnAt(string dueAt, string status)
+        {
+            if (string.Equals(status, "Ongoing", StringComparison.OrdinalIgnoreCase))
+            {
+                return string.Empty;
+            }
+
+            DateTime dueDate = DateTime.ParseExact(dueAt, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            int additionalDays = string.Equals(status, "Late", StringComparison.OrdinalIgnoreCase) ? 2 :
+                string.Equals(status, "Overdue", StringComparison.OrdinalIgnoreCase) ? 5 : 0;
+            return dueDate.AddDays(additionalDays).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+        }
+
+        private static void CalculateCharges(TransactionRow transaction)
+        {
+            CultureInfo pesoCulture = CultureInfo.GetCultureInfo("en-PH");
+            decimal rentalFee = decimal.Parse(transaction.RentalFee, NumberStyles.Currency, pesoCulture);
+            decimal securityDeposit = decimal.Parse(transaction.SecurityDeposit, NumberStyles.Currency, pesoCulture);
+            decimal lateFee = 0m;
+
+            if (!string.IsNullOrEmpty(transaction.ActualReturnAt))
+            {
+                DateTime dueDate = DateTime.ParseExact(transaction.DueAt, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                DateTime actualReturnDate = DateTime.ParseExact(transaction.ActualReturnAt, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                transaction.LateDays = Math.Max(0, (actualReturnDate.Date - dueDate.Date).Days);
+                lateFee = transaction.LateDays * SharedLateFeePerDay;
+            }
+
+            transaction.LateFee = lateFee.ToString("C2", pesoCulture);
+            transaction.Total = (rentalFee + securityDeposit + lateFee).ToString("C2", CultureInfo.GetCultureInfo("en-PH"));
         }
 
         public sealed class TransactionRow
@@ -72,12 +151,23 @@ namespace Techrent.Pages.Admin
             public string TransactionId { get; set; }
             public string ReceiptNumber { get; set; }
             public string CustomerId { get; set; }
+            public string CustomerName { get; set; }
+            public string CustomerEmail { get; set; }
+            public string CustomerMobile { get; set; }
             public string CreatedAt { get; set; }
             public string DueAt { get; set; }
+            public string RentalStartDate { get; set; }
+            public string ReturnDate { get; set; }
             public string Status { get; set; }
             public string RentalFee { get; set; }
             public string SecurityDeposit { get; set; }
+            public string ActualReturnAt { get; set; }
+            public int LateDays { get; set; }
+            public string LateFeePerDay { get; set; }
+            public string LateFee { get; set; }
             public string Total { get; set; }
+            public string PaidAmount { get; set; }
+            public string Change { get; set; }
             public string StatusClass { get; set; }
             public List<TransactionEquipment> Equipment { get; set; }
             public List<PreRentalDetail> PreRentalDetails { get; set; }
@@ -85,6 +175,11 @@ namespace Techrent.Pages.Admin
             public string DetailPayload
             {
                 get { return new JavaScriptSerializer().Serialize(this); }
+            }
+
+            public TransactionRow()
+            {
+                ActualReturnAt = string.Empty;
             }
         }
 

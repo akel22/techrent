@@ -46,7 +46,8 @@
                                     data-telephone-number="<%#: Eval("TelephoneNumber") %>"
                                     data-organization="<%#: Eval("Organization") %>"
                                     data-address="<%#: Eval("Address") %>"
-                                    data-account-status="<%#: Eval("AccountStatus") %>">
+                                     data-account-status="<%#: Eval("AccountStatus") %>"
+                                     data-image="<%#: Eval("ImageData") %>">
                                     <td><%#: Eval("CustomerId") %></td>
                                     <td><%#: Eval("FullName") %></td>
                                     <td><%#: Eval("MobileNumber") %></td>
@@ -81,24 +82,32 @@
                         <div class="col-md-7">
                             <dl class="row mb-0 customer-details-list">
                                 <dt class="col-sm-5">Customer ID</dt>
-                                <dd class="col-sm-7" id="customerDetailId"></dd>
+                                 <dd class="col-sm-7" id="customerDetailId"></dd>
+                                 <input id="selectedCustomerId" runat="server" ClientIDMode="Static" type="hidden" />
                                 <dt class="col-sm-5">First Name</dt>
-                                <dd class="col-sm-7"><input type="text" class="form-control form-control-sm" id="customerDetailFirstName" aria-label="First Name" /></dd>
+                                 <dd class="col-sm-7"><input type="text" runat="server" class="form-control form-control-sm" id="customerDetailFirstName" ClientIDMode="Static" aria-label="First Name" /></dd>
                                 <dt class="col-sm-5">Last Name</dt>
-                                <dd class="col-sm-7"><input type="text" class="form-control form-control-sm" id="customerDetailLastName" aria-label="Last Name" /></dd>
+                                 <dd class="col-sm-7"><input type="text" runat="server" class="form-control form-control-sm" id="customerDetailLastName" ClientIDMode="Static" aria-label="Last Name" /></dd>
                                 <dt class="col-sm-5">Email</dt>
-                                <dd class="col-sm-7"><input type="email" class="form-control form-control-sm" id="customerDetailEmail" aria-label="Email" /></dd>
+                                 <dd class="col-sm-7"><input type="email" runat="server" class="form-control form-control-sm" id="customerDetailEmail" ClientIDMode="Static" aria-label="Email" /></dd>
                                 <dt class="col-sm-5">Mobile Number</dt>
-                                <dd class="col-sm-7"><input type="tel" class="form-control form-control-sm" id="customerDetailMobile" aria-label="Mobile Number" /></dd>
+                                 <dd class="col-sm-7"><input type="tel" runat="server" class="form-control form-control-sm" id="customerDetailMobile" ClientIDMode="Static" aria-label="Mobile Number" /></dd>
                                 <dt class="col-sm-5">Telephone Number</dt>
-                                <dd class="col-sm-7"><input type="tel" class="form-control form-control-sm" id="customerDetailTelephone" aria-label="Telephone Number" /></dd>
-                                <dt class="col-sm-5">Organization</dt>
-                                <dd class="col-sm-7"><input type="text" class="form-control form-control-sm" id="customerDetailOrganization" aria-label="Organization" /></dd>
+                                 <dd class="col-sm-7"><input type="tel" runat="server" class="form-control form-control-sm" id="customerDetailTelephone" ClientIDMode="Static" aria-label="Telephone Number" /></dd>
+                                <dt class="col-sm-5">Occupation</dt>
+                                 <dd class="col-sm-7">
+                                     <select runat="server" class="form-select form-select-sm" id="customerDetailOrganization" ClientIDMode="Static" aria-label="Occupation">
+                                         <option value="Student">Student</option>
+                                         <option value="Employed">Employed</option>
+                                         <option value="Unemployed">Unemployed</option>
+                                         <option value="Other">Other</option>
+                                     </select>
+                                 </dd>
                                 <dt class="col-sm-5">Organization Address</dt>
-                                <dd class="col-sm-7"><input type="text" class="form-control form-control-sm" id="customerDetailAddress" aria-label="Organization Address" /></dd>
+                                 <dd class="col-sm-7"><input type="text" runat="server" class="form-control form-control-sm" id="customerDetailAddress" ClientIDMode="Static" aria-label="Organization Address" /></dd>
                                 <dt class="col-sm-5">Account Status</dt>
                                 <dd class="col-sm-7">
-                                    <select class="form-select form-select-sm" id="customerDetailStatus" aria-label="Account Status">
+                                     <select runat="server" class="form-select form-select-sm" id="customerDetailStatus" ClientIDMode="Static" aria-label="Account Status">
                                         <option value="Active">Active</option>
                                         <option value="Inactive">Inactive</option>
                                     </select>
@@ -106,7 +115,10 @@
                             </dl>
                         </div>
                         <div class="col-md-5">
-                            <div class="customer-profile-placeholder me-4" aria-label="Customer profile image placeholder">Profile image</div>
+                             <div class="customer-profile-placeholder me-4" aria-label="Customer profile image placeholder">
+                                 <span id="customerProfileImagePlaceholder">Profile image unavailable</span>
+                                 <img id="customerProfileImage" class="customer-profile-image d-none" alt="Customer profile image" />
+                             </div>
                         </div>
                     </div>
                 </div>
@@ -115,7 +127,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <button type="button" class="btn btn-link p-0" id="customerTransactionHistoryButton">View transaction history</button>
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-primary" id="customerSaveChangesButton">Save Changes</button>
+                             <button type="submit" runat="server" class="btn btn-primary" id="customerSaveChangesButton" onserverclick="SaveCustomerChanges_ServerClick">Save Changes</button>
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Go back</button>
                         </div>
                     </div>
@@ -171,7 +183,7 @@
                     <div class="alert alert-danger mb-3">
                         <p class="mb-2">The following data will also be deleted:</p>
                         <ul class="mb-0">
-                            <li>All transactions for <strong id="removeCustomerId"></strong></li>
+                            <li>All transactions for <strong id="removeCustomerName">this customer</strong></li>
                             <li>Identification and profile information</li>
                         </ul>
                     </div>
@@ -332,6 +344,7 @@
                     fullName: row.dataset.firstName + ' ' + row.dataset.lastName,
                     row: row
                 };
+                document.getElementById('selectedCustomerId').value = row.dataset.customerId;
                 document.getElementById('customerDetailId').textContent = row.dataset.customerId;
                 document.getElementById('customerDetailFirstName').value = row.dataset.firstName;
                 document.getElementById('customerDetailLastName').value = row.dataset.lastName;
@@ -341,6 +354,17 @@
                 document.getElementById('customerDetailOrganization').value = row.dataset.organization;
                 document.getElementById('customerDetailAddress').value = row.dataset.address;
                 document.getElementById('customerDetailStatus').value = row.dataset.accountStatus;
+                 var image = document.getElementById('customerProfileImage');
+                 var placeholder = document.getElementById('customerProfileImagePlaceholder');
+                 if (row.dataset.image) {
+                     image.src = 'data:image/jpeg;base64,' + row.dataset.image;
+                     image.classList.remove('d-none');
+                     placeholder.classList.add('d-none');
+                 } else {
+                     image.removeAttribute('src');
+                     image.classList.add('d-none');
+                     placeholder.classList.remove('d-none');
+                 }
             });
 
             document.getElementById('customerTransactionHistoryButton').addEventListener('click', function () {
@@ -400,7 +424,7 @@
 
             document.getElementById('removeCustomerModal').addEventListener('show.bs.modal', function (event) {
                 var row = event.relatedTarget.closest('tr');
-                document.getElementById('removeCustomerId').textContent = row.dataset.customerId;
+                document.getElementById('removeCustomerName').textContent = row.dataset.firstName;
             });
 
             renderTable();

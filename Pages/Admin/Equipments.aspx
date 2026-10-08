@@ -10,7 +10,9 @@
             <h1 class="h3 mb-1">Equipment inventory</h1>
             <p class="text-muted mb-0">Review equipment availability and rental details</p>
         </div>
-        <p class="text-muted small mb-0"><%: DateTime.Now.ToString("dddd, dd MMMM yyyy hh:mm tt") %></p>
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
+            <p class="text-muted small mb-0"><%: DateTime.Now.ToString("dddd, dd MMMM yyyy hh:mm tt") %></p>
+        </div>
     </div>
 
     <div class="row g-3 mb-4">
@@ -18,7 +20,7 @@
             <section class="card admin-card h-100">
                 <div class="card-body">
                     <p class="text-muted small mb-2">Available equipment</p>
-                    <p class="h3 mb-0">60</p>
+                    <p class="h3 mb-0"><%: AvailableEquipmentCount %></p>
                 </div>
             </section>
         </div>
@@ -26,7 +28,7 @@
             <section class="card admin-card h-100">
                 <div class="card-body">
                     <p class="text-muted small mb-2">Maintenance</p>
-                    <p class="h3 mb-0">4</p>
+                    <p class="h3 mb-0"><%: MaintenanceEquipmentCount %></p>
                 </div>
             </section>
         </div>
@@ -34,7 +36,7 @@
             <section class="card admin-card h-100">
                 <div class="card-body">
                     <p class="text-muted small mb-2">Total inventory</p>
-                    <p class="h3 mb-0">64</p>
+                    <p class="h3 mb-0"><%: TotalInventoryCount %></p>
                 </div>
             </section>
         </div>
@@ -42,6 +44,8 @@
 
     <section class="card admin-card">
         <div class="card-body">
+         <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#insertEquipmentModal">Insert equipment</button>
+
             <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-3">
                 <div class="d-flex align-items-center gap-2 inventory-sort-controls">
                     <label for="inventorySort" class="form-label mb-0 text-nowrap">Sort by</label>
@@ -85,7 +89,7 @@
                                     <td><%#: Eval("Quantity") %></td>
                                     <td class="text-center text-nowrap">
                                         <button type="button" class="btn btn-danger btn-sm inventory-remove-button" data-bs-toggle="modal" data-bs-target="#removeInventoryModal" data-equipment-id="<%#: Eval("EquipmentId") %>">Remove</button>
-                                        <button type="button" class="btn btn-outline-secondary btn-sm inventory-details-button" data-bs-toggle="modal" data-bs-target="#inventoryDetailsModal" data-equipment-id="<%#: Eval("EquipmentId") %>" data-serial-number="<%#: Eval("SerialNumber") %>" data-model="<%#: Eval("Model") %>" data-category="<%#: Eval("Category") %>" data-type="<%#: Eval("Type") %>" data-status="<%#: Eval("Status") %>" data-quantity="<%#: Eval("Quantity") %>" data-rental-rate="<%#: Eval("RentalRate") %>" data-deposit="<%#: Eval("Deposit") %>" data-date-added="<%#: Eval("DateAdded") %>">Show Details</button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm inventory-details-button" data-bs-toggle="modal" data-bs-target="#inventoryDetailsModal" data-equipment-id="<%#: Eval("EquipmentId") %>" data-serial-number="<%#: Eval("SerialNumber") %>" data-model="<%#: Eval("Model") %>" data-category="<%#: Eval("Category") %>" data-type="<%#: Eval("Type") %>" data-status="<%#: Eval("Status") %>" data-quantity="<%#: Eval("Quantity") %>" data-rental-rate="<%#: Eval("RentalRate") %>" data-deposit="<%#: Eval("Deposit") %>" data-date-added="<%#: Eval("DateAdded") %>" data-image="<%#: Eval("ImageData") %>">Show Details</button>
                                     </td>
                                 </tr>
                             </ItemTemplate>
@@ -100,6 +104,24 @@
         </div>
     </section>
 
+    <div class="modal fade" id="insertEquipmentModal" tabindex="-1" aria-labelledby="insertEquipmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="insertEquipmentModalLabel">Insert equipment</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">Add the equipment details and attach an optional JPG, PNG, or HEIC image on the dedicated insertion page.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="<%: GetRouteUrl("AdminInsertEquipment", null) %>">Continue to form</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="inventoryDetailsModal" tabindex="-1" aria-labelledby="inventoryDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
@@ -108,11 +130,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div id="inventoryDetailAlert" runat="server" ClientIDMode="Static" class="alert alert-danger d-none" role="alert"></div>
                     <div class="row g-3">
                         <div class="col-md-7">
                             <dl class="row mb-0 inventory-details-list">
                                 <dt class="col-sm-5">Equipment ID</dt>
-                                <dd class="col-sm-7" id="inventoryDetailEquipmentId"></dd>
+                                <dd class="col-sm-7" id="inventoryDetailEquipmentIdValue"></dd>
                                 <dt class="col-sm-5">Serial number</dt>
                                 <dd class="col-sm-7" id="inventoryDetailSerialNumber"></dd>
                                 <dt class="col-sm-5">Model</dt>
@@ -126,14 +149,17 @@
                             </dl>
                         </div>
                         <div class="col-md-5">
-                            <div class="inventory-image-placeholder" aria-label="Equipment image placeholder">Item image</div>
+                            <div class="inventory-image-placeholder" aria-label="Equipment image placeholder">
+                                <span id="inventoryDetailImagePlaceholder">Item image</span>
+                                <img id="inventoryDetailImage" class="inventory-detail-image d-none" alt="Equipment image" />
+                            </div>
                         </div>
                     </div>
                     <hr />
                     <div class="row g-3">
                         <div class="col-sm-4">
                             <label for="inventoryDetailStatus" class="form-label">Equipment status</label>
-                            <select id="inventoryDetailStatus" class="form-select">
+                            <select id="inventoryDetailStatus" runat="server" ClientIDMode="Static" class="form-select">
                                 <option>Available</option>
                                 <option>Maintenance</option>
                                 <option>Rented</option>
@@ -141,11 +167,11 @@
                         </div>
                         <div class="col-sm-4">
                             <label for="inventoryDetailQuantity" class="form-label">Quantity</label>
-                            <input type="number" id="inventoryDetailQuantity" class="form-control" min="0" />
+                            <input type="number" id="inventoryDetailQuantity" runat="server" ClientIDMode="Static" class="form-control" min="0" />
                         </div>
                         <div class="col-sm-4">
                             <label for="inventoryDetailType" class="form-label">Equipment type</label>
-                            <select id="inventoryDetailType" class="form-select">
+                            <select id="inventoryDetailType" runat="server" ClientIDMode="Static" class="form-select">
                                 <option value="Obsolete">Obsolete</option>
                                 <option value="Standard">Standard</option>
                                 <option value="Professional">Professional</option>
@@ -157,7 +183,7 @@
                             <label for="inventoryDetailRentalRate" class="form-label">Base rental fee/hour</label>
                             <div class="input-group">
                                 <span class="input-group-text" aria-hidden="true">&#8369;</span>
-                                <input type="number" max="100" id="inventoryDetailRentalRate" class="form-control" min="0" step="0.01" inputmode="decimal" />
+                                <input type="number" id="inventoryDetailRentalRate" runat="server" ClientIDMode="Static" class="form-control" min="0" step="0.01" inputmode="decimal" />
                                 <span class="input-group-text">/hr</span>
                             </div>
                         </div>
@@ -165,7 +191,7 @@
                             <label for="inventoryDetailDeposit" class="form-label">Security deposit/hour</label>
                             <div class="input-group">
                                 <span class="input-group-text" aria-hidden="true">&#8369;</span>
-                                <input type="number" max="100" id="inventoryDetailDeposit" class="form-control" min="0" step="0.01" inputmode="decimal" />
+                                <input type="number" id="inventoryDetailDeposit" runat="server" ClientIDMode="Static" class="form-control" min="0" step="0.01" inputmode="decimal" />
                                 <span class="input-group-text">/hr</span>
                             </div>
                         </div>
@@ -173,7 +199,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Go back</button>
-                    <button type="button" class="btn btn-primary" id="saveInventoryDetails">Save changes</button>
+                    <input id="inventoryDetailEquipmentId" runat="server" ClientIDMode="Static" type="hidden" />
+                    <button type="submit" runat="server" class="btn btn-primary" id="saveInventoryDetails" onserverclick="SaveInventoryDetails_ServerClick">Save changes</button>
                 </div>
             </div>
         </div>
@@ -274,7 +301,8 @@
 
             document.querySelectorAll('.inventory-details-button').forEach(function (button) {
                 button.addEventListener('click', function () {
-                    setText('inventoryDetailEquipmentId', button.dataset.equipmentId);
+                     document.getElementById('inventoryDetailEquipmentId').value = button.dataset.equipmentId;
+                     setText('inventoryDetailEquipmentIdValue', button.dataset.equipmentId);
                     setText('inventoryDetailSerialNumber', button.dataset.serialNumber);
                     setText('inventoryDetailModel', button.dataset.model);
                     setText('inventoryDetailCategory', button.dataset.category);
@@ -285,6 +313,18 @@
                     document.getElementById('inventoryDetailType').value = button.dataset.type;
                     document.getElementById('inventoryDetailRentalRate').value = button.dataset.rentalRate;
                     document.getElementById('inventoryDetailDeposit').value = button.dataset.deposit;
+                     var image = document.getElementById('inventoryDetailImage');
+                     var placeholder = document.getElementById('inventoryDetailImagePlaceholder');
+                     if (button.dataset.image) {
+                         image.src = 'data:image/jpeg;base64,' + button.dataset.image;
+                         image.classList.remove('d-none');
+                         placeholder.classList.add('d-none');
+                     } else {
+                         image.removeAttribute('src');
+                         image.classList.add('d-none');
+                         placeholder.textContent = 'Item image unavailable';
+                         placeholder.classList.remove('d-none');
+                     }
                 });
             });
 

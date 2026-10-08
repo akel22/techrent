@@ -21,10 +21,21 @@
 }
 
 .admin-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     margin-bottom: 0.25rem;
     padding: 0.625rem 0.75rem;
     color: #ffff;
     border-radius: 0.25rem;
+}
+
+.admin-sidebar .nav-link img.admin-sidebar-icon {
+    width: 18px !important;
+    height: 18px !important;
+    max-width: 18px !important;
+    object-fit: contain;
+    flex: 0 0 18px;
 }
 
 .admin-sidebar .nav-link.active {

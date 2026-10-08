@@ -7,7 +7,7 @@
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
     <section class="rental-staff-home" aria-labelledby="welcomeHeading">
         <div class="rental-staff-home-card d-flex justify-content-center align-items-center flex-column">
-            <h1 id="welcomeHeading" class="h4 mb-0">Good day, Rental Staff</h1>
+            <h1 id="welcomeHeading" class="h4 mb-0">Good day, <%: RentalStaffFirstName %></h1>
             <p class="mb-4">Welcome back! Ready to create your rentals?</p>
             <div class="d-flex flex-column align-items-center gap-2">
                 <a class="btn btn-success rental-staff-transaction-button" href="<%: GetRouteUrl("RentalStaffNew", null) %>">Create new transaction <span aria-hidden="true">&#43;</span></a>

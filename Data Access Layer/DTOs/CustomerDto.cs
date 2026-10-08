@@ -4,11 +4,20 @@ namespace Techrent.DataAccessLayer.DTOs
 {
     public class CustomerDto
     {
-        public int CustomerId { get; set; }
-        public string CustomerCode { get; set; }
-        public string FullName { get; set; }
-        public string Mobile { get; set; }
+        public Guid CustomerId { get; set; }
+        public Guid UserId
+        {
+            get { return CustomerId; }
+            set { CustomerId = value; }
+        }
+        public string Role { get { return "Customer"; } }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Occupation { get; set; }
         public string Email { get; set; }
+        public string MobileNumber { get; set; }
+        public string OrganizationAddress { get; set; }
+        public byte[] IdentificationCard { get; set; }
         public DateTime? CreatedAt { get; set; }
     }
 }

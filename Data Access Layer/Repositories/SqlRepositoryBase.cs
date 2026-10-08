@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace Techrent.DataAccessLayer.Repositories
 {
-    internal abstract class SqlRepositoryBase
+    public abstract class SqlRepositoryBase
     {
         protected SqlCommand CreateStoredProcCommand(SqlConnection connection, string procedureName)
         {
@@ -20,7 +20,7 @@ namespace Techrent.DataAccessLayer.Repositories
             var ordinal = reader.GetOrdinal(name);
             if (reader.IsDBNull(ordinal))
                 return default(T);
-            return (T)reader.GetFieldValue(typeof(T), ordinal);
+            return reader.GetFieldValue<T>(ordinal);
         }
     }
 }

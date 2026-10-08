@@ -1,4 +1,5 @@
 using System;
+using System.Web;
 
 namespace Techrent.Pages.RentalStaff
 {
@@ -6,6 +7,15 @@ namespace Techrent.Pages.RentalStaff
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            string customerId = Request.QueryString["customerId"];
+            string reviewUrl = GetRouteUrl("RentalStaffReview", null);
+            if (!string.IsNullOrWhiteSpace(customerId))
+            {
+                reviewUrl += "?customerId=" + HttpUtility.UrlEncode(customerId);
+            }
+
+            Response.Redirect(reviewUrl, false);
+            Context.ApplicationInstance.CompleteRequest();
         }
     }
 }

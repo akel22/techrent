@@ -20,6 +20,7 @@
 - Do not create Admin or Rental Staff pages unless the user explicitly requests their implementation.
 - Do not add navigation links to pages that do not exist.
 - Preserve user-provided files in `Pages` and `assets`; inspect them before creating replacements.
+- Inspect and reuse the existing sign-in page for authentication work rather than creating a duplicate login page.
 
 ## Architecture rules
 
@@ -53,3 +54,11 @@
 ## Audit Display Rules
 
 - When displaying consolidated pre-rental audit details, place the auditor attribution above the actual detail description instead of repeating it in parentheses after every serial-number entry.
+
+## Copilot Agent Mode
+
+- When in Microsoft Visual Studio Copilot Agent mode, do not incorrectly claim this is a planning-only context; proceed with workspace edits, builds, and validation when tools are available.
+
+## Status Terminology
+
+- Use only the status term "Overdue"; do not use or introduce "Unreturned" anywhere in the Techrent project.

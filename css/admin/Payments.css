@@ -1,0 +1,68 @@
+.admin-card {
+    border-color: #dee2e6;
+    background-color: #ffffff;
+}
+
+.payment-search {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+}
+
+.payment-search:focus-within {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.payment-search .input-group-text {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    z-index: 1;
+    padding: 0;
+    border: 0;
+    transform: translateY(-50%);
+}
+
+.payment-search .form-control {
+    padding-left: 2.25rem;
+    border: 0;
+    border-radius: 0.375rem;
+    box-shadow: none;
+}
+
+.payment-search .input-group-text img {
+    width: 1rem;
+    height: 1rem;
+}
+
+.payment-sort-controls {
+    flex-shrink: 0;
+}
+
+.payment-sort-select {
+    width: auto;
+    min-width: 8rem;
+}
+
+.payment-table {
+    min-width: 900px;
+}
+
+.payment-table th {
+    background-color: #f1f3f5;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.payment-table td {
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .payment-search {
+        max-width: none;
+    }
+}

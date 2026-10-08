@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Script.Serialization;
 using System.Web.UI;
+using Techrent.ApplicationLayer.Services;
+using Techrent.DataAccessLayer.DTOs;
 
 namespace Techrent.Pages.Admin
 {
@@ -11,51 +14,87 @@ namespace Techrent.Pages.Admin
         {
             if (!IsPostBack)
             {
-                CustomersRepeater.DataSource = GetSampleCustomers();
-                CustomersRepeater.DataBind();
+                BindCustomers();
             }
         }
 
-        private static List<CustomerRow> GetSampleCustomers()
+        private void BindCustomers()
         {
-            return new List<CustomerRow>
+            var activeCustomerIds = new HashSet<Guid>(ServiceFactory.CreateRentalService()
+                .GetActiveRentals()
+                .Select(transaction => transaction.UserId));
+
+            CustomersRepeater.DataSource = ServiceFactory.CreateCustomerService()
+                .Search(null)
+                .Select(customer => CreateCustomerRow(customer, activeCustomerIds.Contains(customer.UserId)))
+                .ToList();
+            CustomersRepeater.DataBind();
+        }
+
+        protected void SaveCustomerChanges_ServerClick(object sender, EventArgs e)
+        {
+            Guid userId;
+            if (!Guid.TryParse(selectedCustomerId.Value, out userId))
             {
-                new CustomerRow { CustomerId = "CUSTOMER-001", FirstName = "John", LastName = "Doe", Email = "johndoe@example.com", MobileNumber = "09112223456", TelephoneNumber = "(02) 8123 4567", Organization = "Quezon City University", Address = "Novaliches, Quezon City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-002", FirstName = "Jane", LastName = "Santos", Email = "janesantos@example.com", MobileNumber = "09123334567", TelephoneNumber = "(02) 8234 5678", Organization = "Northstar Media", Address = "Makati City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-003", FirstName = "Miguel", LastName = "Reyes", Email = "miguelreyes@example.com", MobileNumber = "09134445678", TelephoneNumber = "(02) 8345 6789", Organization = "Vertex Design Studio", Address = "Pasig City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-004", FirstName = "Angela", LastName = "Cruz", Email = "angelacruz@example.com", MobileNumber = "09145556789", TelephoneNumber = "(02) 8456 7890", Organization = "Crescent Events", Address = "Manila City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-005", FirstName = "Daniel", LastName = "Garcia", Email = "danielgarcia@example.com", MobileNumber = "09156667890", TelephoneNumber = "(02) 8567 8901", Organization = "Garcia and Partners", Address = "Mandaluyong City", AccountStatus = "Inactive" },
-                new CustomerRow { CustomerId = "CUSTOMER-006", FirstName = "Sofia", LastName = "Mendoza", Email = "sofiamendoza@example.com", MobileNumber = "09167778901", TelephoneNumber = "(02) 8678 9012", Organization = "Brightline Learning", Address = "Marikina City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-007", FirstName = "Robert", LastName = "Lim", Email = "robertlim@example.com", MobileNumber = "09178889012", TelephoneNumber = "(02) 8789 0123", Organization = "Pacific Trade Co.", Address = "Taguig City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-008", FirstName = "Carla", LastName = "Navarro", Email = "carlanavarro@example.com", MobileNumber = "09189990123", TelephoneNumber = "(02) 8890 1234", Organization = "Navarro Consulting", Address = "Caloocan City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-009", FirstName = "Anthony", LastName = "Aquino", Email = "anthonyaquino@example.com", MobileNumber = "09190001234", TelephoneNumber = "(02) 8901 2345", Organization = "Apex Solutions", Address = "Pasay City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-010", FirstName = "Beatrice", LastName = "Flores", Email = "beatriceflores@example.com", MobileNumber = "09101112345", TelephoneNumber = "(02) 8012 3456", Organization = "Flores Healthcare", Address = "Paranaque City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-011", FirstName = "Carlos", LastName = "Villanueva", Email = "carlosvillanueva@example.com", MobileNumber = "09112233445", TelephoneNumber = "(02) 8123 5678", Organization = "Villanueva Construction", Address = "Las Pinas City", AccountStatus = "Inactive" },
-                new CustomerRow { CustomerId = "CUSTOMER-012", FirstName = "Diana", LastName = "Castillo", Email = "dianacastillo@example.com", MobileNumber = "09123344556", TelephoneNumber = "(02) 8234 6789", Organization = "Castillo Legal Services", Address = "San Juan City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-013", FirstName = "Edward", LastName = "Ramos", Email = "edwardramos@example.com", MobileNumber = "09134455667", TelephoneNumber = "(02) 8345 7890", Organization = "Ramos Logistics", Address = "Valenzuela City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-014", FirstName = "Faith", LastName = "Torres", Email = "faithtorres@example.com", MobileNumber = "09145566778", TelephoneNumber = "(02) 8456 8901", Organization = "Torres Marketing", Address = "Muntinlupa City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-015", FirstName = "Gabriel", LastName = "Perez", Email = "gabrielperez@example.com", MobileNumber = "09156677889", TelephoneNumber = "(02) 8567 9012", Organization = "Perez Retail Group", Address = "Bacoor City", AccountStatus = "Active" },
-                new CustomerRow { CustomerId = "CUSTOMER-016", FirstName = "Hannah", LastName = "Bautista", Email = "hannahbautista@example.com", MobileNumber = "09167788990", TelephoneNumber = "(02) 8678 0123", Organization = "Bautista Creative House", Address = "Antipolo City", AccountStatus = "Active" }
-            };
+                return;
+            }
+
+            var customerService = ServiceFactory.CreateCustomerService();
+            var existingCustomer = customerService.GetCustomerById(userId);
+            customerService.UpdateCustomer(new CustomerDto
+            {
+                UserId = userId,
+                FirstName = customerDetailFirstName.Value.Trim(),
+                LastName = customerDetailLastName.Value.Trim(),
+                Email = customerDetailEmail.Value.Trim(),
+                MobileNumber = customerDetailMobile.Value.Trim(),
+                Occupation = NormalizeOccupation(customerDetailOrganization.Value),
+                OrganizationAddress = customerDetailAddress.Value.Trim(),
+                IdentificationCard = existingCustomer == null ? null : existingCustomer.IdentificationCard
+            });
+
+            BindCustomers();
         }
 
         public string TransactionHistoryJson
         {
-            get { return new JavaScriptSerializer().Serialize(GetSampleTransactionHistory()); }
+            get
+            {
+                var history = new List<CustomerTransaction>();
+                history.AddRange(ServiceFactory.CreateRentalService()
+                    .GetTransactionLog()
+                    .Select(CreateCustomerTransaction));
+
+                return new JavaScriptSerializer().Serialize(history);
+            }
         }
 
-        private static List<CustomerTransaction> GetSampleTransactionHistory()
+        private static CustomerRow CreateCustomerRow(CustomerDto customer, bool hasActiveRental)
         {
-            return new List<CustomerTransaction>
+            return new CustomerRow
             {
-                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-001-2026", CreatedAt = "2026-01-01 12:00:00", DueAt = "2026-01-08 12:00:00", Status = "Ongoing" },
-                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-017-2026", CreatedAt = "2026-01-20 09:30:00", DueAt = "2026-01-27 09:30:00", Status = "Done" },
-                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-018-2026", CreatedAt = "2026-02-03 10:00:00", DueAt = "2026-02-10 10:00:00", Status = "Late" },
-                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-019-2026", CreatedAt = "2026-02-15 13:15:00", DueAt = "2026-02-22 13:15:00", Status = "Done" },
-                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-020-2026", CreatedAt = "2026-03-01 08:45:00", DueAt = "2026-03-08 08:45:00", Status = "Overdue" },
-                new CustomerTransaction { CustomerId = "CUSTOMER-001", TransactionId = "TR-021-2026", CreatedAt = "2026-03-10 11:20:00", DueAt = "2026-03-17 11:20:00", Status = "Ongoing" },
-                new CustomerTransaction { CustomerId = "CUSTOMER-002", TransactionId = "TR-002-2026", CreatedAt = "2026-01-02 12:00:00", DueAt = "2026-01-09 12:00:00", Status = "Late" },
-                new CustomerTransaction { CustomerId = "CUSTOMER-003", TransactionId = "TR-003-2026", CreatedAt = "2026-01-03 12:00:00", DueAt = "2026-01-10 12:00:00", Status = "Overdue" }
+                CustomerId = customer.UserId.ToString(),
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Email = customer.Email,
+                MobileNumber = customer.MobileNumber,
+                TelephoneNumber = string.Empty,
+                Organization = NormalizeOccupation(customer.Occupation),
+                Address = customer.OrganizationAddress,
+                AccountStatus = "Active",
+                ImageData = customer.IdentificationCard == null ? string.Empty : Convert.ToBase64String(customer.IdentificationCard)
+            };
+        }
+
+        private static CustomerTransaction CreateCustomerTransaction(RentalTransactionDto transaction)
+        {
+            return new CustomerTransaction
+            {
+                CustomerId = transaction.UserId.ToString(),
+                TransactionId = transaction.TransactionId.ToString(),
+                CreatedAt = transaction.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+                DueAt = transaction.DueAt.ToString("yyyy-MM-dd HH:mm:ss"),
+                Status = transaction.Status
             };
         }
 
@@ -64,13 +103,33 @@ namespace Techrent.Pages.Admin
             public string CustomerId { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
-            public string FullName { get { return FirstName + " " + LastName; } }
+            public string FullName { get { return (FirstName + " " + LastName).Trim(); } }
             public string Email { get; set; }
             public string MobileNumber { get; set; }
             public string TelephoneNumber { get; set; }
             public string Organization { get; set; }
             public string Address { get; set; }
             public string AccountStatus { get; set; }
+            public string ImageData { get; set; }
+        }
+
+        private static string NormalizeOccupation(string value)
+        {
+            var allowedOccupations = new[] { "Student", "Employed", "Unemployed", "Other" };
+            var occupation = allowedOccupations.FirstOrDefault(option =>
+                string.Equals(option, value, StringComparison.OrdinalIgnoreCase));
+
+            if (occupation != null)
+            {
+                return occupation;
+            }
+
+            if (string.Equals(value, "Employee", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Employed";
+            }
+
+            return "Other";
         }
 
         public sealed class CustomerTransaction

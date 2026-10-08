@@ -12,5 +12,6 @@ namespace Techrent.Pages.RentalStaff
 
     public partial class Equipment
     {
+        protected global::System.Web.UI.WebControls.Repeater EquipmentRepeater;
     }
 }

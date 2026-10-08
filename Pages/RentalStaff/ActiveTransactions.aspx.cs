@@ -1,30 +1,63 @@
 using System;
-using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Web.UI;
 using Techrent.ApplicationLayer.Services;
 using Techrent.DataAccessLayer.DTOs;
 
 namespace Techrent.Pages.RentalStaff
 {
-    public partial class ActiveTransactions : System.Web.UI.Page
+    public partial class ActiveTransactions : Page
     {
-        // Expose active rentals for future integration with the page markup
-        protected List<RentalTransactionDto> ActiveRentals { get; private set; } = new List<RentalTransactionDto>();
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                try
-                {
-                    var svc = ServiceFactory.CreateRentalService();
-                    ActiveRentals = new List<RentalTransactionDto>(svc.GetActiveRentals());
-                    // Integration into the markup is intentionally deferred; ActiveRentals is available for future binding.
-                }
-                catch (Exception)
-                {
-                    // Swallowing exceptions here to keep the page available while the DB is optional in development.
-                }
+                BindTransactions();
             }
+        }
+
+        protected void CompleteTransactionButton_Click(object sender, EventArgs e)
+        {
+            Guid transactionId;
+            if (!Guid.TryParse(SelectedTransactionIdHidden.Value, out transactionId))
+            {
+                BindTransactions();
+                return;
+            }
+
+            ServiceFactory.CreateRentalService().CompleteRental(transactionId, ReturnConditionNotesHidden.Value);
+            BindTransactions();
+        }
+
+        private void BindTransactions()
+        {
+            ActiveTransactionsRepeater.DataSource = ServiceFactory.CreateRentalService()
+                .GetActiveRentals()
+                .Select(CreateRow)
+                .ToList();
+            ActiveTransactionsRepeater.DataBind();
+        }
+
+        private static ActiveTransactionRow CreateRow(RentalTransactionDto transaction)
+        {
+            return new ActiveTransactionRow
+            {
+                TransactionId = transaction.TransactionId.ToString(),
+                CustomerId = transaction.UserId.ToString(),
+                CustomerName = (transaction.FirstName + " " + transaction.LastName).Trim(),
+                DueDate = transaction.DueAt.ToString("dd MMM yyyy", CultureInfo.InvariantCulture),
+                Status = transaction.Status
+            };
+        }
+
+        public sealed class ActiveTransactionRow
+        {
+            public string TransactionId { get; set; }
+            public string CustomerId { get; set; }
+            public string CustomerName { get; set; }
+            public string DueDate { get; set; }
+            public string Status { get; set; }
         }
     }
 }

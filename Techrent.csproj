@@ -103,7 +103,11 @@
     <Content Include=".gitignore" />
     <Content Include="assets\svg\add.svg" />
     <Content Include="assets\svg\back.svg" />
+    <Content Include="assets\svg\customers.svg" />
+    <Content Include="assets\svg\dashboard.svg" />
+    <Content Include="assets\svg\payment.svg" />
     <Content Include="assets\svg\search.svg" />
+    <Content Include="assets\svg\transaction.svg" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -125,7 +129,10 @@
     <Content Include="css\admin\AdminDashboard.css" />
     <Content Include="css\admin\AuditLogs.css" />
     <Content Include="css\admin\Customers.css" />
+    <Content Include="css\admin\DamageChargeGuidelines.css" />
     <Content Include="css\admin\Inventory.css" />
+    <Content Include="css\admin\InsertEquipment.css" />
+    <Content Include="css\admin\Payments.css" />
     <Content Include="css\admin\Transactions.css" />
     <Content Include="css\rentalstaff\RentalStaff.Home.css" />
     <Content Include="css\rentalstaff\RentalStaff.Master.css" />
@@ -135,11 +142,27 @@
     <Content Include="css\rentalstaff\RentalStaff.Review.css" />
     <Content Include="css\rentalstaff\RentalStaff.ActiveTransactions.css" />
     <Content Include="css\rentalstaff\RegisterCustomer.css" />
+    <Content Include="Database\Scripts\000_DeployDatabase.sql" />
+    <Content Include="Database\Scripts\001_CreateSchema.sql" />
+    <Content Include="Database\Scripts\003_AddTransactionArchiving.sql" />
+    <Content Include="Database\Scripts\004_AddPaymentActivity.sql" />
+    <Content Include="Database\Scripts\006_AddStructuredAuditEvents.sql" />
+    <Content Include="Database\Scripts\007_PersistReturnConditionNotes.sql" />
+    <Content Include="Database\Scripts\008_AddUserAuthentication.sql" />
+    <Content Include="Database\Scripts\009_AllowAnonymousAuditActors.sql" />
+    <Content Include="Database\Scripts\010_SplitCustomers.sql" />
+    <Content Include="Database\Scripts\011_AddOverdueTransactionStatus.sql" />
+    <Content Include="Database\Scripts\012_UpdateOccupationOptions.sql" />
+    <Content Include="Database\Scripts\002_CreateStoredProcedures.sql" />
+    <Content Include="Database\Scripts\005_SyncEquipmentUpdateProcedure.sql" />
     <Content Include="Pages\Admin\Admin.Master" />
     <Content Include="Pages\Admin\AuditLogs.aspx" />
+    <Content Include="Pages\Admin\Guidelines.aspx" />
     <Content Include="Pages\Admin\Dashboard.aspx" />
     <Content Include="Pages\Admin\Customers.aspx" />
     <Content Include="Pages\Admin\Equipments.aspx" />
+    <Content Include="Pages\Admin\InsertEquipment.aspx" />
+    <Content Include="Pages\Admin\Payments.aspx" />
     <Content Include="Pages\Admin\Transactions.aspx" />
     <Content Include="DOCUMENTATION.md" />
     <Content Include="favicon.ico" />
@@ -151,6 +174,7 @@
     <Content Include="Pages\RentalStaff\Equipment.aspx" />
     <Content Include="Pages\RentalStaff\SerialAssignment.aspx" />
     <Content Include="Pages\RentalStaff\Review.aspx" />
+    <Content Include="Scripts\Admin\InsertEquipment.js" />
     <Content Include="Scripts\RentalStaff\Equipment.js" />
     <Content Include="Scripts\RentalStaff\New.js" />
     <Content Include="Scripts\RentalStaff\SerialAssignment.js" />
@@ -215,18 +239,78 @@
     <Content Include="Scripts\WebForms\WebParts.js" />
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
     <Content Include="Pages\Signin.aspx" />
+    <Content Include="Pages\RegisterUser.aspx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
   </ItemGroup>
   <ItemGroup>
+    <!-- Application Layer -->
+    <Compile Include="Application Layer\Services\AuditWorkflow.cs" />
+    <Compile Include="Application Layer\Services\AuthenticationService.cs" />
+    <Compile Include="Application Layer\Services\AuthenticatedUserRegistrationService.cs" />
+    <Compile Include="Application Layer\Services\AuthenticatedUserContext.cs" />
+    <Compile Include="Application Layer\Services\AuditService.cs" />
+    <Compile Include="Application Layer\Services\AuditEventFactory.cs" />
+    <Compile Include="Application Layer\Services\CustomerService.cs" />
+    <Compile Include="Application Layer\Services\DamageChargeCalculator.cs" />
+    <Compile Include="Application Layer\Services\EquipmentService.cs" />
+    <Compile Include="Application Layer\Services\PagedResult.cs" />
+    <Compile Include="Application Layer\Services\PasswordService.cs" />
+    <Compile Include="Application Layer\Services\PaymentService.cs" />
+    <Compile Include="Application Layer\Services\RentalService.cs" />
+    <Compile Include="Application Layer\Services\ServiceFactory.cs" />
+    <!-- App_Start -->
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <!-- DTOs -->
+    <Compile Include="Data Access Layer\DTOs\AuthenticatedUserDto.cs" />
+    <Compile Include="Data Access Layer\DTOs\AuditRecordDto.cs" />
     <Compile Include="Data Access Layer\DTOs\CustomerDto.cs" />
     <Compile Include="Data Access Layer\DTOs\EquipmentDto.cs" />
+    <Compile Include="Data Access Layer\DTOs\PaymentDto.cs" />
+    <Compile Include="Data Access Layer\DTOs\RentalItemDto.cs" />
+    <Compile Include="Data Access Layer\DTOs\RentalTransactionDto.cs" />
+    <!-- Repositories -->
+    <Compile Include="Data Access Layer\Repositories\AuthenticationRepository.cs" />
+    <Compile Include="Data Access Layer\Repositories\AuditRepository.cs" />
+    <Compile Include="Data Access Layer\Repositories\CustomerRepository.cs" />
     <Compile Include="Data Access Layer\Repositories\DatabaseConnectionFactory.cs" />
+    <Compile Include="Data Access Layer\Repositories\EquipmentRepository.cs" />
+    <Compile Include="Data Access Layer\Repositories\PaymentRepository.cs" />
+    <Compile Include="Data Access Layer\Repositories\RentalRepository.cs" />
+    <Compile Include="Data Access Layer\Repositories\SqlRepositoryBase.cs" />
+    <Compile Include="Data Access Layer\Repositories\Interfaces\IAuthenticationRepository.cs" />
+    <Compile Include="Data Access Layer\Repositories\Interfaces\IAuditRepository.cs" />
+    <Compile Include="Data Access Layer\Repositories\Interfaces\ICustomerRepository.cs" />
+    <Compile Include="Data Access Layer\Repositories\Interfaces\IEquipmentRepository.cs" />
+    <Compile Include="Data Access Layer\Repositories\Interfaces\IPaymentRepository.cs" />
+    <Compile Include="Data Access Layer\Repositories\Interfaces\IRentalRepository.cs" />
+    <!-- Application and Web Forms code-behind -->
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Pages\RegisterUser.aspx.cs">
+      <DependentUpon>RegisterUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\RegisterUser.aspx.designer.cs">
+      <DependentUpon>RegisterUser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Signin.aspx.cs">
+      <DependentUpon>Signin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Signin.aspx.designer.cs">
+      <DependentUpon>Signin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\Admin.Master.cs">
+      <DependentUpon>Admin.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Admin\Admin.Master.designer.cs">
+      <DependentUpon>Admin.Master</DependentUpon>
     </Compile>
     <Compile Include="Pages\Admin\AuditLogs.aspx.cs">
       <DependentUpon>AuditLogs.aspx</DependentUpon>
@@ -235,12 +319,61 @@
     <Compile Include="Pages\Admin\AuditLogs.aspx.designer.cs">
       <DependentUpon>AuditLogs.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\RentalStaff\Default.aspx.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
+    <Compile Include="Pages\Admin\Customers.aspx.cs">
+      <DependentUpon>Customers.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\RentalStaff\Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
+    <Compile Include="Pages\Admin\Customers.aspx.designer.cs">
+      <DependentUpon>Customers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\Dashboard.aspx.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Admin\Dashboard.aspx.designer.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\Equipments.aspx.cs">
+      <DependentUpon>Equipments.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Admin\Equipments.aspx.designer.cs">
+      <DependentUpon>Equipments.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\InsertEquipment.aspx.cs">
+      <DependentUpon>InsertEquipment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Admin\InsertEquipment.aspx.designer.cs">
+      <DependentUpon>InsertEquipment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\Guidelines.aspx.cs">
+      <DependentUpon>Guidelines.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Admin\Guidelines.aspx.designer.cs">
+      <DependentUpon>Guidelines.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\Transactions.aspx.cs">
+      <DependentUpon>Transactions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Admin\Transactions.aspx.designer.cs">
+      <DependentUpon>Transactions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\Payments.aspx.cs">
+      <DependentUpon>Payments.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Admin\Payments.aspx.designer.cs">
+      <DependentUpon>Payments.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\RentalStaff\RentalStaff.Master.cs">
+      <DependentUpon>RentalStaff.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\RentalStaff\RentalStaff.Master.designer.cs">
+      <DependentUpon>RentalStaff.Master</DependentUpon>
     </Compile>
     <Compile Include="Pages\RentalStaff\ActiveTransactions.aspx.cs">
       <DependentUpon>ActiveTransactions.aspx</DependentUpon>
@@ -248,6 +381,20 @@
     </Compile>
     <Compile Include="Pages\RentalStaff\ActiveTransactions.aspx.designer.cs">
       <DependentUpon>ActiveTransactions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\RentalStaff\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\RentalStaff\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\RentalStaff\Equipment.aspx.cs">
+      <DependentUpon>Equipment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\RentalStaff\Equipment.aspx.designer.cs">
+      <DependentUpon>Equipment.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\RentalStaff\New.aspx.cs">
       <DependentUpon>New.aspx</DependentUpon>
@@ -263,12 +410,12 @@
     <Compile Include="Pages\RentalStaff\RegisterCustomer.aspx.designer.cs">
       <DependentUpon>RegisterCustomer.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\RentalStaff\Equipment.aspx.cs">
-      <DependentUpon>Equipment.aspx</DependentUpon>
+    <Compile Include="Pages\RentalStaff\Review.aspx.cs">
+      <DependentUpon>Review.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\RentalStaff\Equipment.aspx.designer.cs">
-      <DependentUpon>Equipment.aspx</DependentUpon>
+    <Compile Include="Pages\RentalStaff\Review.aspx.designer.cs">
+      <DependentUpon>Review.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\RentalStaff\SerialAssignment.aspx.cs">
       <DependentUpon>SerialAssignment.aspx</DependentUpon>
@@ -277,75 +424,23 @@
     <Compile Include="Pages\RentalStaff\SerialAssignment.aspx.designer.cs">
       <DependentUpon>SerialAssignment.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\RentalStaff\Review.aspx.cs">
-      <DependentUpon>Review.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\RentalStaff\Review.aspx.designer.cs">
-      <DependentUpon>Review.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\RentalStaff\RentalStaff.Master.cs">
-      <DependentUpon>RentalStaff.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\RentalStaff\RentalStaff.Master.designer.cs">
-      <DependentUpon>RentalStaff.Master</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Pages\Admin\Admin.Master.cs">
-      <DependentUpon>Admin.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Admin\Admin.Master.designer.cs">
-      <DependentUpon>Admin.Master</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Admin\Dashboard.aspx.cs">
-      <DependentUpon>Dashboard.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Admin\Dashboard.aspx.designer.cs">
-      <DependentUpon>Dashboard.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Admin\Customers.aspx.cs">
-      <DependentUpon>Customers.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Admin\Customers.aspx.designer.cs">
-      <DependentUpon>Customers.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Admin\Equipments.aspx.cs">
-      <DependentUpon>Equipments.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Admin\Equipments.aspx.designer.cs">
-      <DependentUpon>Equipments.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Admin\Transactions.aspx.cs">
-      <DependentUpon>Transactions.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Admin\Transactions.aspx.designer.cs">
-      <DependentUpon>Transactions.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Signin.aspx.cs">
-      <DependentUpon>Signin.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Signin.aspx.designer.cs">
-      <DependentUpon>Signin.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ViewSwitcher.ascx.cs">
-      <DependentUpon>ViewSwitcher.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ViewSwitcher.ascx.designer.cs">
-      <DependentUpon>ViewSwitcher.ascx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Application Layer\Services\" />
+    <Content Include="Database\Scripts\001_CreateSchema.sql" />
+    <Content Include="Database\Scripts\003_AddTransactionArchiving.sql" />
+    <Content Include="Database\Scripts\004_AddPaymentActivity.sql" />
+    <Content Include="Database\Scripts\006_AddStructuredAuditEvents.sql" />
+    <Content Include="Database\Scripts\007_PersistReturnConditionNotes.sql" />
+    <Content Include="Database\Scripts\008_AddUserAuthentication.sql" />
+    <Content Include="Database\Scripts\009_AllowAnonymousAuditActors.sql" />
+    <Content Include="Database\Scripts\010_SplitCustomers.sql" />
+    <Content Include="Database\Scripts\011_AddOverdueTransactionStatus.sql" />
+    <Content Include="Database\Scripts\012_UpdateOccupationOptions.sql" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="assets\img\" />
+    <Folder Include="sample receipts\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

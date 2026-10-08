@@ -13,10 +13,10 @@
         <div class="d-flex flex-column align-items-end">
         <p class="text-muted small mb-3"><%: DateTime.Now.ToString("dddd, dd MMMM yyyy hh:mm tt") %></p>
 
-        <select class="form-select admin-period-select" aria-label="Reporting period">
-            <option>Last 30 days</option>
-            <option>Last 60 days</option>
-            <option>Yearly</option>
+        <select id="dashboardPeriod" class="form-select admin-period-select" aria-label="Reporting period" onchange="window.location.search = '?period=' + this.value;">
+            <option value="30" <%: SelectedPeriod == "30" ? "selected=\"selected\"" : "" %>>Last 30 days</option>
+            <option value="60" <%: SelectedPeriod == "60" ? "selected=\"selected\"" : "" %>>Last 60 days</option>
+            <option value="year" <%: SelectedPeriod == "year" ? "selected=\"selected\"" : "" %>>Yearly</option>
         </select>
        </div>
     </div>
@@ -26,8 +26,8 @@
             <section class="card h-100 admin-card">
                 <div class="card-body">
                     <p class="text-muted small mb-2">Revenue</p>
-                    <p class="h3 mb-5">&#8369;153,224.43</p>
-                    <p class="text-success small mb-0">+&#8369;12,345.67 since last month</p>
+                    <p class="h3 mb-5"><%: RevenueText %></p>
+                    <p class="text-muted small mb-0">Recorded payments</p>
                 </div>
             </section>
         </div>
@@ -37,7 +37,7 @@
                 <section class="card  admin-card">
                     <div class="card-body">
                         <p class="text-muted small mb-2">Active rentals</p>
-                        <p class="h3 mb-0">40</p>
+                        <p class="h3 mb-0"><%: ActiveRentalsText %></p>
                     </div>
                 </section>
             </div>
@@ -49,6 +49,7 @@
                     <h2 class="h6 mb-3">Rental Activity</h2>
                     <div class="admin-doughnut-chart">
                         <canvas id="availabilityChart" aria-label="Equipment availability chart" role="img"></canvas>
+                        <p id="rentalActivityEmptyState" class="text-muted text-center d-flex align-items-center justify-content-center h-100 mb-0 d-none">No rental activity for the selected data.</p>
                     </div>
                 </div>
             </section>
@@ -69,42 +70,9 @@
         <div class="col-xl-5">
             <section class="card admin-card h-100">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h2 class="h6 mb-0">Ongoing transactions</h2>
-                        <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="<%$ RouteUrl:RouteName=Transactions %>" CssClass="btn btn-outline-secondary btn-sm">View all</asp:HyperLink>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Transaction</th>
-                                    <th scope="col">Due date</th>
-                                    <th scope="col" class="text-end">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>TR-1024</td>
-                                    <td>Oct 22, 2026</td>
-                                    <td class="text-end">&#8369;4,500.00</td>
-                                </tr>
-                                <tr>
-                                    <td>TR-1023</td>
-                                    <td>Oct 21, 2026</td>
-                                    <td class="text-end">&#8369;2,800.00</td>
-                                </tr>
-                                <tr>
-                                    <td>TR-1022</td>
-                                    <td>Oct 20, 2026</td>
-                                    <td class="text-end">&#8369;3,200.00</td>
-                                </tr>
-                                <tr>
-                                    <td>TR-1021</td>
-                                    <td>Oct 19, 2026</td>
-                                    <td class="text-end">&#8369;5,000.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <h2 class="h6 mb-3">Equipment status</h2>
+                    <div class="admin-equipment-status-chart">
+                        <canvas id="equipmentStatusChart" aria-label="Equipment status chart showing available and maintenance totals" role="img"></canvas>
                     </div>
                 </div>
             </section>
@@ -119,9 +87,9 @@
             new Chart(document.getElementById('revenueChart'), {
                 type: 'line',
                 data: {
-                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    labels: <%= RevenueChartLabels %>,
                     datasets: [{
-                        data: [28500, 35400, 31200, 58100],
+                        data: <%= RevenueChartData %>,
                         borderColor: '#2C3E50',
                         backgroundColor: 'rgba(13, 110, 253, 0.08)',
                         borderWidth: 2,
@@ -138,13 +106,47 @@
                 }
             });
 
-            new Chart(document.getElementById('availabilityChart'), {
-                type: 'pie',
+            var activityCanvas = document.getElementById('availabilityChart');
+            var activityData = <%= TransactionChartData %>;
+            if (activityData.some(function (value) { return value > 0; })) {
+                new Chart(activityCanvas, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Active Rentals', 'Successful Transactions', 'Late Transactions', 'Overdue Transactions'],
+                        datasets: [{ data: activityData, backgroundColor: ['#0d6efd', '#28a745', '#ffc107', '#dc3545'], borderWidth: 0 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                });
+            } else {
+                activityCanvas.classList.add('d-none');
+                document.getElementById('rentalActivityEmptyState').classList.remove('d-none');
+            }
+
+            new Chart(document.getElementById('equipmentStatusChart'), {
+                type: 'bar',
                 data: {
-                    labels: ['Successful Transactions', 'Late Transactions', 'Unreturned Transactions'],
-                    datasets: [{ data: [83, 17, 4], backgroundColor: ['#28a745', '#ffc107', '#dc3545'], borderWidth: 0 }]
+                    labels: ['Available', 'Maintenance'],
+                    datasets: [{
+                        label: 'Equipment units',
+                        data: <%= EquipmentChartData %>,
+                        backgroundColor: ['#28a745', '#ffc107'],
+                        borderWidth: 0,
+                        barThickness: 28
+                    }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: function (context) { return context.raw + ' equipment units'; } } }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: 'Total equipment' } },
+                        y: { grid: { display: false } }
+                    }
+                }
             });
 
         });

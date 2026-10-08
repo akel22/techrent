@@ -51,6 +51,15 @@ namespace Techrent.Pages.Admin
         protected global::System.Web.UI.WebControls.HyperLink TransactionsLink;
 
         /// <summary>
+        /// PaymentsLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink PaymentsLink;
+
+        /// <summary>
         /// AuditLogsLink control.
         /// </summary>
         /// <remarks>
@@ -76,6 +85,15 @@ namespace Techrent.Pages.Admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink EquipmentsLink;
+
+        /// <summary>
+        /// DamageChargeGuidelinesLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink DamageChargeGuidelinesLink;
 
         /// <summary>
         /// LogoutButton control.

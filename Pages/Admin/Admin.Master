@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><%: Page.Title %> - TECHRENT</title>
     <link href="<%: ResolveUrl("~/Content/bootstrap.min.css") %>" rel="stylesheet" />
-    <link href="<%: ResolveUrl("~/css/admin/Admin.Master.css") %>" rel="stylesheet" />
+    <link href="<%: ResolveUrl("~/css/admin/Admin.Master.css?v=2") %>" rel="stylesheet" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
 <body class="bg-light">
@@ -18,16 +18,20 @@
                     <a class="admin-brand" href="<%: GetRouteUrl("dashboard")%>">TECH<span class="text-danger">RENT</span></a>
                 </div>
                 <nav class="nav flex-column" aria-label="Admin navigation">
-                    <asp:HyperLink ID="DashboardLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = dashboard %>">Dashboard</asp:HyperLink>
-                    <asp:HyperLink ID="TransactionsLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = transactions %>">Transactions</asp:HyperLink>
+                    <asp:HyperLink ID="DashboardLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = dashboard %>"><img class="admin-sidebar-icon" width="18" height="18" src="<%: ResolveUrl("~/assets/svg/dashboard.svg") %>" alt="" />Dashboard</asp:HyperLink>
+                    <asp:HyperLink ID="TransactionsLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = transactions %>"><img class="admin-sidebar-icon" width="18" height="18" src="<%: ResolveUrl("~/assets/svg/transaction.svg") %>" alt="" />Transactions</asp:HyperLink>
+                    <asp:HyperLink ID="PaymentsLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = payments %>"><img class="admin-sidebar-icon" width="18" height="18" src="<%: ResolveUrl("~/assets/svg/payment.svg") %>" alt="" />Payments</asp:HyperLink>
                     <asp:HyperLink ID="AuditLogsLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = auditLogs %>">Audit Logs</asp:HyperLink>
-                    <asp:HyperLink ID="CustomersLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = customers %>">Customers</asp:HyperLink>
+                    <asp:HyperLink ID="CustomersLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = customers %>"><img class="admin-sidebar-icon" width="18" height="18" src="<%: ResolveUrl("~/assets/svg/customers.svg") %>" alt="" />Customers</asp:HyperLink>
                     <asp:HyperLink ID="EquipmentsLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = equipments %>">Equipments</asp:HyperLink>
+                    <asp:HyperLink ID="DamageChargeGuidelinesLink" runat="server" CssClass="nav-link" NavigateUrl="<%$ RouteUrl: RouteName = DamageChargeGuidelines %>">Policy and Guidelines</asp:HyperLink>
                     <asp:Button         
                     ID="LogoutButton" 
                         runat="server" 
                         CssClass="nav-link btn btn-danger text-start mt-5" 
-                        Text="Sign out"  />     
+                        Text="Sign out"
+                        OnClick="LogoutButton_Click"
+                        CausesValidation="false" />
                     </nav>
             </aside>
             <main class="admin-main">

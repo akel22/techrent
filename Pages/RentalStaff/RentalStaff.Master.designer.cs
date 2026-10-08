@@ -33,6 +33,11 @@ namespace Techrent.Pages.RentalStaff
         protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
 
         /// <summary>
+        /// LogoutButton control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Button LogoutButton;
+
+        /// <summary>
         /// PageScripts control.
         /// </summary>
         /// <remarks>

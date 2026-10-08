@@ -106,6 +106,67 @@
     object-fit: contain;
 }
 
+.rental-transaction-details dt,
+.rental-transaction-details dd {
+    padding-bottom: 0.75rem;
+}
+
+.rental-transaction-details dt:last-of-type,
+.rental-transaction-details dd:last-of-type {
+    padding-bottom: 0;
+}
+
+.rental-transaction-details dt {
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.rental-transaction-details dd {
+    color: #212529;
+    font-weight: 500;
+}
+
+.rental-transaction-details dd:last-of-type {
+    margin-bottom: 0;
+}
+
+@media (min-width: 992px) {
+    .rental-transaction-details {
+        display: block;
+        padding-top: 0.35rem;
+    }
+
+    .rental-transaction-details dt,
+    .rental-transaction-details dd {
+        display: block;
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .rental-transaction-details dt:not(:first-child) {
+        margin-top: 0.85rem;
+    }
+
+    .rental-transaction-details dd {
+        margin-bottom: 0;
+    }
+}
+
+.rental-return-audit-card {
+    background-color: #f8f9fa;
+}
+
+.rental-return-equipment-summary {
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background-color: #fff;
+}
+
+.rental-return-audit-card .form-label {
+    font-weight: 600;
+}
+
 @media (max-width: 575.98px) {
     .rental-staff-active-transactions {
         padding-top: 1rem;

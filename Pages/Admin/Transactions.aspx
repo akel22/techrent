@@ -14,13 +14,22 @@
     </div>
 
     <section class="card admin-card">
-        <div class="card-body">
+            <div class="card-body">
+                <asp:Label ID="ArchiveMessage" runat="server" CssClass="alert alert-warning d-block" Visible="false" />
             <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
                 <div class="d-flex align-items-center gap-2 transaction-sort-controls">
                     <label for="transactionSort" class="form-label mb-0 text-nowrap">Sort by</label>
                     <select id="transactionSort" class="form-select form-select-sm transaction-sort-select" aria-label="Sort by created date">
                         <option value="latest" selected>Latest date</option>
                         <option value="earliest">Earliest date</option>
+                    </select>
+                    <label for="transactionStatus" class="form-label mb-0 text-nowrap ms-2">Status</label>
+                    <select id="transactionStatus" class="form-select form-select-sm transaction-status-select" aria-label="Filter by transaction status">
+                        <option value="all" selected>All</option>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Late">Late</option>
+                        <option value="Overdue">Overdue</option>
+                        <option value="Done">Done</option>
                     </select>
                 </div>
                 <div class="input-group transaction-search">
@@ -44,7 +53,7 @@
                         </tr>
                     </thead>
                     <tbody id="transactionRows">
-                        <asp:Repeater ID="TransactionsRepeater" runat="server">
+                        <asp:Repeater ID="TransactionsRepeater" runat="server" OnItemCommand="TransactionsRepeater_ItemCommand">
                             <ItemTemplate>
                                 <tr data-detail-payload="<%#: Eval("DetailPayload") %>">
                                     <td><%#: Eval("TransactionId") %></td>
@@ -53,7 +62,7 @@
                                     <td><%#: Eval("DueAt") %></td>
                                     <td><span class="transaction-status <%#: Eval("StatusClass") %>"><%#: Eval("Status") %></span></td>
                                     <td class="text-center text-nowrap">
-                                        <button type="button" class="btn btn-secondary btn-sm" disabled>Archive</button>
+                                        <asp:LinkButton ID="ArchiveButton" runat="server" CommandName="Archive" CommandArgument='<%# Eval("TransactionId") %>' CssClass="btn btn-secondary btn-sm archive-transaction-button" Enabled='<%# Eval("Status").ToString() == "Done" %>'>Archive</asp:LinkButton>
                                         <button type="button" class="btn btn-outline-primary btn-sm transaction-view-button" data-bs-toggle="modal" data-bs-target="#transactionDetailsModal">View receipt</button>
                                     </td>
                                 </tr>
@@ -69,22 +78,42 @@
         </div>
     </section>
 
+    <div class="modal fade" id="archiveConfirmationModal" tabindex="-1" aria-labelledby="archiveConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="archiveConfirmationModalLabel">Archive transaction</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">Are you sure you want to archive transaction <strong data-archive-transaction></strong>? It will be hidden from the transaction log.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" data-confirm-archive>Yes, archive</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="transactionDetailsModal" tabindex="-1" aria-labelledby="transactionDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title h5" id="transactionDetailsModalLabel">Transaction Details</h2>
+                    <h2 class="modal-title h5" id="transactionDetailsModalLabel">Rental Receipt</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="transactionPrintContent">
+                <div class="modal-body" id="transactionModalBody">
+                    <section class="transaction-modal-page" aria-labelledby="transactionReceiptHeading">
+                    <div id="transactionPrintContent">
                     <div class="transaction-receipt">
                         <div class="transaction-receipt-contact text-center mb-4">
                             <h3 class="h5 mb-1">TECH<span class="text-danger">RENT</span></h3>
-                            <p class="small mb-0">Quezon City · (02) 8123-4567 · techrent@example.com</p>
+                            <p class="small mb-0">Quezon City | (02) 8123-4567 | techrent@example.com</p>
                         </div>
                         <div class="transaction-receipt-header d-flex flex-column flex-sm-row justify-content-between gap-3 mb-4">
                             <div>
-                                <h3 class="h4 mb-1" id="receiptHeading">TECH<span class="text-danger">RENT</span> receipt</h3>
+                            <h3 class="h4 mb-1" id="transactionReceiptHeading">Official Receipt</h3>
                                 <p class="small text-muted mb-0">Transaction record and rental charges</p>
                             </div>
                             <dl class="small mb-0 text-sm-end">
@@ -93,19 +122,26 @@
                             </dl>
                         </div>
 
-                        <section class="transaction-detail-section" aria-labelledby="transactionSummaryHeading">
-                            <h3 class="h6 transaction-detail-heading" id="transactionSummaryHeading">Transaction information</h3>
+                        <section class="transaction-detail-section" aria-labelledby="customerInformationHeading">
+                            <h3 class="h6 transaction-detail-heading" id="customerInformationHeading">Customer information</h3>
                             <dl class="transaction-detail-list">
-                                <div class="transaction-detail-field"><dt>Transaction ID</dt><dd id="transactionDetailId"></dd></div>
+                                <div class="transaction-detail-field"><dt>Customer name</dt><dd id="transactionDetailCustomerName"></dd></div>
                                 <div class="transaction-detail-field"><dt>Customer ID</dt><dd id="transactionDetailCustomer"></dd></div>
-                                <div class="transaction-detail-field"><dt>Created date</dt><dd id="transactionDetailCreated"></dd></div>
-                                <div class="transaction-detail-field"><dt>Due date</dt><dd id="transactionDetailExpiration"></dd></div>
-                                <div class="transaction-detail-field"><dt>Status</dt><dd id="transactionDetailStatus"></dd></div>
+                                <div class="transaction-detail-field"><dt>Email</dt><dd id="transactionDetailCustomerEmail"></dd></div>
+                                <div class="transaction-detail-field"><dt>Mobile</dt><dd id="transactionDetailCustomerMobile"></dd></div>
+                            </dl>
+                        </section>
+
+                        <section class="transaction-detail-section" aria-labelledby="rentalDatesHeading">
+                            <h3 class="h6 transaction-detail-heading" id="rentalDatesHeading">Rental dates</h3>
+                            <dl class="transaction-detail-list">
+                                <div class="transaction-detail-field"><dt>Rental start date</dt><dd id="transactionDetailRentalStart"></dd></div>
+                                <div class="transaction-detail-field"><dt>Return date</dt><dd id="transactionDetailExpiration"></dd></div>
                             </dl>
                         </section>
 
                         <section class="transaction-detail-section" aria-labelledby="equipmentHeading">
-                            <h3 class="h6 transaction-detail-heading" id="equipmentHeading">Rented equipment</h3>
+                            <h3 class="h6 transaction-detail-heading" id="equipmentHeading">Assigned rental units</h3>
                             <div class="table-responsive">
                                 <table class="table table-sm align-middle mb-0 transaction-receipt-table">
                                     <caption class="visually-hidden">Equipment and charges for this transaction</caption>
@@ -125,7 +161,6 @@
 
                         <div class="transaction-receipt-footer-row">
                             <section class="transaction-detail-section transaction-receipt-signature-section" aria-labelledby="transactionSignatureHeading">
-                                <h3 class="h6 transaction-detail-heading" id="transactionSignatureHeading">Rental staff signature</h3>
                                 <div class="transaction-receipt-signature-line" aria-hidden="true"></div>
                                 <p class="small text-muted mb-0">Signature</p>
                             </section>
@@ -137,6 +172,10 @@
                                     <dd class="col-4 text-end" id="transactionDetailRentalFee"></dd>
                                     <dt class="col-8">Security deposit</dt>
                                     <dd class="col-4 text-end" id="transactionDetailSecurityDeposit"></dd>
+                                    <dt class="col-8">Amount paid</dt>
+                                    <dd class="col-4 text-end" id="transactionDetailPaidAmount"></dd>
+                                    <dt class="col-8">Change</dt>
+                                    <dd class="col-4 text-end" id="transactionDetailChange"></dd>
                                     <dt class="col-8 transaction-total-label">Total</dt>
                                     <dd class="col-4 text-end transaction-total" id="transactionDetailTotal"></dd>
                                 </dl>
@@ -144,9 +183,10 @@
                         </div>
                     </div>
                 </div>
+                </div>
+                </section>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="printTransactionButton">Save receipt as PDF</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary ms-auto" id="printTransactionButton">Save receipt as PDF</button>
                 </div>
             </div>
         </div>
@@ -160,28 +200,58 @@
             var searchInput = document.getElementById('transactionSearch');
             var pagination = document.getElementById('transactionPagination');
             var sortSelect = document.getElementById('transactionSort');
+            var statusSelect = document.getElementById('transactionStatus');
             var currentPage = 1;
             var pageSize = 8;
             var appliedQuery = '';
+            var archiveModalElement = document.getElementById('archiveConfirmationModal');
+            var archiveModal = new bootstrap.Modal(archiveModalElement);
+            var selectedArchiveButton;
+            var allowArchiveSubmit = false;
+
+            document.querySelectorAll('.archive-transaction-button:not([disabled])').forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    if (allowArchiveSubmit) {
+                        allowArchiveSubmit = false;
+                        return;
+                    }
+
+                    event.preventDefault();
+                    selectedArchiveButton = button;
+                    var row = button.closest('tr');
+                    archiveModalElement.querySelector('[data-archive-transaction]').textContent = row.cells[0].textContent.trim();
+                    archiveModal.show();
+                });
+            });
+
+            archiveModalElement.querySelector('[data-confirm-archive]').addEventListener('click', function () {
+                if (!selectedArchiveButton) {
+                    return;
+                }
+
+                allowArchiveSubmit = true;
+                archiveModal.hide();
+                selectedArchiveButton.click();
+            });
 
             function setDetailText(id, value) {
-                document.getElementById(id).textContent = value || '—';
+                document.getElementById(id).textContent = value === null || value === undefined || value === '' ? '—' : value;
             }
 
             function populateTransactionModal(transaction) {
                 var detail = transaction || {};
                 setDetailText('transactionDetailReceiptNumber', detail.ReceiptNumber);
-                setDetailText('transactionDetailId', detail.TransactionId);
+                setDetailText('transactionDetailCustomerName', detail.CustomerName);
                 setDetailText('transactionDetailCustomer', detail.CustomerId);
-                setDetailText('transactionDetailCreated', detail.CreatedAt);
-                setDetailText('transactionDetailExpiration', detail.DueAt);
+                setDetailText('transactionDetailCustomerEmail', detail.CustomerEmail);
+                setDetailText('transactionDetailCustomerMobile', detail.CustomerMobile);
+                setDetailText('transactionDetailRentalStart', detail.RentalStartDate);
+                setDetailText('transactionDetailExpiration', detail.ReturnDate);
                 setDetailText('transactionDetailRentalFee', detail.RentalFee);
                 setDetailText('transactionDetailSecurityDeposit', detail.SecurityDeposit);
+                setDetailText('transactionDetailPaidAmount', detail.PaidAmount);
+                setDetailText('transactionDetailChange', detail.Change);
                 setDetailText('transactionDetailTotal', detail.Total);
-
-                var status = document.getElementById('transactionDetailStatus');
-                status.textContent = detail.Status || '—';
-                status.className = 'transaction-status ' + (detail.StatusClass || '');
 
                 var equipmentDetails = document.getElementById('transactionEquipmentDetails');
                 equipmentDetails.innerHTML = '';
@@ -211,24 +281,24 @@
 
                 var preRentalDetails = document.getElementById('transactionPreRentalDetails');
                 preRentalDetails.innerHTML = '';
-                var preRentalAuditor = document.createElement('p');
-                preRentalAuditor.className = 'small text-muted mb-2 transaction-pre-rental-auditor';
                 var auditors = [];
-                 (detail.PreRentalDetails || []).forEach(function (preRentalDetail) {
-                     if (preRentalDetail.RecordedBy && auditors.indexOf(preRentalDetail.RecordedBy) === -1) {
-                         auditors.push(preRentalDetail.RecordedBy);
+                (detail.PreRentalDetails || []).forEach(function (preRentalDetail) {
+                    if (preRentalDetail.RecordedBy && auditors.indexOf(preRentalDetail.RecordedBy) === -1) {
+                        auditors.push(preRentalDetail.RecordedBy);
                     }
                 });
-                preRentalAuditor.textContent = auditors.length ? 'Recorded by ' + auditors.join(', ') : 'Recorded by —';
+                var preRentalAuditor = document.createElement('p');
+                preRentalAuditor.className = 'small text-muted mb-2 transaction-pre-rental-auditor';
+                preRentalAuditor.textContent = auditors.length ? 'Recorded by ' + auditors.join(', ') : 'Recorded by --';
                 preRentalDetails.appendChild(preRentalAuditor);
 
                 var preRentalParagraph = document.createElement('p');
                 preRentalParagraph.className = 'small mb-0';
-                 preRentalParagraph.textContent = (detail.PreRentalDetails || []).length
-                     ? detail.PreRentalDetails.map(function (preRentalDetail) {
-                         return preRentalDetail.EquipmentSerialNumber + ': ' + preRentalDetail.Issue;
+                preRentalParagraph.textContent = (detail.PreRentalDetails || []).length
+                    ? detail.PreRentalDetails.map(function (preRentalDetail) {
+                        return preRentalDetail.EquipmentSerialNumber + ': ' + preRentalDetail.Issue;
                     }).join(' ')
-                    : '—';
+                    : 'No pre-rental details recorded.';
                 preRentalDetails.appendChild(preRentalParagraph);
             }
 
@@ -258,7 +328,11 @@
 
             function getFilteredRows() {
                 return rows.filter(function (row) {
-                    return row.textContent.toLowerCase().indexOf(appliedQuery) !== -1;
+                    var matchesSearch = row.textContent.toLowerCase().indexOf(appliedQuery) !== -1;
+                    var status = row.querySelector('.transaction-status');
+                    var matchesStatus = statusSelect.value === 'all' ||
+                        (status && status.textContent.trim() === statusSelect.value);
+                    return matchesSearch && matchesStatus;
                 }).sort(function (first, second) {
                     var comparison = first.cells[2].textContent.localeCompare(second.cells[2].textContent);
                     return sortSelect.value === 'latest' ? -comparison : comparison;
@@ -312,6 +386,11 @@
             });
 
             sortSelect.addEventListener('change', function () {
+                currentPage = 1;
+                renderTable();
+            });
+
+            statusSelect.addEventListener('change', function () {
                 currentPage = 1;
                 renderTable();
             });

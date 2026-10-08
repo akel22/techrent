@@ -53,72 +53,22 @@
                                 </select></div>
                         </div>
                         <div id="equipmentList" class="row g-3">
-                            <div class="col-sm-6 col-lg-4 equipment-item" data-equipment-search="samsung-001 laptop" data-category="laptop">
-                                <article class="card h-100 rental-staff-equipment-card">
-                                    <div class="rental-staff-equipment-visual rental-staff-equipment-visual-laptop">LAPTOP</div>
-                                    <div class="card-body">
-                                        <p class="small text-muted mb-1">Laptop</p>
-                                        <h2 class="h6">SAMSUNG-001</h2>
-                                        <p class="equipment-type-standard">Type: Standard</p>
-                                        <p class="small text-muted">Standard laptop for office work.</p>
-                                        <button type="button" class="btn btn-success btn-sm equipment-add-button" data-equipment-id="SAMSUNG-001" data-equipment-name="SAMSUNG-001" data-equipment-rate="1500" data-equipment-rental-fee="1500" data-equipment-security-deposit="3000" data-equipment-stock="3"><img src="<%: ResolveUrl("~/assets/svg/add.svg") %>" alt="" width="16" height="16" aria-hidden="true" />Add</button><span class="small text-muted ms-2">3 available</span></div>
-                                </article>
-                            </div>
-                            <div class="col-sm-6 col-lg-4 equipment-item" data-equipment-search="projector-001 projector" data-category="projector">
-                                <article class="card h-100 rental-staff-equipment-card">
-                                    <div class="rental-staff-equipment-visual rental-staff-equipment-visual-projector">PROJECTOR</div>
-                                    <div class="card-body">
-                                        <p class="small text-muted mb-1">Projector</p>
-                                        <h2 class="h6">PROJECTOR-001</h2>
-                                        <p class="equipment-type-standard">Type: Standard</p>
-                                        <p class="small text-muted">Portable presentation projector.</p>
-                                        <button type="button" class="btn btn-success btn-sm equipment-add-button" data-equipment-id="PROJECTOR-001" data-equipment-name="PROJECTOR-001" data-equipment-rate="1500" data-equipment-rental-fee="1500" data-equipment-security-deposit="3000" data-equipment-stock="4"><img src="<%: ResolveUrl("~/assets/svg/add.svg") %>" alt="" width="16" height="16" aria-hidden="true" />Add</button><span class="small text-muted ms-2">4 available</span></div>
-                                </article>
-                            </div>
-                            <div class="col-sm-6 col-lg-4 equipment-item" data-equipment-search="dell-u2723qe monitor" data-category="monitor">
-                                <article class="card h-100 rental-staff-equipment-card">
-                                    <div class="rental-staff-equipment-visual rental-staff-equipment-visual-monitor">MONITOR</div>
-                                    <div class="card-body">
-                                        <p class="small text-muted mb-1">Monitor</p>
-                                        <h2 class="h6">DELL-U2723QE</h2>
-                                        <p class="equipment-type-professional">Type: Professional</p>
-                                        <p class="small text-muted">27-inch USB-C monitor.</p>
-                                        <button type="button" class="btn btn-success btn-sm equipment-add-button" data-equipment-id="DELL-U2723QE" data-equipment-name="DELL-U2723QE" data-equipment-rate="1200" data-equipment-rental-fee="1200" data-equipment-security-deposit="2400" data-equipment-stock="5"><img src="<%: ResolveUrl("~/assets/svg/add.svg") %>" alt="" width="16" height="16" aria-hidden="true" />Add</button><span class="small text-muted ms-2">5 available</span></div>
-                                </article>
-                            </div>
-                            <div class="col-sm-6 col-lg-4 equipment-item" data-equipment-search="macbook-pro-m3 laptop" data-category="laptop">
-                                <article class="card h-100 rental-staff-equipment-card">
-                                    <div class="rental-staff-equipment-visual rental-staff-equipment-visual-laptop">LAPTOP</div>
-                                    <div class="card-body">
-                                        <p class="small text-muted mb-1">Laptop</p>
-                                        <h2 class="h6">MACBOOK-PRO-M3</h2>
-                                        <p class="equipment-type-professional">Type: Professional</p>
-                                        <p class="small text-muted">Professional creative-work laptop.</p>
-                                        <button type="button" class="btn btn-success btn-sm equipment-add-button" data-equipment-id="MACBOOK-PRO-M3" data-equipment-name="MACBOOK-PRO-M3" data-equipment-rate="2200" data-equipment-rental-fee="2200" data-equipment-security-deposit="4400" data-equipment-stock="2"><img src="<%: ResolveUrl("~/assets/svg/add.svg") %>" alt="" width="16" height="16" aria-hidden="true" />Add</button><span class="small text-muted ms-2">2 available</span></div>
-                                </article>
-                            </div>
-                            <div class="col-sm-6 col-lg-4 equipment-item" data-equipment-search="epson-4k-pro projector" data-category="projector">
-                                <article class="card h-100 rental-staff-equipment-card">
-                                    <div class="rental-staff-equipment-visual rental-staff-equipment-visual-projector">PROJECTOR</div>
-                                    <div class="card-body">
-                                        <p class="small text-muted mb-1">Projector</p>
-                                        <h2 class="h6">EPSON-4K-PRO</h2>
-                                        <p class="equipment-type-professional">Type: Professional</p>
-                                        <p class="small text-muted">High-resolution room projector.</p>
-                                        <button type="button" class="btn btn-success btn-sm equipment-add-button" data-equipment-id="EPSON-4K-PRO" data-equipment-name="EPSON-4K-PRO" data-equipment-rate="2400" data-equipment-rental-fee="2400" data-equipment-security-deposit="4800" data-equipment-stock="3"><img src="<%: ResolveUrl("~/assets/svg/add.svg") %>" alt="" width="16" height="16" aria-hidden="true" />Add</button><span class="small text-muted ms-2">3 available</span></div>
-                                </article>
-                            </div>
-                            <div class="col-sm-6 col-lg-4 equipment-item" data-equipment-search="usb-c hub accessory" data-category="accessory">
-                                <article class="card h-100 rental-staff-equipment-card">
-                                    <div class="rental-staff-equipment-visual rental-staff-equipment-visual-accessory">ACCESSORY</div>
-                                    <div class="card-body">
-                                        <p class="small text-muted mb-1">Accessory</p>
-                                        <h2 class="h6">USB-C-HUB</h2>
-                                        <p class="equipment-type-obsolete">Type: Obsolete</p>
-                                        <p class="small text-muted">Multi-port laptop hub.</p>
-                                        <button type="button" class="btn btn-success btn-sm equipment-add-button" data-equipment-id="USB-C-HUB" data-equipment-name="USB-C-HUB" data-equipment-rate="350" data-equipment-rental-fee="350" data-equipment-security-deposit="700" data-equipment-stock="6"><img src="<%: ResolveUrl("~/assets/svg/add.svg") %>" alt="" width="16" height="16" aria-hidden="true" />Add</button><span class="small text-muted ms-2">6 available</span></div>
-                                </article>
-                            </div>
+                            <asp:Repeater ID="EquipmentRepeater" runat="server">
+                                <ItemTemplate>
+                                    <div class="col-sm-6 col-lg-4 equipment-item" data-equipment-search="<%#: Eval("SearchText") %>" data-category="<%#: Eval("Category") %>">
+                                        <article class="card h-100 rental-staff-equipment-card">
+                                            <div class="rental-staff-equipment-visual"><%#: Eval("Category") %></div>
+                                            <div class="card-body">
+                                                <p class="small text-muted mb-1"><%#: Eval("Category") %></p>
+                                                <h2 class="h6"><%#: Eval("Model") %></h2>
+                                                <p>Type: <%#: Eval("Type") %></p>
+                                                <p class="small text-muted">SKU: <%#: Eval("Sku") %></p>
+                                                 <button type="button" class="btn btn-success btn-sm equipment-add-button" data-equipment-id="<%#: Eval("EquipmentId") %>" data-equipment-name="<%#: Eval("Model") %>" data-equipment-category="<%#: Eval("Category") %>" data-equipment-sku="<%#: Eval("Sku") %>" data-equipment-stock="<%#: Eval("Stock") %>" data-equipment-rate="<%#: Eval("BaseRentalFee", "{0:0.00}") %>" data-equipment-rental-fee="<%#: Eval("BaseRentalFee", "{0:0.00}") %>" data-equipment-security-deposit="<%#: Eval("SecurityDeposit", "{0:0.00}") %>"><img src="<%: ResolveUrl("~/assets/svg/add.svg") %>" alt="" width="16" height="16" aria-hidden="true" />Add</button><span class="small text-muted ms-2"><%#: Eval("Stock") %> available</span>
+                                            </div>
+                                        </article>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
                         </div>
                         <p id="noEquipmentMessage" class="text-muted text-center d-none">No equipment matches your filters.</p>
                     </div>
@@ -131,7 +81,7 @@
                             <div>
                                 <p class="text-uppercase text-muted small fw-semibold mb-1">Transaction</p>
                                 <h2 id="summaryHeading" class="h5">Transaction summary</h2>
-                                <p class="small text-muted">Customer selection is presentation-only</p>
+                                 <p class="small text-muted">Selected equipment is checked again when the rental is saved.</p>
                             </div>
                         </div>
                         <hr />
@@ -139,8 +89,8 @@
                             <p id="summaryEmpty" class="text-muted small">No equipment added yet.</p>
                         </div>
                         <div class="d-flex justify-content-between mt-4 pt-3 border-top"><span class="fw-semibold">Estimated total</span><strong id="summaryTotal">&#8369;0.00</strong></div>
-                        <p class="text-muted small mt-2">Static sample rates for interface demonstration only.</p>
-                        <button type="button" id="continueButton" class="btn btn-success w-100 mt-3" data-next-url="<%: GetRouteUrl("RentalStaffSerialAssignment", null) %>" disabled>Continue</button></div>
+                         <p class="text-muted small mt-2">Rental and deposit rates are stored with the transaction.</p>
+                         <button type="button" id="continueButton" class="btn btn-success w-100 mt-3" data-next-url="<%: GetRouteUrl("RentalStaffReview", null) %>?customerId=<%: CustomerIdQuery %>" disabled>Continue</button></div>
                 </aside>
             </div>
         </div>
@@ -148,5 +98,5 @@
 </asp:Content>
 
 <asp:Content ID="PageScriptsContent" ContentPlaceHolderID="PageScripts" runat="server">
-    <script src="<%: ResolveUrl("~/Scripts/RentalStaff/Equipment.js?v=3") %>"></script>
+    <script src="<%: ResolveUrl("~/Scripts/RentalStaff/Equipment.js?v=4") %>"></script>
 </asp:Content>

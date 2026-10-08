@@ -60,6 +60,11 @@ namespace Techrent
         protected global::System.Web.UI.WebControls.TextBox PasswordTextBox;
 
         /// <summary>
+        /// SignInErrorLabel control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label SignInErrorLabel;
+
+        /// <summary>
         /// SignInButton control.
         /// </summary>
         /// <remarks>

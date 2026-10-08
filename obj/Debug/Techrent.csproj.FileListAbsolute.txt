@@ -1,3 +1,5 @@
+C:\Users\erevel\source\repos\Techrent\obj\Debug\Techrent.csproj.AssemblyReference.cache
+C:\Users\erevel\source\repos\Techrent\obj\Debug\Techrent.csproj.CoreCompileInputs.cache
 C:\Users\erevel\source\repos\Techrent\bin\Techrent.dll.config
 C:\Users\erevel\source\repos\Techrent\bin\Techrent.dll
 C:\Users\erevel\source\repos\Techrent\bin\Techrent.pdb
@@ -65,8 +67,6 @@ C:\Users\erevel\source\repos\Techrent\bin\Newtonsoft.Json.xml
 C:\Users\erevel\source\repos\Techrent\bin\Antlr3.Runtime.pdb
 C:\Users\erevel\source\repos\Techrent\bin\Microsoft.AspNet.FriendlyUrls.xml
 C:\Users\erevel\source\repos\Techrent\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\erevel\source\repos\Techrent\obj\Debug\Techrent.csproj.AssemblyReference.cache
-C:\Users\erevel\source\repos\Techrent\obj\Debug\Techrent.csproj.CoreCompileInputs.cache
 C:\Users\erevel\source\repos\Techrent\obj\Debug\Techrent.csproj.Up2Date
 C:\Users\erevel\source\repos\Techrent\obj\Debug\Techrent.dll
 C:\Users\erevel\source\repos\Techrent\obj\Debug\Techrent.pdb

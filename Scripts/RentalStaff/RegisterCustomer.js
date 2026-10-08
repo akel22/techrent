@@ -6,7 +6,7 @@
     var photoPlaceholder = document.getElementById('photoPlaceholder');
     var photoError = document.getElementById('photoError');
     var registrationAlert = document.getElementById('registrationAlert');
-    var allowedExtensions = ['jpg', 'jpeg', 'png', 'heic'];
+    var allowedExtensions = ['jpg', 'png', 'heic'];
 
     if (!form) {
         return;

@@ -19,5 +19,21 @@ namespace Techrent.Pages.Admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater InventoryRepeater;
+
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl inventoryDetailAlert;
+
+        protected global::System.Web.UI.HtmlControls.HtmlSelect inventoryDetailStatus;
+
+        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl inventoryDetailQuantity;
+
+        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl inventoryDetailRentalRate;
+
+        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl inventoryDetailDeposit;
+
+        protected global::System.Web.UI.HtmlControls.HtmlSelect inventoryDetailType;
+
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden inventoryDetailEquipmentId;
+
+        protected global::System.Web.UI.HtmlControls.HtmlButton saveInventoryDetails;
     }
 }
