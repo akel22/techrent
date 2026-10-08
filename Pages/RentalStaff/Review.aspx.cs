@@ -106,7 +106,7 @@ namespace Techrent.Pages.RentalStaff
                     new PaymentDto { Amount = amountPaid, PaymentType = "RentalFee", PaymentMethod = "Cash" });
                 ShowSaveMessage("Rental " + transactionId.ToString() + " was saved successfully.", true);
                 saveRentalButton.Disabled = true;
-                ClientScript.RegisterStartupScript(GetType(), "ReopenRentalReceiptModal", "window.setTimeout(function () { window.showRentalReceiptModal(); }, 0);", true);
+                ClientScript.RegisterStartupScript(GetType(), "ReopenRentalReceiptModal", "window.addEventListener('load', function () { if (window.showRentalReceiptModal) { window.showRentalReceiptModal(); } });", true);
             }
             catch (Exception ex)
             {

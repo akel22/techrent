@@ -16,7 +16,7 @@
         <header class="rental-staff-header">
             <div class="container rental-staff-header-content">
                 <h1 class="rental-staff-brand text-center">TECH<span class="text-danger">RENT</span></h1>
-                <asp:Button ID="LogoutButton" runat="server" Text="Sign out" CssClass="btn btn-danger rental-staff-signout" OnClick="LogoutButton_Click" CausesValidation="false" />
+                <asp:Button ID="LogoutButton" runat="server" Text="Sign out" CssClass="btn btn-danger rental-staff-signout" OnClick="LogoutButton_Click" CausesValidation="false" OnClientClick="clearRentalDatesAfterSignOut(); this.form.noValidate = true;" />
             </div>
         </header>
 
@@ -28,5 +28,13 @@
     </form>
     <script src="<%: ResolveUrl("~/Scripts/bootstrap.bundle.min.js") %>"></script>
     <asp:ContentPlaceHolder ID="PageScripts" runat="server" />
+    <script>
+        function clearRentalDatesAfterSignOut() {
+            try {
+                sessionStorage.removeItem('techrent.rentalDates');
+            } catch (error) {
+            }
+        }
+    </script>
 </body>
 </html>

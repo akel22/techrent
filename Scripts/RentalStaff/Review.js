@@ -50,9 +50,8 @@
             securityDeposit += deposit;
             var equipmentName = formatEquipmentCell(item.name);
             var equipmentDetails = formatEquipmentCell((item.category || '') + ' · ' + quantity + ' ' + (quantity === 1 ? 'unit' : 'units'));
-            var equipmentSku = formatEquipmentCell(item.sku);
-            reviewRows.insertAdjacentHTML('beforeend', '<tr><th scope="row"><span class="d-block">' + equipmentName + '</span><span class="small text-muted">' + equipmentDetails + '</span></th><td class="small">' + equipmentSku + '</td><td class="text-end">' + formatCurrency(rentalFee) + '</td><td class="text-end">' + formatCurrency(deposit) + '</td></tr>');
-            rows.insertAdjacentHTML('beforeend', '<tr><th scope="row">' + formatEquipmentCell(item.name) + '</th><td>' + formatEquipmentCell(item.sku) + '</td><td class="text-end">' + formatCurrency(rentalFee) + '</td><td class="text-end">' + formatCurrency(deposit) + '</td></tr>');
+            reviewRows.insertAdjacentHTML('beforeend', '<tr><th scope="row"><span class="d-block">' + equipmentName + '</span><span class="small text-muted">' + equipmentDetails + '</span></th><td class="text-end">' + formatCurrency(rentalFee) + '</td><td class="text-end">' + formatCurrency(deposit) + '</td></tr>');
+            rows.insertAdjacentHTML('beforeend', '<tr><th scope="row">' + formatEquipmentCell(item.name) + '</th><td class="text-end">' + formatCurrency(rentalFee) + '</td><td class="text-end">' + formatCurrency(deposit) + '</td></tr>');
         });
 
         rentalTotal = rentalFees + securityDeposit;

@@ -27,7 +27,6 @@
                 <div class="card-body">
                     <p class="text-muted small mb-2">Revenue</p>
                     <p class="h3 mb-5"><%: RevenueText %></p>
-                    <p class="text-muted small mb-0">Recorded payments</p>
                 </div>
             </section>
         </div>

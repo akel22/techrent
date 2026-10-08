@@ -71,7 +71,7 @@ namespace Techrent.Pages.Admin
                 StatusClass = "status-" + rental.Status.ToLowerInvariant(),
                 Equipment = rental.Items.Select((item, index) => new TransactionEquipment
                 {
-                     SerialNumber = item.Sku,
+                     Sku = item.Sku,
                     Name = item.Model,
                     Rate = FormatCurrency(item.RentalFee),
                     Deposit = FormatCurrency(item.DepositFee)
@@ -185,7 +185,7 @@ namespace Techrent.Pages.Admin
 
         public sealed class TransactionEquipment
         {
-            public string SerialNumber { get; set; }
+            public string Sku { get; set; }
             public string Name { get; set; }
             public string Rate { get; set; }
             public string Deposit { get; set; }

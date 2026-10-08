@@ -146,7 +146,7 @@
                                 <table class="table table-sm align-middle mb-0 transaction-receipt-table">
                                     <caption class="visually-hidden">Equipment and charges for this transaction</caption>
                                     <thead>
-                                        <tr><th scope="col">Equipment</th><th scope="col">Serial number</th><th scope="col" class="text-end">Rental fee</th><th scope="col" class="text-end">Deposit</th></tr>
+                                        <tr><th scope="col">Equipment</th><th scope="col">SKU</th><th scope="col" class="text-end">Rental fee</th><th scope="col" class="text-end">Deposit</th></tr>
                                     </thead>
                                     <tbody id="transactionEquipmentDetails"></tbody>
                                 </table>
@@ -262,9 +262,9 @@
                     equipmentCell.textContent = equipment.Name || '—';
                     row.appendChild(equipmentCell);
 
-                    var serialCell = document.createElement('td');
-                    serialCell.textContent = equipment.SerialNumber || '—';
-                    row.appendChild(serialCell);
+                    var skuCell = document.createElement('td');
+                    skuCell.textContent = equipment.Sku || '—';
+                    row.appendChild(skuCell);
 
                     var rentalFeeCell = document.createElement('td');
                     rentalFeeCell.className = 'text-end';

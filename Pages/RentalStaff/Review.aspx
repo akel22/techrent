@@ -8,7 +8,7 @@
     <section class="rental-staff-review" aria-labelledby="reviewHeading">
         <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
             <div>
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Step 4 of 4</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Step 3 of 3</p>
                 <h1 id="reviewHeading" class="h3 mb-2">Review rental details</h1>
                 <p class="text-muted mb-0">Confirm the customer, assigned equipment, and pre-rental notes before completing the draft.</p>
             </div>
@@ -58,9 +58,9 @@
                         </div>
                         <div class="table-responsive">
                             <table class="table align-middle mb-0 rental-staff-review-table">
-                                <caption class="visually-hidden">Equipment and serial numbers for this rental</caption>
+                                <caption class="visually-hidden">Equipment and charges for this rental</caption>
                                 <thead>
-                                    <tr><th scope="col">Equipment</th><th scope="col">Serial number</th><th scope="col" class="text-end">Rental fee</th><th scope="col" class="text-end">Security Deposit</th></tr>
+                                    <tr><th scope="col">Equipment</th><th scope="col" class="text-end">Rental fee</th><th scope="col" class="text-end">Security Deposit</th></tr>
                                 </thead>
                                 <tbody id="reviewEquipmentRows"></tbody>
                             </table>
@@ -101,7 +101,7 @@
                         </div>
                          <p class="text-muted small mt-3 mb-0">Charges are calculated from the selected equipment and stored transaction rates.</p>
                         <button type="button" id="confirmReviewButton" class="btn btn-success w-100 mt-4">Confirm rental details</button>
-                        <a class="btn btn-outline-secondary w-100 mt-2" href="<%: GetRouteUrl("RentalStaffSerialAssignment", null) %>"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Back to serial assignment</a>
+                        <a class="btn btn-outline-secondary w-100 mt-2" href="<%: GetRouteUrl("RentalStaffEquipment", null) %>?customerId=<%: CustomerId %>"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Back to equipment selection</a>
                     </div>
                 </aside>
             </div>
@@ -155,7 +155,7 @@
                             <div class="table-responsive">
                                 <table class="table table-sm align-middle mb-0 rental-receipt-table">
                                     <thead>
-                                        <tr><th scope="col">Equipment</th><th scope="col">Serial number</th><th scope="col" class="text-end">Rental fee</th><th scope="col" class="text-end">Deposit</th></tr>
+                                        <tr><th scope="col">Equipment</th><th scope="col" class="text-end">Rental fee</th><th scope="col" class="text-end">Deposit</th></tr>
                                     </thead>
                                      <tbody id="rentalReceiptEquipmentRows">
                                     </tbody>

@@ -75,14 +75,18 @@
         return '\u20b1' + value.toLocaleString('ph-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
+    function normalizeCategory(value) {
+        return (value || '').trim().toLowerCase();
+    }
+
     function applyFilters() {
         var term = appliedSearchTerm;
-        var selectedCategory = category.value;
+        var selectedCategory = normalizeCategory(category.value);
         var visible = 0;
 
         items.forEach(function (item) {
             var matchesTerm = !term || item.getAttribute('data-equipment-search').indexOf(term) !== -1;
-            var matchesCategory = selectedCategory === 'all' || item.getAttribute('data-category') === selectedCategory;
+            var matchesCategory = selectedCategory === 'all' || normalizeCategory(item.getAttribute('data-category')) === selectedCategory;
             var visibleItem = matchesTerm && matchesCategory;
             item.classList.toggle('d-none', !visibleItem);
             if (visibleItem) {

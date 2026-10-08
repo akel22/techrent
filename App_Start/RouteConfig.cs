@@ -19,7 +19,6 @@ namespace Techrent
             MapProtectedPageRoute(routes, "RentalStaffNew", "rental-staff/new", "~/Pages/RentalStaff/New.aspx", "RentalStaff");
             MapProtectedPageRoute(routes, "RentalStaffRegisterCustomer", "rental-staff/register-customer", "~/Pages/RentalStaff/RegisterCustomer.aspx", "RentalStaff");
             MapProtectedPageRoute(routes, "RentalStaffEquipment", "rental-staff/equipment", "~/Pages/RentalStaff/Equipment.aspx", "RentalStaff");
-            MapProtectedPageRoute(routes, "RentalStaffSerialAssignment", "rental-staff/serial-assignment", "~/Pages/RentalStaff/SerialAssignment.aspx", "RentalStaff");
             MapProtectedPageRoute(routes, "RentalStaffReview", "rental-staff/review", "~/Pages/RentalStaff/Review.aspx", "RentalStaff");
 
             MapProtectedPageRoute(routes, "Dashboard", "dashboard", "~/Pages/Admin/Dashboard.aspx", "Admin");

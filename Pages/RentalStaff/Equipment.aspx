@@ -7,11 +7,11 @@
     <section class="rental-staff-equipment" aria-labelledby="equipmentHeading">
         <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
             <div>
-                <p class="text-uppercase text-muted small fw-semibold mb-1">Step 2 of 4</p>
+                <p class="text-uppercase text-muted small fw-semibold mb-1">Step 2 of 3</p>
                 <h1 id="equipmentHeading" class="h3 mb-2">Choose equipment</h1>
                 <p class="text-muted mb-0">Add equipment for this rental transaction.</p>
             </div>
-            <a class="btn btn-outline-secondary" href="<%: GetRouteUrl("RentalStaffNew", null) %>"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Go back to Step 1</a></div>
+            <a class="btn btn-outline-secondary" href="<%: GetRouteUrl("RentalStaffNew", null) %>"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Go back to customer selection</a></div>
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-body p-3 p-md-4">
                 <div class="mb-3">
@@ -46,10 +46,12 @@
                             </div>
                             <div class="col-md-5">
                                 <label for="equipmentCategory" class="form-label">Category</label><select id="equipmentCategory" class="form-select"><option value="all">All equipment</option>
-                                    <option value="laptop">Laptops</option>
-                                    <option value="projector">Projectors</option>
-                                    <option value="monitor">Monitors</option>
-                                    <option value="accessory">Accessories</option>
+                                    <option value="Laptop">Laptop</option>
+                                    <option value="Desktop">Desktop</option>
+                                    <option value="Monitor">Monitor</option>
+                                    <option value="Projector">Projector</option>
+                                    <option value="Peripheral">Peripheral</option>
+                                    <option value="Other">Other</option>
                                 </select></div>
                         </div>
                         <div id="equipmentList" class="row g-3">

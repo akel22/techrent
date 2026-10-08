@@ -31,7 +31,8 @@
                         CssClass="nav-link btn btn-danger text-start mt-5" 
                         Text="Sign out"
                         OnClick="LogoutButton_Click"
-                        CausesValidation="false" />
+                        CausesValidation="false"
+                        OnClientClick="this.form.noValidate = true;" />
                     </nav>
             </aside>
             <main class="admin-main">

@@ -172,7 +172,6 @@
     <Content Include="Pages\RentalStaff\New.aspx" />
     <Content Include="Pages\RentalStaff\RegisterCustomer.aspx" />
     <Content Include="Pages\RentalStaff\Equipment.aspx" />
-    <Content Include="Pages\RentalStaff\SerialAssignment.aspx" />
     <Content Include="Pages\RentalStaff\Review.aspx" />
     <Content Include="Scripts\Admin\InsertEquipment.js" />
     <Content Include="Scripts\RentalStaff\Equipment.js" />
@@ -416,13 +415,6 @@
     </Compile>
     <Compile Include="Pages\RentalStaff\Review.aspx.designer.cs">
       <DependentUpon>Review.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\RentalStaff\SerialAssignment.aspx.cs">
-      <DependentUpon>SerialAssignment.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\RentalStaff\SerialAssignment.aspx.designer.cs">
-      <DependentUpon>SerialAssignment.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
