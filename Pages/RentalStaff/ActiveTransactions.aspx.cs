@@ -33,6 +33,8 @@ namespace Techrent.Pages.RentalStaff
 
             ServiceFactory.CreateRentalService().CompleteRental(transactionId, ReturnConditionNotesHidden.Value, additionalCharges);
             BindTransactions();
+            transactionAlert.InnerText = "Transaction marked as done successfully.";
+            transactionAlert.Attributes["class"] = "alert alert-success mb-4";
         }
 
         private void BindTransactions()

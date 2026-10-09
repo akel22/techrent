@@ -115,7 +115,7 @@
                             </dl>
                         </div>
                         <div class="col-md-5">
-                             <div class="customer-profile-placeholder me-4" aria-label="Customer profile image placeholder">
+                             <div class="customer-profile-placeholder me-4 border-0 shadow-sm" aria-label="Customer profile image placeholder">
                                  <span id="customerProfileImagePlaceholder">Profile image unavailable</span>
                                  <img id="customerProfileImage" class="customer-profile-image d-none" alt="Customer profile image" />
                              </div>

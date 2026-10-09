@@ -1,7 +1,7 @@
 <%@ Page Title="Active Transactions" Language="C#" MasterPageFile="~/Pages/RentalStaff/RentalStaff.Master" AutoEventWireup="true" CodeBehind="ActiveTransactions.aspx.cs" Inherits="Techrent.Pages.RentalStaff.ActiveTransactions" %>
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
-    <link href="<%: ResolveUrl("~/css/rentalstaff/RentalStaff.ActiveTransactions.css?v=5") %>" rel="stylesheet" />
+    <link href="<%: ResolveUrl("~/css/rentalstaff/RentalStaff.ActiveTransactions.css?v=6") %>" rel="stylesheet" />
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
@@ -14,6 +14,8 @@
                 <a class="btn btn-outline-secondary rental-staff-back-button" href="<%: GetRouteUrl("RentalStaff", null) %>">
                     <span class="rental-staff-back-icon" aria-hidden="true"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" width="16" height="16" /></span>Back to home</a>
         </div>
+
+        <div id="transactionAlert" runat="server" ClientIDMode="Static" class="alert alert-success d-none mb-4" role="status" aria-live="polite"></div>
 
         <div class="card border-0 shadow-sm">
             <div class="card-body p-3 p-md-4">
@@ -55,16 +57,16 @@
         <asp:HiddenField ID="SelectedTransactionIdHidden" runat="server" ClientIDMode="Static" />
         <asp:HiddenField ID="ReturnConditionNotesHidden" runat="server" ClientIDMode="Static" />
         <asp:HiddenField ID="AdditionalChargesHidden" runat="server" ClientIDMode="Static" />
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg rental-completion-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title h5" id="markDoneModalLabel">Complete transaction</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <p class="mb-3 alert alert-warning">Review the transaction details before marking the rental as done.</p>
-                    <div class="row g-4 align-items-start">
-                        <dl class="col-lg-5 row mb-0 rental-transaction-details">
+                <div class="modal-body p-3 p-md-4">
+                    <p class="alert alert-warning mb-4">Review the transaction details before marking the rental as done.</p>
+                    <div class="row g-3 g-lg-4 align-items-start">
+                        <dl class="col-12 col-lg-5 row mb-0 rental-transaction-details">
                             <dt class="col-sm-5 col-lg-12">Transaction</dt>
                             <dd class="col-sm-7 col-lg-12" data-modal-transaction></dd>
                             <dt class="col-sm-5 col-lg-12">Customer</dt>
@@ -76,39 +78,39 @@
                             <dt class="col-sm-5 col-lg-12">Current status</dt>
                             <dd class="col-sm-7 col-lg-12" data-modal-status>Ongoing</dd>
                         </dl>
-                        <div class="col-lg-7">
+                        <div class="col-12 col-lg-7">
                             <div class="card border rental-return-audit-card h-100">
-                        <div class="card-body p-3">
-                            <div class="mb-3">
-                                <h3 class="h6 mb-1">Return condition audit</h3>
-                                <p class="small text-muted mb-0">Record the overall condition of the equipment being returned.</p>
-                            </div>
-                            <div class="rental-return-equipment-summary mb-3">
-                                <span class="small text-muted d-block">Equipment</span>
-                                <span class="fw-semibold">Rental equipment set</span>
-                                <span class="small text-muted d-block">Serial details recorded in the transaction</span>
-                            </div>
-                            <div>
-                                <label for="returnConditionNotes" class="form-label">Condition notes <span class="text-muted fw-normal">(optional)</span></label>
-                                <textarea id="returnConditionNotes" class="form-control" rows="3" maxlength="500" placeholder="Describe any damage, missing items, or other observations." aria-describedby="returnConditionHelp returnConditionCount"></textarea>
-                                <div class="d-flex justify-content-between gap-3 mt-2">
-                                    <span id="returnConditionHelp" class="form-text">Maximum 500 characters</span>
-                                    <span id="returnConditionCount" class="form-text" aria-live="polite">0 / 500</span>
+                                <div class="card-body p-3 p-md-4">
+                                    <div class="mb-3">
+                                        <h3 class="h6 mb-1">Return condition audit</h3>
+                                        <p class="small text-muted mb-0">Record the overall condition of the equipment being returned.</p>
+                                    </div>
+                                    <div class="rental-return-equipment-summary mb-3">
+                                        <span class="small text-muted d-block">Equipment</span>
+                                        <span class="fw-semibold">Rental equipment set</span>
+                                        <span class="small text-muted d-block">Serial details recorded in the transaction</span>
+                                    </div>
+                                    <div>
+                                        <label for="returnConditionNotes" class="form-label">Condition notes <span class="text-muted fw-normal">(optional)</span></label>
+                                        <textarea id="returnConditionNotes" class="form-control" rows="3" maxlength="500" placeholder="Describe any damage, missing items, or other observations." aria-describedby="returnConditionHelp returnConditionCount"></textarea>
+                                        <div class="d-flex justify-content-between gap-3 mt-2">
+                                            <span id="returnConditionHelp" class="form-text">Maximum 500 characters</span>
+                                            <span id="returnConditionCount" class="form-text" aria-live="polite">0 / 500</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4" aria-labelledby="additionalChargesHeading">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                                            <div class="flex-grow-1">
+                                                <h3 class="h6 mb-1" id="additionalChargesHeading">Additional charges <span class="text-muted fw-normal">(optional)</span></h3>
+                                                <p class="small text-muted mb-0">Record late or damage charges collected when the equipment is returned.</p>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm flex-shrink-0" id="addAdditionalCharge">Add charge</button>
+                                        </div>
+                                        <div id="additionalCharges" class="vstack gap-2"></div>
+                                        <p id="additionalChargesEmpty" class="small text-muted mb-0">No additional charges added.</p>
+                                    </div>
                                 </div>
                             </div>
-                             <div class="mt-4" aria-labelledby="additionalChargesHeading">
-                                 <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                     <div>
-                                         <h3 class="h6 mb-1" id="additionalChargesHeading">Additional charges <span class="text-muted fw-normal">(optional)</span></h3>
-                                         <p class="small text-muted mb-0">Record late or damage charges collected when the equipment is returned.</p>
-                                     </div>
-                                     <button type="button" class="btn btn-outline-secondary btn-sm" id="addAdditionalCharge">Add charge</button>
-                                 </div>
-                                 <div id="additionalCharges" class="vstack gap-2"></div>
-                                 <p id="additionalChargesEmpty" class="small text-muted mb-0">No additional charges added.</p>
-                             </div>
-                        </div>
-                    </div>
                         </div>
                     </div>
                 </div>
@@ -122,5 +124,5 @@
 </asp:Content>
 
 <asp:Content ID="PageScripts" ContentPlaceHolderID="PageScripts" runat="server">
-    <script src="<%: ResolveUrl("~/Scripts/rentalstaff/ActiveTransactions.js?v=4") %>"></script>
+    <script src="<%: ResolveUrl("~/Scripts/rentalstaff/ActiveTransactions.js?v=5") %>"></script>
 </asp:Content>

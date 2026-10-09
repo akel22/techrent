@@ -124,6 +124,7 @@
 .rental-transaction-details dd {
     color: #212529;
     font-weight: 500;
+    overflow-wrap: anywhere;
 }
 
 .rental-transaction-details dd:last-of-type {
@@ -167,8 +168,43 @@
     font-weight: 600;
 }
 
+.rental-completion-dialog .modal-content {
+    max-height: calc(100vh - 2rem);
+}
+
+.rental-completion-dialog .modal-body {
+    overflow-y: auto;
+}
+
+.additional-charge-row > div {
+    min-width: 0;
+}
+
+.additional-charge-row .form-label {
+    display: block;
+    min-height: 2.25rem;
+}
+
+.additional-charge-row .form-control,
+.additional-charge-row .form-select,
+.additional-charge-row .btn {
+    width: 100%;
+}
+
 @media (max-width: 575.98px) {
     .rental-staff-active-transactions {
         padding-top: 1rem;
+    }
+
+    .rental-completion-dialog .modal-content {
+        max-height: calc(100vh - 1rem);
+    }
+
+    .rental-completion-dialog .modal-footer {
+        gap: 0.5rem;
+    }
+
+    .rental-completion-dialog .modal-footer > * {
+        flex: 1 1 auto;
     }
 }

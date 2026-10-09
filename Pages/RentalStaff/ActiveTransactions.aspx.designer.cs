@@ -15,6 +15,15 @@ namespace Techrent.Pages.RentalStaff
     {
 
         /// <summary>
+        /// transactionAlert control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl transactionAlert;
+
+        /// <summary>
         /// ActiveTransactionsRepeater control.
         /// </summary>
         /// <remarks>

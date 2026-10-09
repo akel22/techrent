@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
         row.className = "row g-2 align-items-end additional-charge-row";
 
         var typeColumn = document.createElement("div");
-        typeColumn.className = "col-md-4";
+        typeColumn.className = "col-12 col-sm-6";
         var typeLabel = document.createElement("label");
         typeLabel.className = "form-label small mb-1";
         typeLabel.textContent = "Charge type";
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
         typeColumn.appendChild(type);
 
         var amountColumn = document.createElement("div");
-        amountColumn.className = "col-md-3";
+        amountColumn.className = "col-12 col-sm-6";
         var amountLabel = document.createElement("label");
         amountLabel.className = "form-label small mb-1";
         amountLabel.textContent = "Amount";
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
         amountColumn.appendChild(amount);
 
         var methodColumn = document.createElement("div");
-        methodColumn.className = "col-md-3";
+        methodColumn.className = "col-12 col-sm-6";
         var methodLabel = document.createElement("label");
         methodLabel.className = "form-label small mb-1";
         methodLabel.textContent = "Payment method";
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
         methodColumn.appendChild(method);
 
         var removeColumn = document.createElement("div");
-        removeColumn.className = "col-md-2 d-grid";
+        removeColumn.className = "col-12 col-sm-6 d-grid";
         var remove = document.createElement("button");
         remove.type = "button";
         remove.className = "btn btn-outline-danger";

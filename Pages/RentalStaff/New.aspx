@@ -100,7 +100,7 @@
                             </dl>
                         </div>
                         <div class="col-md-5">
-                            <div class="customer-profile-placeholder" aria-label="Customer identification card">
+                            <div class="customer-profile-placeholder border-0 shadow-sm" aria-label="Customer identification card">
                                 <span id="customerProfileImagePlaceholder">Identification card unavailable</span>
                                 <img id="customerProfileImage" class="customer-profile-image d-none" alt="Customer identification card" />
                             </div>
