@@ -195,7 +195,7 @@ CREATE OR ALTER PROCEDURE dbo.usp_GetTransactionById
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
+		   c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t
 	INNER JOIN dbo.Customers c ON c.CustomerID = t.UserID
 	WHERE t.TransactionID = @TransactionID;

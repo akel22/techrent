@@ -39,15 +39,31 @@ namespace Techrent.Pages.RentalStaff
         protected void SaveRentalButton_ServerClick(object sender, EventArgs e)
         {
             Guid customerId;
+            DateTime startDate;
             DateTime returnDate;
             decimal amountPaid;
             if (!Guid.TryParse(Request.QueryString["customerId"], out customerId) ||
-                !DateTime.TryParseExact(rentalReturnDateValue.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out returnDate) ||
+                !DateTime.TryParseExact(rentalStartDateValue.Value, "yyyy-MM-dd'T'HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate) ||
+                !DateTime.TryParseExact(rentalReturnDateValue.Value, "yyyy-MM-dd'T'HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out returnDate) ||
                 !decimal.TryParse(paymentAmountValue.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out amountPaid))
             {
-                ShowSaveMessage("Select a customer, return date, and valid payment amount before saving.", false);
+                ShowSaveMessage("Select a customer, rental start and return date-time, and valid payment amount before saving.", false);
                 return;
             }
+
+            if (startDate < DateTime.Now)
+            {
+                ShowSaveMessage("The rental start date and time cannot be in the past.", false);
+                return;
+            }
+
+            if (returnDate <= startDate)
+            {
+                ShowSaveMessage("The return date and time must be after the rental start date and time.", false);
+                return;
+            }
+
+            var billableHours = (int)Math.Ceiling((returnDate - startDate).TotalHours);
 
             Dictionary<string, SelectedEquipment> selected;
             try
@@ -87,7 +103,7 @@ namespace Techrent.Pages.RentalStaff
                 {
                     EquipmentId = equipmentId,
                     Quantity = entry.Value.Quantity,
-                    RentalFee = equipment.BaseRentalFee,
+                    RentalFee = equipment.BaseRentalFee * billableHours,
                     DepositFee = equipment.SecurityDeposit
                 });
             }
@@ -102,7 +118,7 @@ namespace Techrent.Pages.RentalStaff
             try
             {
                 var transactionId = ServiceFactory.CreateRentalService().CreateRental(
-                    new RentalTransactionDto { UserId = customerId, DueAt = returnDate, Items = items },
+                    new RentalTransactionDto { UserId = customerId, StartAt = startDate, DueAt = returnDate, BillableHours = billableHours, Items = items },
                     new PaymentDto { Amount = amountPaid, PaymentType = "RentalFee", PaymentMethod = "Cash" });
                 ShowSaveMessage("Rental " + transactionId.ToString() + " was saved successfully.", true);
                 saveRentalButton.Disabled = true;

@@ -16,19 +16,19 @@
             <div class="card-body p-3 p-md-4">
                 <div class="mb-3">
                     <h2 class="h5 mb-1">Rental dates</h2>
-                    <p class="text-muted small mb-0">Choose when the equipment will be released and returned.</p>
+                        <p class="text-muted small mb-0">Choose when the equipment will be released and returned. Rental fees are billed by the hour, with partial hours rounded up.</p>
                 </div>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label for="rentalStartDate" class="form-label">Rental start date</label>
-                        <input id="rentalStartDate" class="form-control" type="date" required aria-describedby="rentalDateHelp" />
+                        <label for="rentalStartDate" class="form-label">Rental start date and time</label>
+                        <input id="rentalStartDate" class="form-control" type="datetime-local" required aria-describedby="rentalDateHelp rentalDateValidation" />
                     </div>
                     <div class="col-md-6">
-                        <label for="rentalEndDate" class="form-label">Return date</label>
-                        <input id="rentalEndDate" class="form-control" type="date" required aria-describedby="rentalDateHelp" />
+                        <label for="rentalEndDate" class="form-label">Return date and time</label>
+                        <input id="rentalEndDate" class="form-control" type="datetime-local" required aria-describedby="rentalDateHelp rentalDateValidation" />
                     </div>
                 </div>
-                <p id="rentalDateHelp" class="form-text mb-0">The return date must be on or after the rental start date.</p>
+                <p id="rentalDateHelp" class="form-text mb-0">The return date and time must be after the rental start date and time.</p>
                 <div id="rentalDateValidation" class="invalid-feedback d-none" role="alert" aria-live="polite"></div>
             </div>
         </div>
@@ -100,5 +100,5 @@
 </asp:Content>
 
 <asp:Content ID="PageScriptsContent" ContentPlaceHolderID="PageScripts" runat="server">
-    <script src="<%: ResolveUrl("~/Scripts/RentalStaff/Equipment.js?v=4") %>"></script>
+    <script src="<%: ResolveUrl("~/Scripts/RentalStaff/Equipment.js?v=5") %>"></script>
 </asp:Content>

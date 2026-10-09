@@ -38,12 +38,16 @@
 
                         <dl class="row g-3 mb-0 small rental-staff-review-dates">
                             <div class="col-md-6">
-                                <dt class="text-muted fw-normal">Rental start date</dt>
+                                <dt class="text-muted fw-normal">Rental start</dt>
                                 <dd id="reviewRentalStartDate" class="mb-0 fw-semibold">Not provided</dd>
                             </div>
                             <div class="col-md-6">
-                                <dt class="text-muted fw-normal">Return date</dt>
+                                <dt class="text-muted fw-normal">Return</dt>
                                 <dd id="reviewRentalReturnDate" class="mb-0 fw-semibold">Not provided</dd>
+                            </div>
+                            <div class="col-md-6">
+                                <dt class="text-muted fw-normal">Billable duration</dt>
+                                <dd id="reviewRentalDuration" class="mb-0 fw-semibold">Not provided</dd>
                             </div>
                         </dl>
                     </div>
@@ -145,8 +149,9 @@
                         <section class="rental-receipt-section" aria-labelledby="rentalReceiptDatesHeading">
                             <h3 class="h6 rental-receipt-heading" id="rentalReceiptDatesHeading">Rental dates</h3>
                             <dl class="rental-receipt-list">
-                                <div class="rental-receipt-field"><dt>Rental start date</dt><dd id="rentalReceiptStartDate">Not provided</dd></div>
-                                <div class="rental-receipt-field"><dt>Return date</dt><dd id="rentalReceiptReturnDate">Not provided</dd></div>
+                                <div class="rental-receipt-field"><dt>Rental start</dt><dd id="rentalReceiptStartDate">Not provided</dd></div>
+                                <div class="rental-receipt-field"><dt>Return</dt><dd id="rentalReceiptReturnDate">Not provided</dd></div>
+                                <div class="rental-receipt-field"><dt>Billable duration</dt><dd id="rentalReceiptDuration">Not provided</dd></div>
                             </dl>
                         </section>
 
@@ -212,5 +217,5 @@
 </asp:Content>
 
 <asp:Content ID="PageScriptsContent" ContentPlaceHolderID="PageScripts" runat="server">
-    <script src="<%: ResolveUrl("~/Scripts/RentalStaff/Review.js?v=3") %>"></script>
+    <script src="<%: ResolveUrl("~/Scripts/RentalStaff/Review.js?v=5") %>"></script>
 </asp:Content>

@@ -16,30 +16,46 @@
     var appliedSearchTerm = '';
     var selectedEquipmentStorageKey = 'techrent.selectedEquipment';
 
-    function formatDateForInput(date) {
+    function formatDateTimeForInput(date) {
         var year = date.getFullYear();
         var month = String(date.getMonth() + 1).padStart(2, '0');
         var day = String(date.getDate()).padStart(2, '0');
-        return year + '-' + month + '-' + day;
+        var hours = String(date.getHours()).padStart(2, '0');
+        var minutes = String(date.getMinutes()).padStart(2, '0');
+        return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+    }
+
+    function getBillableHours() {
+        var start = new Date(rentalStartDate.value);
+        var end = new Date(rentalEndDate.value);
+        if (isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
+            return 0;
+        }
+
+        return Math.ceil((end.getTime() - start.getTime()) / 3600000);
     }
 
     function validateRentalDates() {
         var start = rentalStartDate.value;
         var end = rentalEndDate.value;
         var message = '';
-        var today = rentalStartDate.min;
-        var valid = !!start && !!end && start >= today && end >= start;
+        var startDate = new Date(start);
+        var endDate = new Date(end);
+        var minimum = new Date(rentalStartDate.min);
+        var valid = !!start && !!end && !isNaN(startDate.getTime()) && !isNaN(endDate.getTime()) && startDate >= minimum && endDate > startDate;
 
         if (!start || !end) {
-            message = 'Select both a rental start date and a return date.';
-        } else if (start < today) {
-            message = 'The rental start date cannot be in the past.';
-        } else if (end < start) {
-            message = 'The return date must be on or after the rental start date.';
+            message = 'Select both a rental start date and time and a return date and time.';
+        } else if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            message = 'Enter valid rental start and return date-times.';
+        } else if (startDate < minimum) {
+            message = 'The rental start date and time cannot be in the past.';
+        } else if (endDate <= startDate) {
+            message = 'The return date and time must be after the rental start date and time.';
         }
 
-        rentalStartDate.classList.toggle('is-invalid', !start || start < today || (!!end && end < start));
-        rentalEndDate.classList.toggle('is-invalid', !end || (!!start && end < start));
+        rentalStartDate.classList.toggle('is-invalid', !valid && (!start || isNaN(startDate.getTime()) || startDate < minimum || (!!end && !isNaN(endDate.getTime()) && endDate <= startDate)));
+        rentalEndDate.classList.toggle('is-invalid', !valid && (!end || isNaN(endDate.getTime()) || (!!start && !isNaN(startDate.getTime()) && endDate <= startDate)));
         rentalDateValidation.textContent = message;
         rentalDateValidation.classList.toggle('d-none', valid);
         continueButton.disabled = !valid || Object.keys(selected).length === 0;
@@ -99,25 +115,31 @@
 
     function renderSummary() {
         var totalUnits = 0;
+        var rentalFees = 0;
+        var securityDeposit = 0;
         var total = 0;
+        var billableHours = getBillableHours();
         var markup = '';
 
         Object.keys(selected).forEach(function (id) {
             var item = selected[id];
-            var lineTotal = item.quantity * item.rate;
+            var lineRentalFee = item.quantity * item.rate * billableHours;
+            var lineDeposit = item.quantity * item.securityDeposit;
             totalUnits += item.quantity;
-            total += lineTotal;
+            rentalFees += lineRentalFee;
+            securityDeposit += lineDeposit;
             markup += '<div class="rental-staff-summary-item">' +
-                '<div><strong>' + item.name + '</strong><span> Base rental fee: ' + money(item.rate) + '/hr </span>' +
+                '<div><strong>' + item.name + '</strong><span> Rental fee: ' + money(item.rate) + '/hr × ' + billableHours + ' ' + (billableHours === 1 ? 'hour' : 'hours') + '</span>' +
                 '<span> Security deposit: '+ money(item.securityDeposit) + '</span></div>' +
                 '<div class="rental-staff-summary-controls" aria-label="Quantity for ' + item.name + '">' +
                 '<button type="button" class="btn btn-sm btn-outline-secondary summary-quantity-button" data-action="decrease" data-id="' + id + '">−</button>' +
                 '<span>' + item.quantity + '</span>' +
                 '<button type="button" class="btn btn-sm btn-outline-secondary summary-quantity-button" data-action="increase" data-id="' + id + '">+</button>' +
                 '<button type="button" class="btn btn-sm btn-link text-danger summary-remove-button" data-action="remove" data-id="' + id + '">Remove</button>' +
-                '</div><strong>' + money(lineTotal) + '</strong></div>';
+                '</div><strong>' + money(lineRentalFee + lineDeposit) + '</strong></div>';
         });
 
+        total = rentalFees + securityDeposit;
         summaryEmpty.classList.toggle('d-none', totalUnits !== 0);
         summaryItems.querySelectorAll('.rental-staff-summary-item').forEach(function (node) { node.remove(); });
         summaryItems.insertAdjacentHTML('afterbegin', markup);
@@ -197,16 +219,16 @@
         }
     });
     category.addEventListener('change', applyFilters);
-    var today = new Date();
-    var todayValue = formatDateForInput(today);
-    rentalStartDate.min = todayValue;
-    rentalEndDate.min = todayValue;
+    var now = new Date();
+    var nowValue = formatDateTimeForInput(now);
+    rentalStartDate.min = nowValue;
+    rentalEndDate.min = nowValue;
     rentalStartDate.addEventListener('change', function () {
-        rentalEndDate.min = rentalStartDate.value || todayValue;
+        rentalEndDate.min = rentalStartDate.value || nowValue;
         validateRentalDates();
     });
     rentalEndDate.addEventListener('change', validateRentalDates);
     restoreRentalDates();
-    rentalEndDate.min = rentalStartDate.value || todayValue;
+    rentalEndDate.min = rentalStartDate.value || nowValue;
     validateRentalDates();
 }());

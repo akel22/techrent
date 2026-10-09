@@ -133,14 +133,17 @@ GO
 
 CREATE OR ALTER PROCEDURE dbo.usp_CreateTransaction
 	@UserID UNIQUEIDENTIFIER,
+	@StartAt DATETIME2(7),
 	@DueAt DATETIME2(7),
+	@BillableHours INT,
 	@TransactionID UNIQUEIDENTIFIER OUTPUT
 AS
 BEGIN
 	SET NOCOUNT ON;
+	IF @DueAt <= @StartAt OR @BillableHours <= 0 THROW 51000, 'The rental period and billable hours are invalid.', 1;
 	SET @TransactionID = NEWID();
-	INSERT INTO dbo.Transactions (TransactionID, UserID, Status, DueAt)
-	VALUES (@TransactionID, @UserID, 'Ongoing', @DueAt);
+	INSERT INTO dbo.Transactions (TransactionID, UserID, Status, StartAt, DueAt, BillableHours)
+	VALUES (@TransactionID, @UserID, 'Ongoing', @StartAt, @DueAt, @BillableHours);
 END
 GO
 
@@ -166,7 +169,7 @@ BEGIN
 	UPDATE dbo.Transactions
 	SET Status = CASE WHEN DueAt < DATEADD(DAY, -3, SYSUTCDATETIME()) THEN 'Overdue' ELSE 'Late' END
 	WHERE IsArchived = 0 AND Status IN ('Ongoing', 'Overdue', 'Late') AND DueAt < SYSUTCDATETIME();
-	SELECT t.TransactionID, t.UserID, u.FirstName, u.LastName, t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, u.FirstName, u.LastName, t.CreatedAt, t.StartAt, t.DueAt, t.BillableHours, t.Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t
 	INNER JOIN dbo.Users u ON u.UserID = t.UserID
 	WHERE t.Status IN ('Ongoing', 'Overdue', 'Late')
@@ -183,7 +186,7 @@ BEGIN
 	SET Status = CASE WHEN DueAt < DATEADD(DAY, -3, SYSUTCDATETIME()) THEN 'Overdue' ELSE 'Late' END
 	WHERE IsArchived = 0 AND Status IN ('Ongoing', 'Overdue', 'Late') AND DueAt < SYSUTCDATETIME();
 	SELECT t.TransactionID, t.UserID, u.FirstName, u.LastName, u.Email, u.MobileNumber,
-		   t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
+		   t.CreatedAt, t.StartAt, t.DueAt, t.BillableHours, t.Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t
 	INNER JOIN dbo.Users u ON u.UserID = t.UserID
 	WHERE t.IsArchived = 0
@@ -196,7 +199,7 @@ CREATE OR ALTER PROCEDURE dbo.usp_GetTransactionById
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT t.TransactionID, t.UserID, u.FirstName, u.LastName, u.Email, u.MobileNumber, t.CreatedAt, t.DueAt, t.Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, u.FirstName, u.LastName, u.Email, u.MobileNumber, t.CreatedAt, t.StartAt, t.DueAt, t.BillableHours, t.Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t
 	INNER JOIN dbo.Users u ON u.UserID = t.UserID
 	WHERE t.TransactionID = @TransactionID;

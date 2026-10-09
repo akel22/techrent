@@ -79,10 +79,14 @@ BEGIN
 		UserID UNIQUEIDENTIFIER NOT NULL,
 		[Status] NVARCHAR(12) NOT NULL CONSTRAINT DF_Transactions_Status DEFAULT 'Ongoing',
 		CreatedAt DATETIME2(7) NOT NULL CONSTRAINT DF_Transactions_CreatedAt DEFAULT SYSUTCDATETIME(),
+		StartAt DATETIME2(7) NOT NULL,
 		DueAt DATETIME2(7) NOT NULL,
+		BillableHours INT NOT NULL,
 		Receipt VARBINARY(MAX) NULL,
 		ReturnConditionNotes NVARCHAR(500) NULL,
-		IsArchived BIT NOT NULL CONSTRAINT DF_Transactions_IsArchived DEFAULT 0
+		IsArchived BIT NOT NULL CONSTRAINT DF_Transactions_IsArchived DEFAULT 0,
+		CONSTRAINT CK_Transactions_BillableHours CHECK (BillableHours > 0),
+		CONSTRAINT CK_Transactions_RentalPeriod CHECK (DueAt > StartAt)
 	);
 END
 GO
@@ -290,11 +294,19 @@ BEGIN
 END
 GO
 
-CREATE OR ALTER PROCEDURE dbo.usp_CreateTransaction @UserID UNIQUEIDENTIFIER, @DueAt DATETIME2(7), @TransactionID UNIQUEIDENTIFIER OUTPUT AS
+CREATE OR ALTER PROCEDURE dbo.usp_CreateTransaction
+	@UserID UNIQUEIDENTIFIER,
+	@StartAt DATETIME2(7),
+	@DueAt DATETIME2(7),
+	@BillableHours INT,
+	@TransactionID UNIQUEIDENTIFIER OUTPUT
+AS
 BEGIN
 	SET NOCOUNT ON;
+	IF @DueAt <= @StartAt OR @BillableHours <= 0 THROW 51000, 'The rental period and billable hours are invalid.', 1;
 	SET @TransactionID = NEWID();
-	INSERT INTO dbo.Transactions(TransactionID, UserID, [Status], DueAt) VALUES(@TransactionID, @UserID, N'Ongoing', @DueAt);
+	INSERT INTO dbo.Transactions(TransactionID, UserID, [Status], StartAt, DueAt, BillableHours)
+	VALUES(@TransactionID, @UserID, N'Ongoing', @StartAt, @DueAt, @BillableHours);
 END
 GO
 
@@ -318,7 +330,7 @@ BEGIN
 	UPDATE dbo.Transactions
 	SET [Status]=CASE WHEN DueAt < DATEADD(DAY,-3,SYSUTCDATETIME()) THEN N'Overdue' ELSE N'Late' END
 	WHERE IsArchived=0 AND [Status] IN(N'Ongoing',N'Overdue',N'Late') AND DueAt < SYSUTCDATETIME();
-	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.StartAt, t.DueAt, t.BillableHours, t.[Status] AS Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t INNER JOIN dbo.Customers c ON c.CustomerID=t.UserID
 	WHERE t.[Status] IN(N'Ongoing',N'Overdue',N'Late') AND t.IsArchived=0 ORDER BY t.DueAt;
 END
@@ -330,7 +342,7 @@ BEGIN
 	UPDATE dbo.Transactions
 	SET [Status]=CASE WHEN DueAt < DATEADD(DAY,-3,SYSUTCDATETIME()) THEN N'Overdue' ELSE N'Late' END
 	WHERE IsArchived=0 AND [Status] IN(N'Ongoing',N'Overdue',N'Late') AND DueAt < SYSUTCDATETIME();
-	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.StartAt, t.DueAt, t.BillableHours, t.[Status] AS Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t INNER JOIN dbo.Customers c ON c.CustomerID=t.UserID WHERE t.IsArchived=0 ORDER BY t.CreatedAt DESC;
 END
 GO
@@ -338,7 +350,7 @@ GO
 CREATE OR ALTER PROCEDURE dbo.usp_GetTransactionsByCustomer @UserID UNIQUEIDENTIFIER AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.StartAt, t.DueAt, t.BillableHours, t.[Status] AS Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t INNER JOIN dbo.Customers c ON c.CustomerID=t.UserID
 	WHERE t.UserID=@UserID ORDER BY t.CreatedAt DESC;
 END
@@ -347,7 +359,7 @@ GO
 CREATE OR ALTER PROCEDURE dbo.usp_GetTransactionById @TransactionID UNIQUEIDENTIFIER AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.DueAt, t.[Status] AS Status, t.IsArchived, t.Receipt
+	SELECT t.TransactionID, t.UserID, c.FirstName, c.LastName, c.Email, c.MobileNumber, t.CreatedAt, t.StartAt, t.DueAt, t.BillableHours, t.[Status] AS Status, t.IsArchived, t.Receipt
 	FROM dbo.Transactions t INNER JOIN dbo.Customers c ON c.CustomerID=t.UserID
 	WHERE t.TransactionID=@TransactionID;
 	SELECT te.TransactionID, te.EquipmentID, e.Model, e.SKU, e.Category, e.[Type] AS Type, e.[Status] AS Status, te.Quantity, te.RentalFee, te.DepositFee

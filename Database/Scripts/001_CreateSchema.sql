@@ -46,11 +46,15 @@ CREATE TABLE dbo.Transactions
 	UserID UNIQUEIDENTIFIER NOT NULL,
 	"Status" NVARCHAR(12) NOT NULL CONSTRAINT DF_Transactions_Status DEFAULT 'Ongoing',
 	CreatedAt DATETIME2(7) NOT NULL CONSTRAINT DF_Transactions_CreatedAt DEFAULT SYSUTCDATETIME(),
+	StartAt DATETIME2(7) NOT NULL,
 	DueAt DATETIME2(7) NOT NULL,
+	BillableHours INT NOT NULL,
 	Receipt VARBINARY(MAX) NULL,
 	ReturnConditionNotes NVARCHAR(500) NULL,
 	CONSTRAINT FK_Transactions_Users FOREIGN KEY (UserID) REFERENCES dbo.Users(UserID),
-	CONSTRAINT CK_Transactions_Status CHECK (Status IN ('Ongoing', 'Overdue', 'Late', 'Done'))
+	CONSTRAINT CK_Transactions_Status CHECK (Status IN ('Ongoing', 'Overdue', 'Late', 'Done')),
+	CONSTRAINT CK_Transactions_BillableHours CHECK (BillableHours > 0),
+	CONSTRAINT CK_Transactions_RentalPeriod CHECK (DueAt > StartAt)
 );
 
 CREATE TABLE dbo.TransactionEquipments

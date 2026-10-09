@@ -61,7 +61,7 @@ namespace Techrent.Pages.Admin
 
         private void BuildRevenueChart(IEnumerable<Techrent.DataAccessLayer.DTOs.PaymentDto> payments, DateTime periodStart, DateTime periodEnd, JavaScriptSerializer serializer)
         {
-            int bucketCount = SelectedPeriod == "year" ? 12 : SelectedPeriod == "60" ? 6 : 5;
+            int bucketCount = SelectedPeriod == "year" ? 12 : SelectedPeriod == "60" ? 8 : 4;
             double totalDays = (periodEnd - periodStart).TotalDays;
             double bucketDays = SelectedPeriod == "year" ? 0 : totalDays / bucketCount;
             var labels = new string[bucketCount];
@@ -71,14 +71,14 @@ namespace Techrent.Pages.Admin
             {
                 DateTime bucketStart = SelectedPeriod == "year"
                     ? periodStart.AddMonths(index)
-                    : periodStart.AddDays(Math.Floor(index * bucketDays));
+                    : periodStart.AddDays(Math.Floor((bucketCount - index - 1) * bucketDays));
                 DateTime bucketEnd = SelectedPeriod == "year"
                     ? bucketStart.AddMonths(1)
-                    : index == bucketCount - 1 ? periodEnd : periodStart.AddDays(Math.Floor((index + 1) * bucketDays));
+                    : index == 0 ? periodEnd : periodStart.AddDays(Math.Floor((bucketCount - index) * bucketDays));
 
                 labels[index] = SelectedPeriod == "year"
                     ? bucketStart.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)
-                    : "Period " + (index + 1);
+                    : "Week " + (index + 1);
                 values[index] = payments.Where(payment => payment.CreatedAt >= bucketStart && payment.CreatedAt < bucketEnd).Sum(payment => payment.Amount);
             }
 

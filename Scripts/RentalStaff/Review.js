@@ -14,8 +14,10 @@
     var receiptAuditLog = document.getElementById('rentalReceiptAuditLog');
     var reviewRentalStartDate = document.getElementById('reviewRentalStartDate');
     var reviewRentalReturnDate = document.getElementById('reviewRentalReturnDate');
+    var reviewRentalDuration = document.getElementById('reviewRentalDuration');
     var receiptRentalStartDate = document.getElementById('rentalReceiptStartDate');
     var receiptRentalReturnDate = document.getElementById('rentalReceiptReturnDate');
+    var receiptRentalDuration = document.getElementById('rentalReceiptDuration');
     var printReceiptButton = document.getElementById('printRentalReceiptButton');
 
     function getSelectedEquipment() {
@@ -38,13 +40,14 @@
         var rentalFees = 0;
         var securityDeposit = 0;
         var selectedEquipment = getSelectedEquipment();
+        var billableHours = getBillableHours();
         reviewRows.innerHTML = '';
         rows.innerHTML = '';
 
         Object.keys(selectedEquipment).forEach(function (id) {
             var item = selectedEquipment[id];
             var quantity = Number(item.quantity) || 0;
-            var rentalFee = quantity * (Number(item.rentalFee) || 0);
+            var rentalFee = quantity * (Number(item.rentalFee) || 0) * billableHours;
             var deposit = quantity * (Number(item.securityDeposit) || 0);
             rentalFees += rentalFee;
             securityDeposit += deposit;
@@ -77,21 +80,33 @@
         }
     }
 
+    function getBillableHours() {
+        var dates = getRentalDates();
+        var start = new Date(dates.startDate);
+        var end = new Date(dates.returnDate);
+        if (isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
+            return 0;
+        }
+
+        return Math.ceil((end.getTime() - start.getTime()) / 3600000);
+    }
+
     function formatRentalDate(value) {
         if (!value) {
             return 'Not provided';
         }
 
-        var parts = value.split('-');
-        if (parts.length !== 3) {
+        var date = new Date(value);
+        if (isNaN(date.getTime())) {
             return 'Not provided';
         }
 
-        var date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-        return isNaN(date.getTime()) ? 'Not provided' : date.toLocaleDateString('en-US', {
+        return date.toLocaleString('en-US', {
             year: 'numeric',
             month: 'long',
-            day: 'numeric'
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit'
         });
     }
 
@@ -99,11 +114,15 @@
         var dates = getRentalDates();
         var startDate = formatRentalDate(dates.startDate);
         var returnDate = formatRentalDate(dates.returnDate);
+        var duration = getBillableHours();
+        var durationText = duration ? duration + ' ' + (duration === 1 ? 'hour' : 'hours') : 'Not provided';
 
         reviewRentalStartDate.textContent = startDate;
         reviewRentalReturnDate.textContent = returnDate;
+        reviewRentalDuration.textContent = durationText;
         receiptRentalStartDate.textContent = startDate;
         receiptRentalReturnDate.textContent = returnDate;
+        receiptRentalDuration.textContent = durationText;
     }
 
     function formatCurrency(value) {
