@@ -17,11 +17,7 @@ CREATE OR ALTER PROCEDURE dbo.usp_InsertAudit
 	@UserLogged NVARCHAR(100),
 	@Category NVARCHAR(30) = NULL,
 	@EventType NVARCHAR(60) = NULL,
-	@Outcome NVARCHAR(20) = NULL,
-	@AffectedRecordType NVARCHAR(40) = NULL,
-	@AffectedRecordId NVARCHAR(100) = NULL,
 	@Description NVARCHAR(MAX) = NULL,
-	@FailureDetail NVARCHAR(1000) = NULL,
 	@LogID UNIQUEIDENTIFIER OUTPUT
 AS
 BEGIN
@@ -30,13 +26,11 @@ BEGIN
 
 	INSERT INTO dbo.Logs
 	(
-		LogID, UserID, UserLogged, Category, EventType, Outcome,
-		AffectedRecordType, AffectedRecordId, Description, FailureDetail
+		LogID, UserID, UserLogged, Category, EventType, Description
 	)
 	VALUES
 	(
-		@LogID, @UserID, @UserLogged, @Category, @EventType, @Outcome,
-		@AffectedRecordType, @AffectedRecordId, @Description, @FailureDetail
+		@LogID, @UserID, @UserLogged, @Category, @EventType, @Description
 	);
 END
 GO

@@ -25,16 +25,6 @@ namespace Techrent.ApplicationLayer.Services
             var user = _repository.GetByEmail(email.Trim());
             if (user == null || !user.IsActive || !PasswordService.VerifyPassword(password, user.PasswordHash, user.PasswordSalt))
             {
-                // Keep Guid.Empty as the anonymous failure sentinel; repository maps it to DB NULL.
-                TryAudit(AuditEventFactory.Failure(
-                    Guid.Empty,
-                    email.Trim(),
-                    AuditEventFactory.AccountCategory,
-                    "SignIn",
-                    "User",
-                    null,
-                    "A sign-in attempt failed.",
-                    null));
                 return null;
             }
 
@@ -42,9 +32,7 @@ namespace Techrent.ApplicationLayer.Services
                 user.UserId,
                 user.DisplayName,
                 AuditEventFactory.AccountCategory,
-                "SignIn",
-                "User",
-                user.UserId,
+                "Login",
                 "A user signed in successfully."));
             return user;
         }

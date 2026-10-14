@@ -56,7 +56,13 @@ namespace Techrent
                 return;
             }
 
-            if (Context.User == null || !Context.User.Identity.IsAuthenticated || !Context.User.IsInRole(requiredRole))
+            var isAuthenticated = Context.User != null
+                && Context.User.Identity != null
+                && Context.User.Identity.IsAuthenticated;
+            var hasRequiredRole = string.Equals(requiredRole, RouteConfig.AuthenticatedRole, StringComparison.Ordinal)
+                || (Context.User != null && Context.User.IsInRole(requiredRole));
+
+            if (!isAuthenticated || !hasRequiredRole)
             {
                 Response.Clear();
                 Response.StatusCode = 403;

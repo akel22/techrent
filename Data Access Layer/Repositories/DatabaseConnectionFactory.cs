@@ -1,5 +1,4 @@
 using System;
-using System.Configuration;
 using System.Data.SqlClient;
 
 namespace Techrent.DataAccessLayer.Repositories
@@ -8,13 +7,13 @@ namespace Techrent.DataAccessLayer.Repositories
     {
         public static SqlConnection CreateConnection()
         {
-            var settings = ConfigurationManager.ConnectionStrings["TechrentConnection"];
-            if (settings == null || string.IsNullOrWhiteSpace(settings.ConnectionString))
+            var connectionString = Environment.GetEnvironmentVariable("TECHRENT_CONNECTION_STRING");
+            if (string.IsNullOrWhiteSpace(connectionString))
             {
-                throw new InvalidOperationException("Connection string 'TechrentConnection' is not configured in Web.config.");
+                throw new InvalidOperationException("The TECHRENT_CONNECTION_STRING environment variable is not configured.");
             }
 
-            return new SqlConnection(settings.ConnectionString);
+            return new SqlConnection(connectionString);
         }
     }
 }

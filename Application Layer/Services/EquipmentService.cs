@@ -19,31 +19,23 @@ namespace Techrent.ApplicationLayer.Services
 
         public System.Guid Create(EquipmentDto equipment)
         {
-            try
-            {
-                var equipmentId = _repo.Create(equipment);
-                AuditWorkflow.Success(_auditService, AuditEventFactory.InventoryCategory, "EquipmentCreated", "Equipment", equipmentId, "Equipment inventory was created.");
-                return equipmentId;
-            }
-            catch (System.Exception ex)
-            {
-                AuditWorkflow.Failure(_auditService, AuditEventFactory.InventoryCategory, "EquipmentCreated", "Equipment", null, "An equipment creation attempt failed.", ex);
-                throw;
-            }
+            return _repo.Create(equipment);
         }
 
         public void Update(EquipmentDto equipment)
         {
-            try
+            _repo.Update(equipment);
+        }
+
+        public bool Delete(System.Guid equipmentId)
+        {
+            var deleted = _repo.Delete(equipmentId);
+            if (deleted)
             {
-                _repo.Update(equipment);
-                AuditWorkflow.Success(_auditService, AuditEventFactory.InventoryCategory, "EquipmentUpdated", "Equipment", equipment.EquipmentId, "Equipment inventory was updated.");
+                AuditWorkflow.Success(_auditService, AuditEventFactory.InventoryCategory, "RecordDeleted", "An equipment record was deleted: " + equipmentId + ".");
             }
-            catch (System.Exception ex)
-            {
-                AuditWorkflow.Failure(_auditService, AuditEventFactory.InventoryCategory, "EquipmentUpdated", "Equipment", equipment.EquipmentId, "An equipment update attempt failed.", ex);
-                throw;
-            }
+
+            return deleted;
         }
 
         public IEnumerable<EquipmentDto> Search(string keyword) => _repo.Search(keyword);

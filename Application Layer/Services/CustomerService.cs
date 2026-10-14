@@ -23,28 +23,24 @@ namespace Techrent.ApplicationLayer.Services
             try
             {
                 var customerId = _repo.Create(customer);
-                AuditWorkflow.Success(_auditService, AuditEventFactory.CustomerCategory, "CustomerRegistered", "Customer", customerId, "A customer account was registered.");
+                AuditWorkflow.Success(_auditService, AuditEventFactory.CustomerCategory, "CustomerRegistered", "A customer account was registered.");
                 return customerId;
             }
-            catch (Exception ex)
+            catch
             {
-                AuditWorkflow.Failure(_auditService, AuditEventFactory.CustomerCategory, "CustomerRegistered", "Customer", customer.CustomerId == Guid.Empty ? (Guid?)null : customer.CustomerId, "A customer registration attempt failed.", ex);
                 throw;
             }
         }
 
         public void UpdateCustomer(CustomerDto customer)
         {
-            try
-            {
-                _repo.Update(customer);
-                AuditWorkflow.Success(_auditService, AuditEventFactory.CustomerCategory, "CustomerUpdated", "Customer", customer.CustomerId, "A customer account was updated.");
-            }
-            catch (Exception ex)
-            {
-                AuditWorkflow.Failure(_auditService, AuditEventFactory.CustomerCategory, "CustomerUpdated", "Customer", customer.CustomerId, "A customer update attempt failed.", ex);
-                throw;
-            }
+            _repo.Update(customer);
+        }
+
+        public void DeleteCustomer(Guid customerId)
+        {
+            _repo.Delete(customerId);
+            AuditWorkflow.Success(_auditService, AuditEventFactory.CustomerCategory, "RecordDeleted", "A customer record was deleted: " + customerId + ".");
         }
 
         public IEnumerable<CustomerDto> Search(string keyword) => _repo.Search(keyword);

@@ -101,6 +101,7 @@
   <ItemGroup>
     <Content Include=".github\copilot-instructions.md" />
     <Content Include=".gitignore" />
+    <Content Include=".env.example" />
     <Content Include="assets\svg\add.svg" />
     <Content Include="assets\svg\back.svg" />
     <Content Include="assets\svg\customers.svg" />
@@ -142,21 +143,24 @@
     <Content Include="css\rentalstaff\RentalStaff.Review.css" />
     <Content Include="css\rentalstaff\RentalStaff.ActiveTransactions.css" />
     <Content Include="css\rentalstaff\RegisterCustomer.css" />
-    <Content Include="Database\Scripts\000_DeployDatabase.sql" />
-    <Content Include="Database\Scripts\001_CreateSchema.sql" />
-    <Content Include="Database\Scripts\003_AddTransactionArchiving.sql" />
-    <Content Include="Database\Scripts\004_AddPaymentActivity.sql" />
-    <Content Include="Database\Scripts\006_AddStructuredAuditEvents.sql" />
-    <Content Include="Database\Scripts\007_PersistReturnConditionNotes.sql" />
-    <Content Include="Database\Scripts\008_AddUserAuthentication.sql" />
-    <Content Include="Database\Scripts\009_AllowAnonymousAuditActors.sql" />
-    <Content Include="Database\Scripts\010_SplitCustomers.sql" />
-    <Content Include="Database\Scripts\011_AddOverdueTransactionStatus.sql" />
-    <Content Include="Database\Scripts\012_UpdateOccupationOptions.sql" />
-    <Content Include="Database\Scripts\013_AddCompletionCharges.sql" />
-    <Content Include="Database\Scripts\014_AddRentalTiming.sql" />
-    <Content Include="Database\Scripts\002_CreateStoredProcedures.sql" />
-    <Content Include="Database\Scripts\005_SyncEquipmentUpdateProcedure.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\000_DeployDatabase.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\001_CreateSchema.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\003_AddTransactionArchiving.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\004_AddPaymentActivity.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\005_SearchAudits.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\006_AddStructuredAuditEvents.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\007_PersistReturnConditionNotes.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\008_AddUserAuthentication.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\009_AllowAnonymousAuditActors.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\010_SplitCustomers.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\011_RemoveLegacyAuditFields.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\011_AddOverdueTransactionStatus.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\012_UpdateOccupationOptions.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\013_AddCompletionCharges.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\014_AddRentalTiming.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\015_DeleteCustomerAndEquipment.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\002_CreateStoredProcedures.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\005_SyncEquipmentUpdateProcedure.sql" />
     <Content Include="Pages\Admin\Admin.Master" />
     <Content Include="Pages\Admin\AuditLogs.aspx" />
     <Content Include="Pages\Admin\Guidelines.aspx" />
@@ -175,6 +179,7 @@
     <Content Include="Pages\RentalStaff\RegisterCustomer.aspx" />
     <Content Include="Pages\RentalStaff\Equipment.aspx" />
     <Content Include="Pages\RentalStaff\Review.aspx" />
+    <Content Include="README.md" />
     <Content Include="Scripts\Admin\InsertEquipment.js" />
     <Content Include="Scripts\RentalStaff\Equipment.js" />
     <Content Include="Scripts\RentalStaff\New.js" />
@@ -421,16 +426,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Database\Scripts\001_CreateSchema.sql" />
-    <Content Include="Database\Scripts\003_AddTransactionArchiving.sql" />
-    <Content Include="Database\Scripts\004_AddPaymentActivity.sql" />
-    <Content Include="Database\Scripts\006_AddStructuredAuditEvents.sql" />
-    <Content Include="Database\Scripts\007_PersistReturnConditionNotes.sql" />
-    <Content Include="Database\Scripts\008_AddUserAuthentication.sql" />
-    <Content Include="Database\Scripts\009_AllowAnonymousAuditActors.sql" />
-    <Content Include="Database\Scripts\010_SplitCustomers.sql" />
-    <Content Include="Database\Scripts\011_AddOverdueTransactionStatus.sql" />
-    <Content Include="Database\Scripts\012_UpdateOccupationOptions.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\001_CreateSchema.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\003_AddTransactionArchiving.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\004_AddPaymentActivity.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\006_AddStructuredAuditEvents.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\007_PersistReturnConditionNotes.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\008_AddUserAuthentication.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\009_AllowAnonymousAuditActors.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\010_SplitCustomers.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\011_RemoveLegacyAuditFields.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\011_AddOverdueTransactionStatus.sql" />
+    <Content Include="Data Access Layer\Database\Scripts\012_UpdateOccupationOptions.sql" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -487,4 +493,3 @@
     <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
 </Project>
-

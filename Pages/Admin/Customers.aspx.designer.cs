@@ -23,6 +23,10 @@ namespace Techrent.Pages.Admin
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater CustomersRepeater;
 
+        protected global::System.Web.UI.WebControls.Label CustomerDeleteMessage;
+
+        protected global::System.Web.UI.WebControls.Button DeleteCustomerButton;
+
         /// <summary>
         /// selectedCustomerId control.
         /// </summary>

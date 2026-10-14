@@ -5,6 +5,7 @@
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
+    <asp:Label ID="CustomerDeleteMessage" runat="server" CssClass="alert alert-success d-block" Visible="false" />
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-4">
         <div>
             <h1 class="h3 mb-1">Manage Customers</h1>
@@ -190,7 +191,7 @@
                     <p class="text-danger small mb-0 text-center">Once deleted, this action cannot be undone.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Delete Record</button>
+                    <asp:Button ID="DeleteCustomerButton" runat="server" CssClass="btn btn-danger" Text="Delete Record" OnClick="DeleteCustomerButton_Click" />
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Cancel</button>
                 </div>
             </div>
@@ -425,6 +426,7 @@
             document.getElementById('removeCustomerModal').addEventListener('show.bs.modal', function (event) {
                 var row = event.relatedTarget.closest('tr');
                 document.getElementById('removeCustomerName').textContent = row.dataset.firstName;
+                document.getElementById('selectedCustomerId').value = row.dataset.customerId;
             });
 
             renderTable();

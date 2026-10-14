@@ -22,12 +22,11 @@ namespace Techrent.ApplicationLayer.Services
             try
             {
                 var transactionId = _repo.CreateRental(tx);
-                AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "RentalCreated", "Transaction", transactionId, "A rental transaction was created.");
+                AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "TransactionCreated", "A rental transaction was created.");
                 return transactionId;
             }
-            catch (Exception ex)
+            catch
             {
-                AuditWorkflow.Failure(_auditService, AuditEventFactory.RentalCategory, "RentalCreated", "Transaction", null, "A rental creation attempt failed.", ex);
                 throw;
             }
         }
@@ -37,12 +36,11 @@ namespace Techrent.ApplicationLayer.Services
             try
             {
                 var transactionId = _repo.CreateRental(tx, payment);
-                AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "RentalCreated", "Transaction", transactionId, "A rental transaction and initial payment were created.");
+                AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "TransactionCreated", "A rental transaction and initial payment were created.");
                 return transactionId;
             }
-            catch (Exception ex)
+            catch
             {
-                AuditWorkflow.Failure(_auditService, AuditEventFactory.RentalCategory, "RentalCreated", "Transaction", null, "A rental creation attempt failed.", ex);
                 throw;
             }
         }
@@ -93,11 +91,10 @@ namespace Techrent.ApplicationLayer.Services
             try
             {
                 _repo.CompleteRental(rentalId, notes, charges);
-                AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "RentalCompleted", "Transaction", rentalId, "A rental transaction was completed.");
+                AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "TransactionCompleted", "A rental transaction was completed.");
             }
-            catch (Exception ex)
+            catch
             {
-                AuditWorkflow.Failure(_auditService, AuditEventFactory.RentalCategory, "RentalCompleted", "Transaction", rentalId, "A rental completion attempt failed.", ex);
                 throw;
             }
         }
@@ -109,18 +106,13 @@ namespace Techrent.ApplicationLayer.Services
                 var archived = _repo.ArchiveRental(rentalId);
                 if (archived)
                 {
-                    AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "RentalArchived", "Transaction", rentalId, "A rental transaction was archived.");
-                }
-                else
-                {
-                    AuditWorkflow.Failure(_auditService, AuditEventFactory.RentalCategory, "RentalArchived", "Transaction", rentalId, "A rental archive attempt did not change the transaction.", null);
+                    AuditWorkflow.Success(_auditService, AuditEventFactory.RentalCategory, "TransactionArchived", "A rental transaction was archived.");
                 }
 
                 return archived;
             }
-            catch (Exception ex)
+            catch
             {
-                AuditWorkflow.Failure(_auditService, AuditEventFactory.RentalCategory, "RentalArchived", "Transaction", rentalId, "A rental archive attempt failed.", ex);
                 throw;
             }
         }

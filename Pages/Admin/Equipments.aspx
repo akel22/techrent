@@ -5,6 +5,7 @@
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
+    <asp:Label ID="EquipmentDeleteMessage" runat="server" CssClass="alert alert-success d-block" Visible="false" />
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-4">
         <div>
             <h1 class="h3 mb-1">Equipment inventory</h1>
@@ -220,7 +221,7 @@
                     <p class="text-danger small mb-0 text-center">Once removed, this action cannot be undone.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Remove equipment</button>
+                    <asp:Button ID="DeleteEquipmentButton" runat="server" CssClass="btn btn-danger" Text="Remove equipment" OnClick="DeleteEquipmentButton_Click" />
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><img src="<%: ResolveUrl("~/assets/svg/back.svg") %>" alt="" aria-hidden="true" width="16" height="16" class="me-1" />Cancel</button>
                 </div>
             </div>
@@ -330,6 +331,7 @@
             document.querySelectorAll('.inventory-remove-button').forEach(function (button) {
                 button.addEventListener('click', function () {
                     setText('removeInventoryEquipmentId', button.dataset.equipmentId);
+                    document.getElementById('inventoryDetailEquipmentId').value = button.dataset.equipmentId;
                 });
             });
 

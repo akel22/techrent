@@ -18,6 +18,35 @@ namespace Techrent.Pages.Admin
             }
         }
 
+        protected void DeleteCustomerButton_Click(object sender, EventArgs e)
+        {
+            Guid customerId;
+            if (!Guid.TryParse(selectedCustomerId.Value, out customerId))
+            {
+                ShowCustomerDeleteMessage("The customer could not be identified.", false);
+                return;
+            }
+
+            try
+            {
+                ServiceFactory.CreateCustomerService().DeleteCustomer(customerId);
+                BindCustomers();
+                selectedCustomerId.Value = string.Empty;
+                ShowCustomerDeleteMessage("The customer record and its rental history were deleted successfully.", true);
+            }
+            catch (Exception ex)
+            {
+                ShowCustomerDeleteMessage(ex.Message, false);
+            }
+        }
+
+        private void ShowCustomerDeleteMessage(string message, bool success)
+        {
+            CustomerDeleteMessage.Text = message;
+            CustomerDeleteMessage.CssClass = success ? "alert alert-success d-block" : "alert alert-danger d-block";
+            CustomerDeleteMessage.Visible = true;
+        }
+
         private void BindCustomers()
         {
             var activeCustomerIds = new HashSet<Guid>(ServiceFactory.CreateRentalService()

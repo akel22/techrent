@@ -35,7 +35,7 @@
                     </select>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-2">
-                    <button type="button" id="applyAuditFilters" class="btn btn-primary w-100">Apply Filters</button>
+                    <asp:Button ID="ApplyAuditFiltersButton" runat="server" CssClass="btn btn-primary w-100" Text="Apply Filters" OnClick="ApplyAuditFilters_Click" />
                 </div>
                 <div class="col-12 col-lg-4">
                     <label for="auditSearch" class="form-label">Search audit logs</label>
@@ -43,12 +43,11 @@
                         <span class="input-group-text bg-white" aria-hidden="true">
                             <img src="<%: ResolveUrl("~/assets/svg/search.svg") %>" alt="" />
                         </span>
-                        <input type="search" id="auditSearch" class="form-control" placeholder="e.g. Role, Action by, Event" aria-label="Search audit logs" />
+                        <asp:TextBox ID="AuditSearch" runat="server" CssClass="form-control" placeholder="e.g. Role, Action by, Event" />
                     </div>
                 </div>
             </div>
-
-            <div id="auditFilterError" class="alert alert-danger py-2" role="alert" hidden></div>
+            <div id="auditFilterError" runat="server" class="alert alert-danger py-2" role="alert" hidden></div>
             <div class="table-responsive">
                 <table class="table table-sm align-middle mb-0 audit-table">
                     <thead>
@@ -63,7 +62,7 @@
                     <tbody id="auditRows">
                         <asp:Repeater ID="AuditLogsRepeater" runat="server">
                             <ItemTemplate>
-                                <tr data-category="<%#: Eval("Category") %>" data-date="<%#: Eval("DateKey") %>" data-description="<%#: Eval("Description") %>" data-target="<%#: Eval("Target") %>" data-ip-address="<%#: Eval("IpAddress") %>">
+                                <tr data-category="<%#: Eval("Category") %>" data-date="<%#: Eval("DateKey") %>" data-description="<%#: Eval("Description") %>">
                                     <td><%#: Eval("LogId") %></td>
                                     <td><%#: Eval("ActionBy") %></td>
                                     <td><%#: Eval("Role") %></td>
@@ -75,9 +74,9 @@
                     </tbody>
                 </table>
             </div>
-            <p id="auditEmptyMessage" class="text-muted text-center py-4 mb-0" hidden>No audit logs match these filters.</p>
+            <p id="auditEmptyMessage" runat="server" class="text-muted text-center py-4 mb-0" hidden>No audit logs match these filters.</p>
             <nav class="mt-4" aria-label="Audit log pages">
-                <ul class="pagination justify-content-center mb-0" id="auditPagination"></ul>
+                <ul class="pagination justify-content-center mb-0" id="auditPagination" runat="server"></ul>
             </nav>
         </div>
     </section>
@@ -103,10 +102,7 @@
                         <dd class="col-sm-8" id="auditDetailTimestamp"></dd>
                         <dt class="col-sm-4">Event</dt>
                         <dd class="col-sm-8" id="auditDetailDescription"></dd>
-                        <dt class="col-sm-4">Affected record</dt>
-                        <dd class="col-sm-8" id="auditDetailTarget"></dd>
-                        <dt class="col-sm-4">IP address</dt>
-                        <dd class="col-sm-8" id="auditDetailIpAddress"></dd>
+                        <!-- Affected record and IP address are not available in the current audit contract -->
                     </dl>
                 </div>
                 <div class="modal-footer">
@@ -121,7 +117,6 @@
     <script src="<%: ResolveUrl("~/Scripts/bootstrap.bundle.min.js") %>"></script>
     <script>
         document.getElementById('auditDetailsModal').addEventListener('show.bs.modal', function (event) {
-
             var row = event.relatedTarget.closest('tr');
             document.getElementById('auditDetailLogId').textContent = row.cells[0].textContent;
             document.getElementById('auditDetailActionBy').textContent = row.cells[1].textContent;
@@ -129,112 +124,6 @@
             document.getElementById('auditDetailTimestamp').textContent = row.cells[3].textContent;
             document.getElementById('auditDetailCategory').textContent = row.dataset.category;
             document.getElementById('auditDetailDescription').textContent = row.dataset.description;
-            document.getElementById('auditDetailTarget').textContent = row.dataset.target;
-            document.getElementById('auditDetailIpAddress').textContent = row.dataset.ipAddress;
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var rows = Array.prototype.slice.call(document.querySelectorAll('#auditRows tr'));
-            var dateFromInput = document.getElementById('auditDateFrom');
-            var dateToInput = document.getElementById('auditDateTo');
-            var categorySelect = document.getElementById('auditCategory');
-            var searchInput = document.getElementById('auditSearch');
-            var applyButton = document.getElementById('applyAuditFilters');
-            var errorMessage = document.getElementById('auditFilterError');
-            var emptyMessage = document.getElementById('auditEmptyMessage');
-            var pagination = document.getElementById('auditPagination');
-            var currentPage = 1;
-            var pageSize = 8;
-            var appliedQuery = '';
-            var filters = { dateFrom: '', dateTo: '', category: '', query: '' };
-
-            function applyFilters() {
-                var dateFrom = dateFromInput.value;
-                var dateTo = dateToInput.value;
-
-                if (dateFrom && dateTo && dateFrom > dateTo) {
-                    errorMessage.textContent = 'Date From must be on or before Date To.';
-                    errorMessage.hidden = false;
-                    dateFromInput.focus();
-                    return;
-                }
-
-                errorMessage.textContent = '';
-                errorMessage.hidden = true;
-                filters = {
-                    dateFrom: dateFrom,
-                    dateTo: dateTo,
-                    category: categorySelect.value,
-                    query: appliedQuery
-                };
-                currentPage = 1;
-                renderTable();
-            }
-
-            function getFilteredRows() {
-                return rows.filter(function (row) {
-                    var date = row.dataset.date;
-                    var matchesDateFrom = !filters.dateFrom || date >= filters.dateFrom;
-                    var matchesDateTo = !filters.dateTo || date <= filters.dateTo;
-                    var matchesCategory = !filters.category || row.dataset.category === filters.category;
-                    var searchableText = [row.textContent, row.dataset.category, row.dataset.description, row.dataset.target]
-                        .join(' ').toLowerCase();
-                    return matchesDateFrom && matchesDateTo && matchesCategory && searchableText.indexOf(filters.query) !== -1;
-                });
-            }
-
-            function renderTable() {
-                var filteredRows = getFilteredRows();
-                var pageCount = Math.ceil(filteredRows.length / pageSize);
-                currentPage = Math.min(Math.max(currentPage, 1), Math.max(pageCount, 1));
-
-                rows.forEach(function (row) { row.hidden = true; });
-                filteredRows.slice((currentPage - 1) * pageSize, currentPage * pageSize).forEach(function (row) {
-                    row.hidden = false;
-                });
-
-                emptyMessage.hidden = filteredRows.length !== 0;
-                pagination.parentElement.hidden = filteredRows.length === 0;
-                pagination.innerHTML = '';
-                if (pageCount === 0) {
-                    return;
-                }
-
-                addPageLink('Previous', currentPage - 1, currentPage === 1);
-                for (var page = 1; page <= pageCount; page++) {
-                    addPageLink(page, page, false, page === currentPage);
-                }
-                addPageLink('Next', currentPage + 1, currentPage === pageCount);
-            }
-
-            function addPageLink(label, page, disabled, active) {
-                var item = document.createElement('li');
-                item.className = 'page-item' + (disabled ? ' disabled' : '') + (active ? ' active' : '');
-                var link = document.createElement('button');
-                link.type = 'button';
-                link.className = 'page-link';
-                link.textContent = label;
-                link.disabled = disabled;
-                if (active) {
-                    link.setAttribute('aria-current', 'page');
-                }
-                link.addEventListener('click', function () {
-                    currentPage = page;
-                    renderTable();
-                });
-                item.appendChild(link);
-                pagination.appendChild(item);
-            }
-
-            applyButton.addEventListener('click', applyFilters);
-            searchInput.addEventListener('keydown', function (event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    appliedQuery = searchInput.value.trim().toLowerCase();
-                    applyFilters();
-                }
-            });
-            applyFilters();
         });
     </script>
 </asp:Content>

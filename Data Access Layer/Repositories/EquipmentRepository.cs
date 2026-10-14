@@ -46,6 +46,17 @@ namespace Techrent.DataAccessLayer.Repositories
             }
         }
 
+        public bool Delete(Guid equipmentId)
+        {
+            using (var connection = DatabaseConnectionFactory.CreateConnection())
+            using (var command = CreateStoredProcCommand(connection, "usp_DeleteEquipment"))
+            {
+                command.Parameters.Add("@EquipmentID", SqlDbType.UniqueIdentifier).Value = equipmentId;
+                connection.Open();
+                return Convert.ToBoolean(command.ExecuteScalar());
+            }
+        }
+
         public EquipmentDto GetById(Guid id) { var result = Query("usp_GetEquipmentById", "@EquipmentID", id); return result.Count == 0 ? null : result[0]; }
         public IEnumerable<EquipmentDto> Search(string keyword) => Query("usp_SearchEquipment", "@Keyword", keyword);
         private List<EquipmentDto> Query(string procedure, string parameter, object value)

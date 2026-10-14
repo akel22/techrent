@@ -8,5 +8,6 @@ namespace Techrent.DataAccessLayer.Repositories.Interfaces
     {
         Guid Insert(AuditRecordDto record);
         IEnumerable<AuditRecordDto> QueryRecent(int maxRows);
+        IEnumerable<AuditRecordDto> QueryFiltered(int page, int pageSize, DateTime? dateFrom, DateTime? dateTo, string category, string query, out int totalRows);
     }
 }

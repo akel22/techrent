@@ -8,27 +8,15 @@ namespace Techrent.ApplicationLayer.Services
     public class PaymentService
     {
         private readonly IPaymentRepository _repo;
-        private readonly AuditService _auditService;
 
-        public PaymentService(IPaymentRepository repo, AuditService auditService)
+        public PaymentService(IPaymentRepository repo)
         {
             _repo = repo;
-            _auditService = auditService;
         }
 
         public Guid Create(PaymentDto payment)
         {
-            try
-            {
-                var paymentId = _repo.Create(payment);
-                AuditWorkflow.Success(_auditService, AuditEventFactory.PaymentCategory, "PaymentCreated", "Payment", paymentId, "A payment was recorded.");
-                return paymentId;
-            }
-            catch (Exception ex)
-            {
-                AuditWorkflow.Failure(_auditService, AuditEventFactory.PaymentCategory, "PaymentCreated", "Payment", payment.PaymentId == Guid.Empty ? (Guid?)null : payment.PaymentId, "A payment creation attempt failed.", ex);
-                throw;
-            }
+            return _repo.Create(payment);
         }
 
         public IEnumerable<PaymentDto> GetByTransaction(Guid transactionId) => _repo.GetByTransaction(transactionId);

@@ -22,5 +22,10 @@ namespace Techrent.Pages.Admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater AuditLogsRepeater;
+        protected global::System.Web.UI.WebControls.Button ApplyAuditFiltersButton;
+        protected global::System.Web.UI.WebControls.TextBox AuditSearch;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl auditFilterError;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl auditEmptyMessage;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl auditPagination;
     }
 }

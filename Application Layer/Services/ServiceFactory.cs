@@ -46,7 +46,7 @@ namespace Techrent.ApplicationLayer.Services
         public static PaymentService CreatePaymentService()
         {
             IPaymentRepository repo = new PaymentRepository();
-            return new PaymentService(repo, CreateAuditService());
+            return new PaymentService(repo);
         }
     }
 }

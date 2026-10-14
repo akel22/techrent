@@ -23,6 +23,10 @@ namespace Techrent.Pages.Admin
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater InventoryRepeater;
 
+        protected global::System.Web.UI.WebControls.Label EquipmentDeleteMessage;
+
+        protected global::System.Web.UI.WebControls.Button DeleteEquipmentButton;
+
         /// <summary>
         /// inventoryDetailAlert control.
         /// </summary>

@@ -11,10 +11,6 @@ namespace Techrent.DataAccessLayer.DTOs
         public DateTime LoggedAt { get; set; }
         public string Category { get; set; }
         public string EventType { get; set; }
-        public string Outcome { get; set; }
-        public string AffectedRecordType { get; set; }
-        public string AffectedRecordId { get; set; }
         public string Description { get; set; }
-        public string FailureDetail { get; set; }
     }
 }

@@ -9,10 +9,12 @@ namespace Techrent
     public static class RouteConfig
     {
         public const string RequiredRoleKey = "RequiredRole";
+        public const string AuthenticatedRole = "Authenticated";
 
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.MapPageRoute("Signin", "signin", "~/Pages/Signin.aspx");
+            routes.MapPageRoute("Register", "register", "~/Pages/RegisterUser.aspx");
 
             MapProtectedPageRoute(routes, "RentalStaff", "", "~/Pages/RentalStaff/Default.aspx", "RentalStaff");
             MapProtectedPageRoute(routes, "RentalStaffActiveTransactions", "rental-staff/active-transactions", "~/Pages/RentalStaff/ActiveTransactions.aspx", "RentalStaff");
@@ -53,6 +55,11 @@ namespace Techrent
             if (normalizedPath.IndexOf("/Pages/RentalStaff/", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return "RentalStaff";
+            }
+
+            if (normalizedPath.EndsWith(".aspx", StringComparison.OrdinalIgnoreCase))
+            {
+                return AuthenticatedRole;
             }
 
             return null;

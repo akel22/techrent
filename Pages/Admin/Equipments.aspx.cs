@@ -19,6 +19,41 @@ namespace Techrent.Pages.Admin
             }
         }
 
+        protected void DeleteEquipmentButton_Click(object sender, EventArgs e)
+        {
+            Guid equipmentId;
+            if (!Guid.TryParse(inventoryDetailEquipmentId.Value, out equipmentId))
+            {
+                ShowEquipmentDeleteMessage("The equipment could not be identified.", false);
+                return;
+            }
+
+            try
+            {
+                var deleted = ServiceFactory.CreateEquipmentService().Delete(equipmentId);
+                if (!deleted)
+                {
+                    ShowEquipmentDeleteMessage("This equipment cannot be deleted while its stock is greater than zero.", false);
+                    return;
+                }
+
+                BindInventory();
+                inventoryDetailEquipmentId.Value = string.Empty;
+                ShowEquipmentDeleteMessage("The equipment record was deleted successfully.", true);
+            }
+            catch (Exception ex)
+            {
+                ShowEquipmentDeleteMessage(ex.Message, false);
+            }
+        }
+
+        private void ShowEquipmentDeleteMessage(string message, bool success)
+        {
+            EquipmentDeleteMessage.Text = message;
+            EquipmentDeleteMessage.CssClass = success ? "alert alert-success d-block" : "alert alert-danger d-block";
+            EquipmentDeleteMessage.Visible = true;
+        }
+
         public int AvailableEquipmentCount { get; private set; }
         public int MaintenanceEquipmentCount { get; private set; }
         public int TotalInventoryCount { get; private set; }
